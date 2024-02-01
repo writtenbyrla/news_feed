@@ -1,0 +1,98 @@
+-- DROP TABLE 
+DROP TABLE COMMENTLIKE;
+DROP TABLE POSTLIKE;
+DROP TABLE COMMENT;
+DROP TABLE MULTIMEDIA;
+DROP TABLE POST;
+DROP TABLE FOLLOW;
+DROP TABLE USER;
+
+
+
+-- CREATE TABLE(PK, UNIQUE)
+CREATE TABLE `user` (
+  `user_id` bigint NOT NULL AUTO_INCREMENT,
+  `pwd` varchar(300) not null,
+  `username` varchar(300) not null unique,
+  `email` varchar(300) not null unique,
+  `phone` varchar(300),
+  `description` varchar(300) DEFAULT '자신을 한 줄에 담아 표현해보세요!',
+  `profile_img` varchar(300),
+  `role` varchar(300) DEFAULT 'user',
+  `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+);
+
+CREATE TABLE `post` (
+  `post_id` bigint NOT NULL AUTO_INCREMENT,
+  `content` varchar(300),
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`deleted_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `user_id` bigint,
+  PRIMARY KEY (`post_id`)
+);
+
+CREATE TABLE `comment` (
+  `comment_id` bigint NOT NULL AUTO_INCREMENT,
+  `content` varchar(300),
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `user_id` bigint,
+  `post_id` bigint,
+  PRIMARY KEY (`comment_id`)
+) ;
+
+CREATE TABLE `postlike` (
+  `postlike_id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint,
+  `post_id` bigint,
+  PRIMARY KEY (`postlike_id`)
+);
+
+CREATE TABLE `commentlike` (
+  `commentlike_id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint,
+  `comment_id` bigint,
+  PRIMARY KEY (`commentlike_id`)
+);
+
+CREATE TABLE `follow` (
+  `follow_id` bigint NOT NULL AUTO_INCREMENT,
+  `following_id` bigint,
+  `follower_id` bigint,
+  PRIMARY KEY (`follow_id`)
+);
+
+CREATE TABLE `multimedia` (
+  `multimedia_id` bigint NOT NULL AUTO_INCREMENT,
+  `post_id` bigint,
+  `file_url` varchar(300),
+  PRIMARY KEY (`multimedia_id`)
+);
+
+-- FOREIGN KEY(FK)
+ALTER TABLE `post` ADD CONSTRAINT `post_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `comment` ADD CONSTRAINT `comment_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `comment` ADD CONSTRAINT `comment_post_fk` FOREIGN KEY (`post_id`) REFERENCES `post`(`post_id`) ON DELETE CASCADE;
+ALTER TABLE `postlike` ADD CONSTRAINT `postlike_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `postlike` ADD CONSTRAINT `postlike_post_fk` FOREIGN KEY (`post_id`) REFERENCES `post`(`post_id`) ON DELETE CASCADE;
+ALTER TABLE `commentlike` ADD CONSTRAINT `commentlike_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `commentlike` ADD CONSTRAINT `commentlike_comment_fk` FOREIGN KEY (`comment_id`) REFERENCES `comment`(`comment_id`) ON DELETE CASCADE;
+ALTER TABLE `multimedia` ADD CONSTRAINT `multimedia_post_fk` FOREIGN KEY (`post_id`) REFERENCES `post`(`post_id`);
+ALTER TABLE `follow` ADD CONSTRAINT `follow_user_fk` FOREIGN KEY (`following_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `follow` ADD CONSTRAINT `follow_follow_fk` FOREIGN KEY (`follower_id`) REFERENCES `user`(`user_id`);
+
+-- SELECT
+SELECT * FROM comment;
+SELECT * FROM commentlike;
+select * from multimedia;
+select * from follow;
+select * from post;
+select * from postlike;
+select * from user;
+
+
