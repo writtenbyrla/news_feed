@@ -12,13 +12,13 @@ DROP TABLE USER;
 -- CREATE TABLE(PK, UNIQUE)
 CREATE TABLE `user` (
   `user_id` bigint NOT NULL AUTO_INCREMENT,
-  `pwd` varchar(300) not null,
-  `username` varchar(300) not null unique,
-  `email` varchar(300) not null unique,
-  `phone` varchar(300),
-  `description` varchar(300) DEFAULT '자신을 한 줄에 담아 표현해보세요!',
-  `profile_img` varchar(300),
-  `role` varchar(300) DEFAULT 'user',
+  `pwd` varchar(255) not null,
+  `username` varchar(255) not null,
+  `email` varchar(255) not null,
+  `phone` varchar(255),
+  `description` varchar(255) DEFAULT '자신을 한 줄에 담아 표현해보세요!',
+  `profile_img` varchar(255),
+  `role` varchar(255) DEFAULT 'user',
   `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
@@ -27,20 +27,20 @@ CREATE TABLE `user` (
 
 CREATE TABLE `post` (
   `post_id` bigint NOT NULL AUTO_INCREMENT,
-  `content` varchar(300),
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-`deleted_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `content` varchar(255),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `user_id` bigint,
   PRIMARY KEY (`post_id`)
 );
 
 CREATE TABLE `comment` (
   `comment_id` bigint NOT NULL AUTO_INCREMENT,
-  `content` varchar(300),
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `deleted_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `content` varchar(255),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `user_id` bigint,
   `post_id` bigint,
   PRIMARY KEY (`comment_id`)
@@ -70,7 +70,7 @@ CREATE TABLE `follow` (
 CREATE TABLE `multimedia` (
   `multimedia_id` bigint NOT NULL AUTO_INCREMENT,
   `post_id` bigint,
-  `file_url` varchar(300),
+  `file_url` varchar(255),
   PRIMARY KEY (`multimedia_id`)
 );
 
