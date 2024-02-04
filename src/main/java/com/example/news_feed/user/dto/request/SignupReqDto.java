@@ -1,11 +1,15 @@
 package com.example.news_feed.user.dto.request;
 
+import com.example.news_feed.comment.domain.Comment;
+import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.user.domain.User;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Date;
 
 @AllArgsConstructor
 @ToString
@@ -24,4 +28,6 @@ public class SignupReqDto {
     @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식이 올바르지 않습니다.")
     private String email;
     private String phone;
+
+    private Date createdAt;
 }

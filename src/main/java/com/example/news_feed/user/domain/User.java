@@ -56,12 +56,13 @@ public class User {
 //    @Enumerated(value=EnumType.STRING)
 //    private UserRoleEnum role;
 
-    public User(Long userId, String username, String pwd, String email, String phone) {
+    public User(Long userId, String username, String pwd, String email, String phone, Date createdAt) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
         this.phone = phone;
+        this.createdAt = createdAt;
     }
 
     public User(String email, String pwd) {
@@ -79,7 +80,8 @@ public class User {
                 signupReqDto.getUsername(),
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail(),
-                signupReqDto.getPhone()
+                signupReqDto.getPhone(),
+                signupReqDto.getCreatedAt()
         );
 
     }
@@ -99,6 +101,9 @@ public class User {
         if (updateDto.getDescription() != null)
             this.description = updateDto.getDescription();
 
+
+        this.updatedAt = updateDto.getUpdatedAt();
+
     }
 
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
@@ -107,6 +112,6 @@ public class User {
             throw new IllegalArgumentException("암호 수정 실패! userId가 잘못 입력되었습니다.");
 
         this.pwd = pwdUpdateDto.getNewPwd();
-
+        this.updatedAt = pwdUpdateDto.getUpdatedAt();
     }
 }
