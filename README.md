@@ -12,7 +12,7 @@
 <br>
 
 ## 프로젝트 소개
-### 개발 환경
+### ◾개발 환경
 - **프로그래밍 언어:** Java(JDK) 17
 - **프레임워크:** Spring Boot 3.2.2
 - **빌드 툴:** Gradle
@@ -21,7 +21,7 @@
 - **보안 및 인증:** JWT
 <br>
   
-### ◾ ERD
+### ◾ERD
 ![ERD](https://github.com/writtenbyrla/news_feed/assets/133620285/2f391c36-67eb-4253-aee0-a4e452de68b2)
 
 <br>
