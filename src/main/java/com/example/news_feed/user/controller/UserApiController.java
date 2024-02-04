@@ -2,6 +2,7 @@ package com.example.news_feed.user.controller;
 
 import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
+import com.example.news_feed.user.dto.response.LoginResponseDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
 import com.example.news_feed.user.service.UserService;
 import jakarta.validation.Valid;
@@ -47,12 +48,10 @@ public class UserApiController {
 
     // 로그인
     @PostMapping("/user/login")
-    public ResponseEntity<UserResponseDto> login(@RequestBody LoginReqDto loginReqDto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto){
 
-        userService.login(loginReqDto);
-
-        UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "로그인 완료");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+      // UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "로그인 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginReqDto));
     };
 
 
