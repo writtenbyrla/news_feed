@@ -9,134 +9,62 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 @ToString
 public class UserDetailsImpl implements UserDetails {
-//
-//    private final Long userId;
-//    private final String email;
-//    private final String pwd;
-//    private final String username;
-//    private final UserRoleEnum role;
-//    private Collection<? extends GrantedAuthority> authorities;
-//
-//    @Builder
-//    public UserDetailsImpl(Long userId, String email, String pwd, String username, UserRoleEnum role, final Collection<? extends GrantedAuthority> authorities) {
-//        this.userId = userId;
-//        this.email = email;
-//        this.pwd = pwd;
-//        this.username = username;
-//        this.role = role;
-//        this.authorities = authorities;
-//    }
-//
-////    public static UserDetailsImpl from(User user) {
-////
-////        //log.info("UserDetailsImpl : {} " , user.getRole().getAuthority()); // user.getRole() : USER , user.getRole().getAuthority() : ROLE_USER
-////        Set<SimpleGrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority(user.getRole().getAuthority()));
-////
-////        //log.info("UserDetailsImpl : {} " , authorities); ROLE_USER
-////        return UserDetailsImpl.builder()
-////                .userId(user.getUserId())
-////                .email(user.getEmail())
-////                .pwd(user.getPwd())
-////                .authorities(authorities)
-////                .build();
-////    }
-//
-//
-//    public Long getId(){ return userId; }
-//
-//    public String getEmail(){ return email; }
-//
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        UserRoleEnum role = this.role;
-//        String authority = role.getAuthority();
-//
-//        log.info("UserDetailsImpl role: {} " , role);
-//        log.info("UserDetailsImpl authority: {} " , authority);
-//
-//        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-//        Collection<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(simpleGrantedAuthority);
-//        return authorities;
-//    }
-//
-//    @Override
-//    public String getPassword() {
-//        return pwd;
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return email;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
 
-    private final User user;
+    private final Long userId;
+    private final String email;
+    private final String pwd;
+    private final String username;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
+    @Builder
+    public UserDetailsImpl(Long userId, String email, String pwd, String username, UserRoleEnum role, final Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
+        this.email = email;
+        this.pwd = pwd;
+        this.username = username;
+        this.authorities = authorities;
+    }
+
+    public static UserDetailsImpl from(User user) {
+
+        Set<SimpleGrantedAuthority> authorities = Optional.ofNullable(user.getRole())
+                .map(role -> Set.of(new SimpleGrantedAuthority("ROLE_" + role.name())))
+                .orElse(Collections.emptySet());
+
+        return UserDetailsImpl.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .pwd(user.getPwd())
+                .username(user.getUsername())
+                .authorities(authorities) // 권한 설정 해줘야함.
+                .build();
     }
 
 
-    public User getUser(){
-        return user;
-    }
+    public Long getId(){ return userId; }
 
+    public String getEmail(){ return email; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
     @Override
     public String getPassword() {
-        return user.getPwd();
+        return pwd;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
-    }
-
-
-//    public String getEmail(){ return user.getEmail(); }
-
-    public Long getId(){ return user.getUserId(); }
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum role = user.getRole();
-        String authority = role.getAuthority();
-
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(simpleGrantedAuthority);
-        return authorities;
+        return email;
     }
 
     @Override

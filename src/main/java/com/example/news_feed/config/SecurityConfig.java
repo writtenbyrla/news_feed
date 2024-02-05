@@ -47,10 +47,9 @@ public class SecurityConfig {
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
-                                .requestMatchers(HttpMethod.PATCH, "/post/{postId}").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.DELETE, "/post/{postId}").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.PATCH, "/comments/{commentId}").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.DELETE, "/comments/{commentId}").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.GET,"/post/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()
+                                .requestMatchers( "/admin/**").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
 
