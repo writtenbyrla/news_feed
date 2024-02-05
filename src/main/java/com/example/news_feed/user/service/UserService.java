@@ -3,6 +3,7 @@ package com.example.news_feed.user.service;
 import com.example.news_feed.security.jwt.JwtTokenProvider;
 import com.example.news_feed.security.jwt.TokenType;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
@@ -31,6 +32,10 @@ public class UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    // ADMIN_TOKEN
+    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+
     // 회원가입
     @Transactional
     public User signup(SignupReqDto signupReqDto){
@@ -53,10 +58,20 @@ public class UserService {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
 
-        // 댓글 엔티티 생성
+        // 사용자 ROLE 확인(admin 토큰이 있을 경우에만 admin으로 회원가입)
+        UserRoleEnum role = UserRoleEnum.USER;
+        if (signupReqDto.isAdmin()) {
+            if(!ADMIN_TOKEN.equals(signupReqDto.getAdminToken())){
+                throw new IllegalArgumentException("관리자 암호가 틀립니다.");
+            }
+            role = UserRoleEnum.ADMIN;
+        }
+        signupReqDto.setRole(role);
+
+        // 유저 엔티티 생성
         User user = User.createUser(signupReqDto);
 
-        // 댓글 엔티티를 DB로 저장
+        // 유저 엔티티를 DB로 저장
         User created = userRepository.save(user);
 
         // Dto로 변경하여 반환
@@ -76,15 +91,15 @@ public class UserService {
         );
 
         String username = user.getUsername();
-
+        UserRoleEnum role = user.getRole();
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(email, username, TokenType.ACCESS);
-        String refreshToken = jwtTokenProvider.createToken(email, username, TokenType.REFRESH);
+        String accessToken = jwtTokenProvider.createToken(email, username, role, TokenType.ACCESS);
+        String refreshToken = jwtTokenProvider.createToken(email, username, role, TokenType.REFRESH);
 
-        return new LoginResponseDto(accessToken, refreshToken, email, username);
+        return new LoginResponseDto(accessToken, refreshToken, email, username, role);
     };
 
     // 기본 프로필 수정
@@ -104,13 +119,13 @@ public class UserService {
         User target = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("프로필 수정 실패! 유저 정보가 없습니다."));
 
-        // 댓글 수정
+        // 프로필 수정
         target.patchProfile(updateDto);
 
         // DB
         User updated = userRepository.save(target);
 
-        // 댓글 엔티티를 DTO로 변환해서 반환
+        // 엔티티를 DTO로 변환해서 반환
         return UserUpdateDto.createUserDto(updated);
     }
 
@@ -131,7 +146,7 @@ public class UserService {
             throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
 
-        // 댓글 수정
+        // 암호 수정
         pwdUpdateDto.setNewPwd(bCryptPasswordEncoder.encode(pwdUpdateDto.getNewPwd()));
         target.patchPwd(pwdUpdateDto);
 
