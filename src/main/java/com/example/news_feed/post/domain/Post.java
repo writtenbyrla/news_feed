@@ -30,9 +30,6 @@ public class Post {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
-
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
@@ -52,4 +49,5 @@ public class Post {
         if (updatePostDto.getContent() != null)
             this.content = updatePostDto.getContent();
     }
+
 }

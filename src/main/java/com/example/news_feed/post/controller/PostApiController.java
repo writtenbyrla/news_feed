@@ -3,16 +3,18 @@ package com.example.news_feed.post.controller;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.security.UserDetailsImpl;
-import com.example.news_feed.security.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -35,7 +37,7 @@ public class PostApiController {
 
     // 게시글 수정
     @PatchMapping("/post/{postId}")
-    public ResponseEntity<PostResponseDto> create(@PathVariable Long postId,
+    public ResponseEntity<PostResponseDto> update(@PathVariable Long postId,
                                                   @RequestBody UpdatePostDto updatePostDto,
                                                   @AuthenticationPrincipal final UserDetailsImpl userDetails) {
 
@@ -57,8 +59,17 @@ public class PostApiController {
 
 
     // 게시글 목록
+    @GetMapping("/post")
+    public ResponseEntity<List<PostDetailDto>> showAll(){
+        List<PostDetailDto> posts = postService.showAll();
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
 
     // 게시글 상세
-
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<PostDetailDto> show(@PathVariable Long postId){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.show(postId));
+    }
 
 }

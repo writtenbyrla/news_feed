@@ -3,6 +3,7 @@ package com.example.news_feed.post.service;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.repository.UserRepository;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,8 +56,12 @@ public class PostService {
         Post target = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 정보가 없습니다."));
 
-        // 작성자가 일치하거나 ADMIN인 경우에만 수정 가능
-        if ((updatePostDto.getUserId() != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
+//        // 작성자가 일치하거나 ADMIN인 경우에만 수정 가능
+//        if ((updatePostDto.getUserId() != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
+//            throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 수정이 불가능합니다.");
+//        }
+        // 작성자 여부 확인
+        if ((updatePostDto.getUserId() != target.getUser().getUserId())){
             throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 수정이 불가능합니다.");
         }
 
@@ -70,6 +77,7 @@ public class PostService {
 
     }
 
+    @Transactional
     // 게시글 삭제
     public Post delete(Long userId, Long postId) {
         // 기존 유저정보 조회 및 예외 처리
@@ -80,8 +88,13 @@ public class PostService {
         Post target = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 정보가 없습니다."));
 
-        // 작성자가 일치하거나 ADMIN인 경우에만 삭제 가능
-        if ((userId != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
+//        // 작성자가 일치하거나 ADMIN인 경우에만 삭제 가능
+//        if ((userId != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
+//            throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 삭제가 불가능합니다.");
+//        }
+
+        // 작성자 일치 여부 확인
+        if ((userId != target.getUser().getUserId())){
             throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 삭제가 불가능합니다.");
         }
 
@@ -89,5 +102,19 @@ public class PostService {
         return target;
     }
 
+    // 게시글 목록
+    public List<PostDetailDto> showAll() {
+        return postRepository.findAll()
+                .stream()
+                .map(PostDetailDto::createPostDto)
+                .collect(Collectors.toList());
 
+    }
+
+    // 게시글 상세
+    public PostDetailDto show(Long postId) {
+        return postRepository.findById(postId)
+                .map(PostDetailDto::createPostDto)
+                .orElse(null);
+    }
 }
