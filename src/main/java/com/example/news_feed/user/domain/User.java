@@ -40,8 +40,8 @@ public class User {
     @Column(name="profile_img")
     private String profileImg;
 
-    @Column(name="role")
-    private String role;
+//    @Column(name="role")
+//    private String role;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -52,17 +52,18 @@ public class User {
     @Column(name = "deleted_at")
     private Date deletedAt;
 
-    //    @Column(name="role")
-//    @Enumerated(value=EnumType.STRING)
-//    private UserRoleEnum role;
+    @Column(name="role")
+    @Enumerated(value=EnumType.STRING)
+    private UserRoleEnum role;
 
-    public User(Long userId, String username, String pwd, String email, String phone, Date createdAt) {
+    public User(Long userId, String username, String pwd, String email, String phone, Date createdAt, UserRoleEnum role) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
         this.phone = phone;
         this.createdAt = createdAt;
+        this.role = role;
     }
 
     public User(String email, String pwd) {
@@ -81,7 +82,8 @@ public class User {
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail(),
                 signupReqDto.getPhone(),
-                signupReqDto.getCreatedAt()
+                signupReqDto.getCreatedAt(),
+                signupReqDto.getRole()
         );
 
     }

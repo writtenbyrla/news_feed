@@ -33,12 +33,12 @@ public class JwtTokenProvider {
     }
 
     // 토큰 생성
-    public String createToken(String email, String username, TokenType type) {
+    public String createToken(String email, String username, UserRoleEnum role, TokenType type) {
         // 1. 클레임에 정보 담기
         Claims claims = Jwts.claims();
         claims.put("username", username);
         claims.put("email", email);
-//        claims.put("auth", role);
+        claims.put("auth", role);
 
         String secretKey;
         Long expiredTime;
@@ -56,7 +56,7 @@ public class JwtTokenProvider {
 
         Date date = new Date();
         return Jwts.builder()
-                .setSubject(username) // 사용자 식별자값 (username vs email?)
+                .setSubject(email) // 사용자 식별자값 (username vs email?)
                 .setClaims(claims) // username, email, role 포함
                 .setIssuedAt(date) // 발급시간
                 .setExpiration(new Date(date.getTime() + expiredTime)) // 만료 시간

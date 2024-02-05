@@ -3,6 +3,7 @@ package com.example.news_feed.user.dto.request;
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.domain.UserRoleEnum;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,4 +31,10 @@ public class SignupReqDto {
     private String phone;
 
     private Date createdAt;
+
+    private UserRoleEnum role;
+
+    private boolean admin = false;
+    private String adminToken = "";
+
 }

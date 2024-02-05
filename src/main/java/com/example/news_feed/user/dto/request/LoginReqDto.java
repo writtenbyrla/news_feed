@@ -1,6 +1,7 @@
 package com.example.news_feed.user.dto.request;
 
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,4 @@ public class LoginReqDto {
     private String email;
     private String pwd;
 
-
-    public User toEntity() {
-        return new User(email, pwd);
-    }
 }
