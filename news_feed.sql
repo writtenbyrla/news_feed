@@ -2,9 +2,9 @@
 DROP TABLE COMMENTLIKE;
 DROP TABLE POSTLIKE;
 DROP TABLE COMMENT;
-DROP TABLE MULTIMEDIA;
 DROP TABLE POST;
 DROP TABLE FOLLOW;
+DROP TABLE AUTH_HISTORY;
 DROP TABLE USER;
 
 
@@ -19,6 +19,8 @@ CREATE TABLE `user` (
   `description` varchar(255) DEFAULT '자신을 한 줄에 담아 표현해보세요!',
   `profile_img` varchar(255),
   `role` varchar(255) DEFAULT 'user',
+`created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+`updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
@@ -28,9 +30,9 @@ CREATE TABLE `user` (
 CREATE TABLE `post` (
   `post_id` bigint NOT NULL AUTO_INCREMENT,
   `content` varchar(255),
+  `multimedia` varchar(255),
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-`deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `user_id` bigint,
   PRIMARY KEY (`post_id`)
 );
@@ -40,7 +42,6 @@ CREATE TABLE `comment` (
   `content` varchar(255),
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `user_id` bigint,
   `post_id` bigint,
   PRIMARY KEY (`comment_id`)
@@ -67,11 +68,12 @@ CREATE TABLE `follow` (
   PRIMARY KEY (`follow_id`)
 );
 
-CREATE TABLE `multimedia` (
-  `multimedia_id` bigint NOT NULL AUTO_INCREMENT,
-  `post_id` bigint,
-  `file_url` varchar(255),
-  PRIMARY KEY (`multimedia_id`)
+CREATE TABLE `auth_history` (
+  `history_id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint,
+  `oldPwd` varchar(255),
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`history_id`)
 );
 
 -- FOREIGN KEY(FK)
@@ -82,17 +84,18 @@ ALTER TABLE `postlike` ADD CONSTRAINT `postlike_user_fk` FOREIGN KEY (`user_id`)
 ALTER TABLE `postlike` ADD CONSTRAINT `postlike_post_fk` FOREIGN KEY (`post_id`) REFERENCES `post`(`post_id`) ON DELETE CASCADE;
 ALTER TABLE `commentlike` ADD CONSTRAINT `commentlike_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
 ALTER TABLE `commentlike` ADD CONSTRAINT `commentlike_comment_fk` FOREIGN KEY (`comment_id`) REFERENCES `comment`(`comment_id`) ON DELETE CASCADE;
-ALTER TABLE `multimedia` ADD CONSTRAINT `multimedia_post_fk` FOREIGN KEY (`post_id`) REFERENCES `post`(`post_id`);
-ALTER TABLE `follow` ADD CONSTRAINT `follow_user_fk` FOREIGN KEY (`following_id`) REFERENCES `user`(`user_id`);
-ALTER TABLE `follow` ADD CONSTRAINT `follow_follow_fk` FOREIGN KEY (`follower_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `auth_history` ADD CONSTRAINT `auth_history_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `follow` ADD CONSTRAINT `following_user_fk` FOREIGN KEY (`following_id`) REFERENCES `user`(`user_id`);
+ALTER TABLE `follow` ADD CONSTRAINT `follower_user_fk` FOREIGN KEY (`follower_id`) REFERENCES `user`(`user_id`);
 
 -- SELECT
 SELECT * FROM comment;
 SELECT * FROM commentlike;
-select * from multimedia;
+select * from auth_history;
 select * from follow;
 select * from post;
 select * from postlike;
 select * from user;
 
 
+select * from history where user_id=1 order by updated_at desc limit 0, 3;
