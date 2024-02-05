@@ -46,9 +46,6 @@ public class Post {
     }
 
     public void patch(UpdatePostDto updatePostDto) {
-        if (this.user.getUserId() != updatePostDto.getUserId())
-            throw new IllegalArgumentException("게시글 수정 실패! userId가 잘못 입력되었습니다.");
-
         if (this.postId != updatePostDto.getPostId())
             throw new IllegalArgumentException("게시글 수정 실패! postId가 잘못 입력되었습니다.");
 
