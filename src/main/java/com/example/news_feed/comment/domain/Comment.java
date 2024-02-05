@@ -2,6 +2,7 @@ package com.example.news_feed.comment.domain;
 
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
+@Table(name="comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +32,12 @@ public class Comment {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
-
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", referencedColumnName = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
     public Comment(CreateCommentDto createCommentDto, Post post, User user, Date date) {

@@ -3,6 +3,7 @@ package com.example.news_feed.comment.service;
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.repository.PostRepository;
@@ -10,10 +11,14 @@ import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -76,6 +81,7 @@ public class CommentService {
         return UpdateCommentDto.updateCommentDto(updated);
 
     }
+    @Transactional
 
     public Comment delete(Long userId, Long commentId) {
         // 기존 유저정보 조회 및 예외 처리
@@ -93,5 +99,21 @@ public class CommentService {
 
         commentRepository.delete(target);
         return target;
+    }
+
+    public List<CommentDetailDto> showAll(Long postId) {
+
+        return commentRepository.findByPostId(postId)
+                .stream()
+                .map(CommentDetailDto::createCommentDetailDto)
+                .collect(Collectors.toList());
+    }
+
+    public CommentDetailDto show(Long commentId) {
+
+        return commentRepository.findById(commentId)
+                .map(CommentDetailDto::createCommentDetailDto)
+                .orElse(null);
+
     }
 }

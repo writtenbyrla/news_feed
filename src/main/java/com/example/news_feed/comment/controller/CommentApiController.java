@@ -2,6 +2,7 @@ package com.example.news_feed.comment.controller;
 
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
 import com.example.news_feed.comment.service.CommentService;
 import com.example.news_feed.security.UserDetailsImpl;
@@ -10,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -54,8 +58,17 @@ public class CommentApiController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 댓글 전체 조회
+    // 댓글 목록
+    @GetMapping("/post/{postId}/comment")
+    public ResponseEntity<List<CommentDetailDto>> showAll(@PathVariable Long postId){
+        List<CommentDetailDto> comments = commentService.showAll(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    }
 
 
     // 댓글 상세 조회
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<CommentDetailDto> show(@PathVariable Long commentId){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.show(commentId));
+    }
 }
