@@ -2,6 +2,7 @@ package com.example.news_feed.user.service;
 
 import com.example.news_feed.security.jwt.JwtTokenProvider;
 import com.example.news_feed.security.jwt.TokenType;
+import com.example.news_feed.user.domain.AuthHistory;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
@@ -9,6 +10,7 @@ import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
+import com.example.news_feed.user.repository.HistoryRepository;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+
+    private final HistoryRepository historyRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -102,6 +106,7 @@ public class UserService {
         return new LoginResponseDto(accessToken, refreshToken, email, username, role);
     };
 
+
     // 기본 프로필 수정
     @Transactional
     public UserUpdateDto updateProfile(Long userId, UserUpdateDto updateDto) {
@@ -128,6 +133,7 @@ public class UserService {
         // 엔티티를 DTO로 변환해서 반환
         return UserUpdateDto.createUserDto(updated);
     }
+
 
     // 패스워드 수정
     @Transactional
