@@ -19,11 +19,11 @@ public class AuthHistory {
     @Column(name="history_id")
     private Long History;
 
-    @Column(name="oldPwd")
+    @Column(name="old_pwd")
     private String oldPwd;
 
     @Column(name="updated_at")
-    private Date updated_at;
+    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id")

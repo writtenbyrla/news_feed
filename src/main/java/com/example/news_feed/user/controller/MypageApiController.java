@@ -69,5 +69,14 @@ public class MypageApiController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };
 
+    // 회원정보 조회
+
+    // 내가 쓴 게시글 조회
+
+    // 내가 쓴 댓글 조회
+
+    // 내가 팔로우한 사람
+
+    // 나를 팔로우한 사람
 
 }
