@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HistoryRepository extends JpaRepository<AuthHistory, Long> {
-    @Query(value="select * from history where user_id = :userId order by updated_at desc limit 0, 3", nativeQuery = true)
+public interface AuthHistoryRepository extends JpaRepository<AuthHistory, Long> {
+    @Query(value="select * from auth_history where user_id = :userId order by updated_at desc limit 0, 3", nativeQuery = true)
     List<AuthHistory> findByUserId(@Param("userId") Long userId);
 
 }

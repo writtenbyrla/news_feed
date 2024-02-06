@@ -40,9 +40,6 @@ public class User {
     @Column(name="profile_img")
     private String profileImg;
 
-//    @Column(name="role")
-//    private String role;
-
     @Column(name = "created_at")
     private Date createdAt;
 
