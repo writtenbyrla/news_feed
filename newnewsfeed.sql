@@ -67,6 +67,7 @@ CREATE TABLE `follow` (
   `follow_id` bigint NOT NULL AUTO_INCREMENT,
   `following_id` bigint,
   `follower_id` bigint,
+    `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`follow_id`)
 );
 
@@ -89,6 +90,8 @@ ALTER TABLE `commentlike` ADD CONSTRAINT `commentlike_comment_fk` FOREIGN KEY (`
 ALTER TABLE `auth_history` ADD CONSTRAINT `auth_history_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`);
 ALTER TABLE `follow` ADD CONSTRAINT `following_user_fk` FOREIGN KEY (`following_id`) REFERENCES `user`(`user_id`);
 ALTER TABLE `follow` ADD CONSTRAINT `follower_user_fk` FOREIGN KEY (`follower_id`) REFERENCES `user`(`user_id`);
+-- CREATE UNIQUE INDEX unique_postlike ON postlike (user_id, post_id);
+-- CREATE UNIQUE INDEX unique_commentlike ON commentlike (user_id, comment_id);
 
 -- SELECT
 SELECT * FROM comment;

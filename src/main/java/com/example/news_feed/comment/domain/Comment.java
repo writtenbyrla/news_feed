@@ -23,7 +23,7 @@ public class Comment {
     @Column(name="comment_id")
     private Long commentId;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "created_at")
@@ -33,11 +33,11 @@ public class Comment {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Comment(CreateCommentDto createCommentDto, Post post, User user, Date date) {

@@ -21,7 +21,7 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "created_at")
@@ -31,9 +31,8 @@ public class Post {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
-
 
     public Post(CreatePostDto createPostDto, User user, Date date) {
         this.postId = createPostDto.getPostId();

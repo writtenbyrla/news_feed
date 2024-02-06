@@ -20,15 +20,13 @@ public class User {
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="pwd")
-//    @Pattern(regexp = "[A-Za-z0-9!-~]{8,15}", message = "비밀번호는 알파벳 대소문자, 숫자, 특수문자를 포함하여 8~15자여야 합니다.")
+    @Column(name="pwd", nullable = false)
     private String pwd;
 
-    @Column(name="username")
-//    @Pattern(regexp = "[a-z0-9]{4,10}", message = "이름은 알파벳 소문자, 숫자를 포함하여 4~10자여야 합니다.")
+    @Column(name="username", nullable = false, unique = true)
     private String username;
 
-    @Column(name="email")
+    @Column(name="email", nullable = false, unique = true)
     private String email;
 
     @Column(name="phone")
