@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name="auth_history")
-public class AuthHistory {
+public class PwdHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

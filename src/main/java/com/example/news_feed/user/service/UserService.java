@@ -2,7 +2,7 @@ package com.example.news_feed.user.service;
 
 import com.example.news_feed.security.jwt.JwtTokenProvider;
 import com.example.news_feed.security.jwt.TokenType;
-import com.example.news_feed.user.domain.AuthHistory;
+import com.example.news_feed.user.domain.PwdHistory;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
@@ -80,7 +80,6 @@ public class UserService {
 
         // Dto로 변경하여 반환
         return userRepository.save(created);
-
     }
 
     // 로그인
@@ -159,10 +158,12 @@ public class UserService {
         // 3. 새로운 비밀번호로 업데이트
 
         // 1. pwds 리스트의 각 요소의 oldPwd 필드와 입력받은 새로운 비밀번호 비교
-        List<AuthHistory> pwds = showPwd(userId);
+        List<PwdHistory> pwds = showPwd(userId);
         String newPwd = pwdUpdateDto.getNewPwd();
 
-        boolean newPasswordValid = pwds.stream().noneMatch(history -> bCryptPasswordEncoder.matches(newPwd, history.getOldPwd()));
+        boolean newPasswordValid = pwds
+                .stream()
+                .noneMatch(history -> bCryptPasswordEncoder.matches(newPwd, history.getOldPwd()));
 
         if(newPasswordValid) {
             // 2. 암호 수정 전에 히스토리 저장
@@ -185,7 +186,7 @@ public class UserService {
     // 회원정보 수정 시 현재 패스워드 히스토리 테이블에 저장
     @Transactional
     public void saveHistory(User user, String pwd){
-        AuthHistory history = new AuthHistory();
+        PwdHistory history = new PwdHistory();
         history.setUser(user);
         history.setOldPwd(pwd);
         history.setUpdatedAt(new Date());
@@ -193,8 +194,8 @@ public class UserService {
     }
 
     // 패스워드 최근 3개 조회
-    private List<AuthHistory> showPwd(Long userId){
-        List<AuthHistory> pwds = historyRepository.findByUserId(userId);
+    private List<PwdHistory> showPwd(Long userId){
+        List<PwdHistory> pwds = historyRepository.findByUserId(userId);
         return pwds;
     }
 
