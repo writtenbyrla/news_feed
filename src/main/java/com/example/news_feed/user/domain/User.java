@@ -1,5 +1,6 @@
 package com.example.news_feed.user.domain;
 
+import com.example.news_feed.timestamp.TimeStamp;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
@@ -13,7 +14,7 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
-public class User {
+public class User extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +39,6 @@ public class User {
     @Column(name="profile_img")
     private String profileImg;
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
-
     @Column(name = "deleted_at")
     private Date deletedAt;
 
@@ -51,13 +46,12 @@ public class User {
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(Long userId, String username, String pwd, String email, String phone, Date createdAt, UserRoleEnum role) {
+    public User(Long userId, String username, String pwd, String email, String phone, UserRoleEnum role) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
         this.phone = phone;
-        this.createdAt = createdAt;
         this.role = role;
     }
 
@@ -77,7 +71,6 @@ public class User {
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail(),
                 signupReqDto.getPhone(),
-                signupReqDto.getCreatedAt(),
                 signupReqDto.getRole()
         );
 
@@ -99,8 +92,6 @@ public class User {
             this.description = updateDto.getDescription();
 
 
-        this.updatedAt = updateDto.getUpdatedAt();
-
     }
 
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
@@ -109,6 +100,5 @@ public class User {
             throw new IllegalArgumentException("암호 수정 실패! userId가 잘못 입력되었습니다.");
 
         this.pwd = pwdUpdateDto.getNewPwd();
-        this.updatedAt = pwdUpdateDto.getUpdatedAt();
     }
 }

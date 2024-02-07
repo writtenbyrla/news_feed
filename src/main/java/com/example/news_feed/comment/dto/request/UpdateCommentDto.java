@@ -25,15 +25,13 @@ public class UpdateCommentDto {
     @JsonProperty("post_id")
     private Long postId;
 
-    private Date updated_at;
 
     public static UpdateCommentDto updateCommentDto(Comment comment){
         return new UpdateCommentDto(
                 comment.getCommentId(),
                 comment.getContent(),
                 comment.getPost().getPostId(),
-                comment.getUser().getUserId(),
-                comment.getUpdatedAt()
+                comment.getUser().getUserId()
         );
     }
 }

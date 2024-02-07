@@ -25,15 +25,12 @@ public class CreateCommentDto {
     @JsonProperty("post_id")
     private Long postId;
 
-    private Date created_at;
-
     public static CreateCommentDto createCommentDto(Comment comment) {
         return new CreateCommentDto(
                 comment.getCommentId(),
                 comment.getContent(),
                 comment.getPost().getPostId(),
-                comment.getUser().getUserId(),
-                comment.getCreatedAt()
+                comment.getUser().getUserId()
         );
     }
 

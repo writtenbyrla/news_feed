@@ -48,7 +48,6 @@ public class UserService {
         String email = signupReqDto.getEmail();
 
         signupReqDto.setPwd(pwd);
-        signupReqDto.setCreatedAt(new Date());
 
         // 유저네임 중복확인
         Optional<User> checkUsername = userRepository.findByName(username);
@@ -71,6 +70,7 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
         signupReqDto.setRole(role);
+
 
         // 유저 엔티티 생성
         User user = User.createUser(signupReqDto);
@@ -111,7 +111,6 @@ public class UserService {
     public UserUpdateDto updateProfile(Long userId, UserUpdateDto updateDto) {
 
         updateDto.setUserId(userId);
-        updateDto.setUpdatedAt(new Date());
 
         // 본인 닉네임 제외해서 중복확인
         Optional<User> checkUsername = userRepository.findByNameAndUserIdNot(updateDto.getUsername(), userId);
@@ -139,7 +138,6 @@ public class UserService {
     public PwdUpdateDto updatePwd(Long userId, PwdUpdateDto pwdUpdateDto) {
 
         pwdUpdateDto.setUserId(userId);
-        pwdUpdateDto.setUpdatedAt(new Date());
         String oldPwd = pwdUpdateDto.getOldPwd(); // 현재 비밀번호 입력값
 
         // 기존 유저정보 조회 및 예외 처리
@@ -189,7 +187,6 @@ public class UserService {
         PwdHistory history = new PwdHistory();
         history.setUser(user);
         history.setOldPwd(pwd);
-        history.setUpdatedAt(new Date());
         historyRepository.save(history);
     }
 

@@ -4,6 +4,7 @@ import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.timestamp.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name="comment")
-public class Comment {
+public class Comment extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id")
@@ -25,12 +26,6 @@ public class Comment {
 
     @Column(name = "content", nullable = false)
     private String content;
-
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -40,12 +35,11 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(CreateCommentDto createCommentDto, Post post, User user, Date date) {
+    public Comment(CreateCommentDto createCommentDto, Post post, User user) {
             this.commentId = createCommentDto.getCommentId();
             this.content = createCommentDto.getContent();
             this.post = post;
             this.user = user;
-            this.createdAt = date;
 
     }
 

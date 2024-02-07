@@ -34,7 +34,6 @@ public class AdminPostService {
 
 
         // 게시글 수정
-        target.setUpdatedAt(new Date());
         target.patch(updatePostDto);
 
         // 엔티티 db 저장
