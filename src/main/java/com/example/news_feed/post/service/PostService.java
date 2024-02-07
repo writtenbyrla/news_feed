@@ -33,7 +33,7 @@ public class PostService {
                 .orElseThrow( () -> new IllegalArgumentException("등록된 사용자가 없습니다."));
 
         // 엔티티 생성
-        Post post = new Post(createPostDto, user, new Date());
+        Post post = new Post(createPostDto, user);
 
         // 엔티티를 DB로 저장
         Post created = postRepository.save(post);
@@ -56,17 +56,12 @@ public class PostService {
         Post target = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 정보가 없습니다."));
 
-//        // 작성자가 일치하거나 ADMIN인 경우에만 수정 가능
-//        if ((updatePostDto.getUserId() != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
-//            throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 수정이 불가능합니다.");
-//        }
         // 작성자 여부 확인
         if ((updatePostDto.getUserId() != target.getUser().getUserId())){
             throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 수정이 불가능합니다.");
         }
 
         // 게시글 수정
-        target.setUpdatedAt(new Date());
         target.patch(updatePostDto);
 
         // 엔티티 db 저장
@@ -88,10 +83,6 @@ public class PostService {
         Post target = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 정보가 없습니다."));
 
-//        // 작성자가 일치하거나 ADMIN인 경우에만 삭제 가능
-//        if ((userId != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
-//            throw new IllegalArgumentException("본인이 작성한 게시글이 아닙니다. 삭제가 불가능합니다.");
-//        }
 
         // 작성자 일치 여부 확인
         if ((userId != target.getUser().getUserId())){
