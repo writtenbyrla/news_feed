@@ -6,6 +6,8 @@ import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -40,7 +42,7 @@ public class User extends TimeStamp {
     private String profileImg;
 
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private LocalDateTime deletedAt;
 
     @Column(name="role")
     @Enumerated(value=EnumType.STRING)

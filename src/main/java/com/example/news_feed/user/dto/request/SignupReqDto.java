@@ -33,7 +33,4 @@ public class SignupReqDto {
 
     private UserRoleEnum role;
 
-    private boolean admin = false;
-    private String adminToken = "";
-
 }

@@ -36,9 +36,6 @@ public class UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
-
 
     // 회원가입
     @Transactional
@@ -63,12 +60,6 @@ public class UserService {
 
         // 사용자 ROLE 확인(admin 토큰이 있을 경우에만 admin으로 회원가입)
         UserRoleEnum role = UserRoleEnum.USER;
-        if (signupReqDto.isAdmin()) {
-            if(!ADMIN_TOKEN.equals(signupReqDto.getAdminToken())){
-                throw new IllegalArgumentException("관리자 암호가 틀립니다.");
-            }
-            role = UserRoleEnum.ADMIN;
-        }
         signupReqDto.setRole(role);
 
 

@@ -2,6 +2,7 @@ package com.example.news_feed.admin.service;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminCommentService {
@@ -57,5 +60,13 @@ public class AdminCommentService {
 
         commentRepository.delete(target);
         return target;
+    }
+
+    // 댓글 전체 조회
+    public List<CommentDetailDto> showAll() {
+        return commentRepository.findAll()
+                .stream()
+                .map(CommentDetailDto::createCommentDetailDto)
+                .collect(Collectors.toList());
     }
 }
