@@ -35,7 +35,6 @@ public class AdminCommentService {
 
 
         // 댓글 수정
-        target.setUpdatedAt(new Date());
         target.patch(commentId, updateCommentDto);
 
         // DB로 갱신
@@ -46,6 +45,7 @@ public class AdminCommentService {
 
     }
 
+    @Transactional
     public Comment delete(Long userId, Long commentId) {
         // 기존 유저정보 조회 및 예외 처리
         User user = userRepository.findById(userId)

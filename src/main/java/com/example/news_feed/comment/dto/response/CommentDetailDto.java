@@ -4,6 +4,8 @@ import com.example.news_feed.comment.domain.Comment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -21,8 +23,11 @@ public class CommentDetailDto {
     private Long userId;
 
     private String username;
-    private Date created_at;
-    private Date updated_at;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+
+
 
     public static CommentDetailDto createCommentDetailDto(Comment comment) {
         return new CommentDetailDto(
@@ -32,7 +37,7 @@ public class CommentDetailDto {
                 comment.getUser().getUserId(),
                 comment.getUser().getUsername(),
                 comment.getCreatedAt(),
-                comment.getUpdatedAt()
+                comment.getModifiedAt()
         );
     }
 

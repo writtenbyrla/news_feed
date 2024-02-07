@@ -21,14 +21,11 @@ public class CreatePostDto {
     @JsonProperty("user_id")
     private Long userId;
 
-    private Date created_at;
-
     public static CreatePostDto createPostDto(Post post) {
         return new CreatePostDto(
                 post.getPostId(),
                 post.getContent(),
-                post.getUser().getUserId(),
-                post.getCreatedAt()
+                post.getUser().getUserId()
         );
     }
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @AllArgsConstructor
 @ToString
@@ -19,8 +20,8 @@ public class PostDetailDto {
     @JsonProperty("user_id")
     private Long userId;
     private String username;
-    private Date created_at;
-    private Date updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAT;
 
     public static PostDetailDto createPostDto(Post post) {
         return new PostDetailDto(
@@ -29,7 +30,7 @@ public class PostDetailDto {
                 post.getUser().getUserId(),
                 post.getUser().getUsername(),
                 post.getCreatedAt(),
-                post.getUpdatedAt()
+                post.getModifiedAt()
         );
     }
 

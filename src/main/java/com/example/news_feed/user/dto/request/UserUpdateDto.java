@@ -4,6 +4,7 @@ import com.example.news_feed.user.domain.User;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -20,16 +21,13 @@ public class UserUpdateDto {
 
     private String phone;
     private String description;
-    private Date updatedAt;
-
 
     public static UserUpdateDto createUserDto(User user) {
         return new UserUpdateDto(
                 user.getUserId(),
                 user.getUsername(),
                 user.getPhone(),
-                user.getDescription(),
-                user.getUpdatedAt()
+                user.getDescription()
         );
 
     }

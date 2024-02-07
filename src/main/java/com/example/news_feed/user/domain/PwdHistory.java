@@ -1,5 +1,6 @@
 package com.example.news_feed.user.domain;
 
+import com.example.news_feed.timestamp.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,8 +12,8 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
-@Table(name="auth_history")
-public class PwdHistory {
+@Table(name="pwd_history")
+public class PwdHistory extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +22,6 @@ public class PwdHistory {
 
     @Column(name="old_pwd")
     private String oldPwd;
-
-    @Column(name="updated_at")
-    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id")
