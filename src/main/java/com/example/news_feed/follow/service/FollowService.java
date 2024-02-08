@@ -79,15 +79,15 @@ public class FollowService {
         List<Follow> follows = followRepository.findByFollowerId(followerId);
         log.info(follows.toString());
 
-        // 팔로우 목록에서 유저아이디만 추출
-        List<Long> followingIds = follows.stream()
-                .map(follow -> follow.getFollowingId().getUserId())
+        // 팔로우 목록에서 유저 추출
+        List<User> followings = follows.stream()
+                .map(Follow::getFollowingId)
                 .collect(Collectors.toList());
-        log.info(followingIds.toString()); // 여기까진 잘 받아와짐[1, 3]
 
-        // 유저아이디로 post 조회 후 리스트 반환 (여기서부터 안됨)
-        List<FollowingPostDto> posts = followRepository.findByFollowingId(followingIds);
-        log.info(posts.toString());
-        return null;
+        // 유저 정보로 post 조회 후 리스트 반환
+        List<Post> posts = postRepository.findByUserIn(followings);
+        return posts.stream()
+                .map(FollowingPostDto::createFollowingPostDto)
+                .collect(Collectors.toList());
     }
 }
