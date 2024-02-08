@@ -45,7 +45,7 @@ public class CommentService {
 
 
         // 엔티티 생성
-        Comment comment = new Comment(createCommentDto, post, user, new Date());
+        Comment comment = new Comment(createCommentDto, post, user);
 
         // 엔티티를 DB로 저장
         Comment created = commentRepository.save(comment);
@@ -71,7 +71,6 @@ public class CommentService {
         }
 
         // 댓글 수정
-        target.setUpdatedAt(new Date());
         target.patch(commentId, updateCommentDto);
 
         // DB로 갱신
@@ -82,7 +81,6 @@ public class CommentService {
 
     }
     @Transactional
-
     public Comment delete(Long userId, Long commentId) {
         // 기존 유저정보 조회 및 예외 처리
         User user = userRepository.findById(userId)
@@ -92,8 +90,8 @@ public class CommentService {
         Comment target = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 댓글이 없습니다."));
 
-        // 작성자가 일치하거나 ADMIN인 경우에만 삭제 가능
-        if ((userId != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
+        // 작성자가 일치하는 경우 수정 가능
+        if (userId != target.getUser().getUserId()){
             throw new IllegalArgumentException("본인이 작성한 댓글이 아닙니다. 삭제가 불가능합니다.");
         }
 
