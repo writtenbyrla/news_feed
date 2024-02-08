@@ -81,7 +81,7 @@ public class FollowService {
 
         // 팔로우 목록에서 유저 추출
         List<User> followings = follows.stream()
-                .map(Follow::getFollowingId)
+                .map(Follow::getFollowing)
                 .collect(Collectors.toList());
 
         // 유저 정보로 post 조회 후 리스트 반환

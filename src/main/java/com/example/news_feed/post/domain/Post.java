@@ -1,5 +1,6 @@
 package com.example.news_feed.post.domain;
 
+import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.timestamp.TimeStamp;
@@ -7,7 +8,9 @@ import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -28,6 +31,12 @@ public class Post extends TimeStamp {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostLike> postLike = new ArrayList<>();
 
     public Post(CreatePostDto createPostDto, User user) {
         this.postId = createPostDto.getPostId();

@@ -27,8 +27,8 @@ public class CreateFollowDto {
     public static CreateFollowDto createFollowDto(Follow follow) {
         return new CreateFollowDto(
                 follow.getFollowId(),
-                follow.getFollowingId().getUserId(),
-                follow.getFollowerId().getUserId()
+                follow.getFollowing().getUserId(),
+                follow.getFollower().getUserId()
         );
     }
 }

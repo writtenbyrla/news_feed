@@ -23,11 +23,11 @@ public class Follow extends TimeStamp {
 
     @ManyToOne
     @JoinColumn(name="following_id") // 팔로우 당하는 사람
-    private User followingId;
+    private User following;
 
     @ManyToOne
     @JoinColumn(name="follower_id") // 현재 유저(팔로우를 하는 사람)
-    private User followerId;
+    private User follower;
 
 
     public static Follow createFollow(User following, User follower) {

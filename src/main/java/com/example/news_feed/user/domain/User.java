@@ -1,5 +1,10 @@
 package com.example.news_feed.user.domain;
 
+import com.example.news_feed.comment.domain.Comment;
+import com.example.news_feed.comment.domain.CommentLike;
+import com.example.news_feed.follow.domain.Follow;
+import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.domain.PostLike;
 import com.example.news_feed.timestamp.TimeStamp;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
@@ -10,7 +15,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -50,7 +57,7 @@ public class User extends TimeStamp {
     @Column(name="role", columnDefinition = "varchar(10) default 'USER'")
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
-
+    
     public User(Long userId, String username, String pwd, String email, String phone, String status, UserRoleEnum role) {
         this.userId = userId;
         this.username = username;
@@ -78,7 +85,6 @@ public class User extends TimeStamp {
         );
 
     }
-
 
     public void patchProfile(UserUpdateDto updateDto) {
 
