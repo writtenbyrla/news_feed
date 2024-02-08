@@ -93,8 +93,6 @@ public class User extends TimeStamp {
 
         if (updateDto.getDescription() != null)
             this.description = updateDto.getDescription();
-
-
     }
 
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
@@ -104,4 +102,6 @@ public class User extends TimeStamp {
 
         this.pwd = pwdUpdateDto.getNewPwd();
     }
+
+
 }
