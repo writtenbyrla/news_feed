@@ -6,6 +6,8 @@ import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
+@DynamicInsert
 public class User extends TimeStamp {
 
     @Id
@@ -41,19 +44,20 @@ public class User extends TimeStamp {
     @Column(name="profile_img")
     private String profileImg;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @Column(name = "status", columnDefinition = "varchar(1) default 'Y'")
+    private String status;
 
-    @Column(name="role")
+    @Column(name="role", columnDefinition = "varchar(10) default 'USER'")
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(Long userId, String username, String pwd, String email, String phone, UserRoleEnum role) {
+    public User(Long userId, String username, String pwd, String email, String phone, String status, UserRoleEnum role) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
         this.phone = phone;
+        this.status=status;
         this.role = role;
     }
 
@@ -63,16 +67,13 @@ public class User extends TimeStamp {
     }
 
     public static User createUser(SignupReqDto signupReqDto) {
-        // 예외 처리
-        if (signupReqDto.getUserId() != null)
-            throw new IllegalArgumentException("회원가입 실패! 유저 id가 없어야 합니다.");
-
         return new User(
                 signupReqDto.getUserId(),
                 signupReqDto.getUsername(),
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail(),
                 signupReqDto.getPhone(),
+                signupReqDto.getStatus(),
                 signupReqDto.getRole()
         );
 

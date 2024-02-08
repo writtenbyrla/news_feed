@@ -2,12 +2,11 @@ package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.admin.service.AdminUserService;
+import com.example.news_feed.user.dto.response.UserResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,4 +23,9 @@ public class AdminUserController {
         List<UserDetailDto> users = adminUserService.showAll();
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
+
+    // 사용자 권한 변경
+
+
+    // 강제 탈퇴
 }

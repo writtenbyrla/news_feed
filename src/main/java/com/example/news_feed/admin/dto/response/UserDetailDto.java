@@ -23,7 +23,7 @@ public class UserDetailDto {
     private String profileImg;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private LocalDateTime deletedAt;
+    private String status;
 
     public static UserDetailDto createUserDetailDto(User user) {
         return new UserDetailDto(
@@ -35,7 +35,7 @@ public class UserDetailDto {
           user.getProfileImg(),
           user.getCreatedAt(),
           user.getCreatedAt(),
-          user.getModifiedAt()
+          user.getStatus()
         );
     }
 }

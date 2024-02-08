@@ -58,11 +58,6 @@ public class UserService {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
 
-        // 사용자 ROLE 확인(admin 토큰이 있을 경우에만 admin으로 회원가입)
-        UserRoleEnum role = UserRoleEnum.USER;
-        signupReqDto.setRole(role);
-
-
         // 유저 엔티티 생성
         User user = User.createUser(signupReqDto);
 

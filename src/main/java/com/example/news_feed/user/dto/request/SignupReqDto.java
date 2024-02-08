@@ -30,7 +30,7 @@ public class SignupReqDto {
     @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식이 올바르지 않습니다.")
     private String email;
     private String phone;
-
+    private String status;
     private UserRoleEnum role;
 
 }
