@@ -23,7 +23,7 @@ CREATE TABLE `user` (
   `role` varchar(255) DEFAULT 'user',
 `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
 `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `status` varchar(10) DEFAULT 'Y',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
