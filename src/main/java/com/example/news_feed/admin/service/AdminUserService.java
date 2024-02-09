@@ -43,6 +43,7 @@ public class AdminUserService {
         if (target.getRole() == newRole) {
             throw new IllegalArgumentException("이미 해당 권한을 가지고 있습니다.");
         }
+
         target.setRole(newRole);
         userRepository.save(target);
     }
@@ -53,9 +54,10 @@ public class AdminUserService {
         User target = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("권한 수정 실패! 유저 정보가 없습니다."));
 
-        if (target.getStatus() == status) {
+        if (target.getStatus().equals(status)) {
             throw new IllegalArgumentException("변경할 상태가 없습니다.");
         }
+
         target.setStatus(status);
         userRepository.save(target);
 
