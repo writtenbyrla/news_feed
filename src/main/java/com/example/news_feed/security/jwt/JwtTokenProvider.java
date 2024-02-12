@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -15,16 +16,20 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     // accessToken Key
-    private String accessSecretKey = "FlRpX30MqDbiAkmlfArbrmVkDD4RqISskGZmBFax5oGVxzXXWUzTR5JyskiHMIV9M10icegkpi46AdvrcX1E6CmTUBc6";
+    @Value("${jwt.secret.accessSecretKey}")
+    private String accessSecretKey;
 
     // refreshToken key
-    private String refreshSecretKey = "7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLgbTPiDc6IF";
+    @Value("${jwt.secret.refreshSecretKey}")
+    private String refreshSecretKey;
 
     // accessToken 만료시간
-    private Long accessTokenExpiredTime = 24 * 60 * 60 * 1000L;
+    @Value("${jwt.secret.accessTokenExpiredTime}")
+    private Long accessTokenExpiredTime;
 
     // refreshToken 만료 시간
-    private Long refreshTokenExpiredTime = 24 * 60 * 60 * 1000L;
+    @Value("${jwt.secret.refreshTokenExpiredTime}")
+    private Long refreshTokenExpiredTime;
 
 
     private Key getKey(String key) {
