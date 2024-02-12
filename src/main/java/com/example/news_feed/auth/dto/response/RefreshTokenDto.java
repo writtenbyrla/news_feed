@@ -1,4 +1,4 @@
-package com.example.news_feed.auth.dto;
+package com.example.news_feed.auth.dto.response;
 
 import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.AllArgsConstructor;
