@@ -1,6 +1,6 @@
 package com.example.news_feed.auth.controller;
 
-import com.example.news_feed.auth.dto.RefreshTokenDto;
+import com.example.news_feed.auth.dto.response.RefreshTokenDto;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;

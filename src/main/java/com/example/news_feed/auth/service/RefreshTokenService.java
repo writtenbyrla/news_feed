@@ -1,12 +1,13 @@
 package com.example.news_feed.auth.service;
 
-import com.example.news_feed.auth.dto.RefreshTokenDto;
+import com.example.news_feed.auth.dto.response.RefreshTokenDto;
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class RefreshTokenService {
     private final UserRepository userRepository;
     private final RedisService redisService;
 
+    @Transactional
     public RefreshTokenDto refresh(HttpServletRequest request) {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 

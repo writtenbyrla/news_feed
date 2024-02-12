@@ -90,7 +90,7 @@ public class JwtTokenProvider {
     // 만료 여부 확인
     public boolean isExpired(String token, TokenType type) {
         Date expiredDate = extractClaims(token, type).getExpiration();
-        return expiredDate.before(new Date());
+        return expiredDate.after(new Date());
     }
 
     // 만료 시간
