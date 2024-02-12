@@ -3,13 +3,12 @@ package com.example.news_feed.post.domain;
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
-import com.example.news_feed.timestamp.TimeStamp;
+import com.example.news_feed.common.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity

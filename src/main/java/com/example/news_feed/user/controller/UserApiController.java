@@ -5,6 +5,7 @@ import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
 import com.example.news_feed.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +49,9 @@ public class UserApiController {
 
     // 로그인
     @PostMapping("/user/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
 
-      // UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "로그인 완료");
-        return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginReqDto));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginReqDto, response));
     };
 
 

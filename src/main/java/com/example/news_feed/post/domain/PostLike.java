@@ -1,6 +1,5 @@
 package com.example.news_feed.post.domain;
 
-import com.example.news_feed.timestamp.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

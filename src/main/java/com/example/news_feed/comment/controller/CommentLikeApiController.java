@@ -2,7 +2,7 @@ package com.example.news_feed.comment.controller;
 
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
 import com.example.news_feed.comment.service.CommentLikeService;
-import com.example.news_feed.security.UserDetailsImpl;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

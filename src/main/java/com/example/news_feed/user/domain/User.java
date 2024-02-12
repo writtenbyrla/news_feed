@@ -1,23 +1,12 @@
 package com.example.news_feed.user.domain;
 
-import com.example.news_feed.comment.domain.Comment;
-import com.example.news_feed.comment.domain.CommentLike;
-import com.example.news_feed.follow.domain.Follow;
-import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.domain.PostLike;
-import com.example.news_feed.timestamp.TimeStamp;
+import com.example.news_feed.common.TimeStamp;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor

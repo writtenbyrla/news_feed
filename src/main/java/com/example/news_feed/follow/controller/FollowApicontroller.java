@@ -1,10 +1,9 @@
 package com.example.news_feed.follow.controller;
 
-import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowResponseDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
 import com.example.news_feed.follow.service.FollowService;
-import com.example.news_feed.security.UserDetailsImpl;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

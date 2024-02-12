@@ -1,10 +1,8 @@
 package com.example.news_feed.user.domain;
 
-import com.example.news_feed.timestamp.TimeStamp;
+import com.example.news_feed.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
