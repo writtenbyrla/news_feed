@@ -1,9 +1,8 @@
 package com.example.news_feed.post.controller;
 
-import com.example.news_feed.post.dto.request.PostLikeDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostLikeService;
-import com.example.news_feed.security.UserDetailsImpl;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

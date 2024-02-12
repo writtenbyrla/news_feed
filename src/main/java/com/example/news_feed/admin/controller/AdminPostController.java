@@ -1,12 +1,11 @@
 package com.example.news_feed.admin.controller;
 
-import com.example.news_feed.admin.service.AdminCommentService;
 import com.example.news_feed.admin.service.AdminPostService;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostService;
-import com.example.news_feed.security.UserDetailsImpl;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

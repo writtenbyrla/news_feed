@@ -1,8 +1,8 @@
-package com.example.news_feed.security.filter;
+package com.example.news_feed.auth.security.filter;
 
-import com.example.news_feed.security.UserDetailsServiceImpl;
-import com.example.news_feed.security.jwt.JwtTokenProvider;
-import com.example.news_feed.security.jwt.TokenType;
+import com.example.news_feed.auth.security.UserDetailsServiceImpl;
+import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
+import com.example.news_feed.auth.security.jwt.TokenType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.example.news_feed.security;
+package com.example.news_feed.auth.security;
 
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
@@ -10,8 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @ToString

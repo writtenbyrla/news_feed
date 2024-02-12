@@ -1,6 +1,6 @@
-package com.example.news_feed.config;
+package com.example.news_feed.auth.security.config;
 
-import com.example.news_feed.security.filter.JwtAuthenticationFilter;
+import com.example.news_feed.auth.security.filter.JwtAuthenticationFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

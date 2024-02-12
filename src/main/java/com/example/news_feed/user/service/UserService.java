@@ -1,7 +1,8 @@
 package com.example.news_feed.user.service;
 
-import com.example.news_feed.security.jwt.JwtTokenProvider;
-import com.example.news_feed.security.jwt.TokenType;
+import com.example.news_feed.auth.redis.service.RedisService;
+import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
+import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.user.domain.PwdHistory;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
@@ -12,15 +13,16 @@ import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
 import com.example.news_feed.user.repository.AuthHistoryRepository;
 import com.example.news_feed.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -35,6 +37,8 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final RedisService redisService;
 
 
     // 회원가입
@@ -69,7 +73,7 @@ public class UserService {
     }
 
     // 로그인
-    public LoginResponseDto login(LoginReqDto loginReqDto) {
+    public LoginResponseDto login(LoginReqDto loginReqDto, HttpServletResponse response) {
 
         String email = loginReqDto.getEmail();
         String pwd = loginReqDto.getPwd();
@@ -87,6 +91,13 @@ public class UserService {
 
         String accessToken = jwtTokenProvider.createToken(email, username, role, TokenType.ACCESS);
         String refreshToken = jwtTokenProvider.createToken(email, username, role, TokenType.REFRESH);
+
+        Long expiresTime = jwtTokenProvider.getExpiredTime(refreshToken, TokenType.REFRESH);
+        redisService.setValues("RefreshToken:" + user.getEmail(), refreshToken, expiresTime, TimeUnit.MILLISECONDS);
+
+        // 토큰을 헤더에 넣어서 클라이언트에게 전달
+        jwtTokenProvider.accessTokenSetHeader(accessToken, response);
+        jwtTokenProvider.refreshTokenSetHeader(refreshToken, response);
 
         return new LoginResponseDto(accessToken, refreshToken, email, username, role);
     };
