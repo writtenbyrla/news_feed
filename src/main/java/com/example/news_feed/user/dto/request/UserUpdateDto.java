@@ -19,14 +19,12 @@ public class UserUpdateDto {
     @Pattern(regexp = "[a-z0-9]{4,10}", message = "이름은 알파벳 소문자, 숫자를 포함하여 4~10자여야 합니다.")
     private String username;
 
-    private String phone;
     private String description;
 
     public static UserUpdateDto createUserDto(User user) {
         return new UserUpdateDto(
                 user.getUserId(),
                 user.getUsername(),
-                user.getPhone(),
                 user.getDescription()
         );
 

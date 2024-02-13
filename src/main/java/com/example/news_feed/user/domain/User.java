@@ -31,9 +31,6 @@ public class User extends TimeStamp {
     @Column(name="email", nullable = false, unique = true)
     private String email;
 
-    @Column(name="phone")
-    private String phone;
-
     @Column(name="description")
     private String description;
 
@@ -47,12 +44,11 @@ public class User extends TimeStamp {
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
     
-    public User(Long userId, String username, String pwd, String email, String phone, String status, UserRoleEnum role) {
+    public User(Long userId, String username, String pwd, String email, String status, UserRoleEnum role) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
-        this.phone = phone;
         this.status=status;
         this.role = role;
     }
@@ -68,7 +64,6 @@ public class User extends TimeStamp {
                 signupReqDto.getUsername(),
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail(),
-                signupReqDto.getPhone(),
                 signupReqDto.getStatus(),
                 signupReqDto.getRole()
         );
@@ -82,9 +77,6 @@ public class User extends TimeStamp {
 
         if (updateDto.getUsername() != null)
             this.username = updateDto.getUsername();
-
-        if (updateDto.getPhone() != null)
-            this.phone = updateDto.getPhone();
 
         if (updateDto.getDescription() != null)
             this.description = updateDto.getDescription();

@@ -79,7 +79,7 @@ public class JwtTokenProvider {
         header.put("typ", "JWT");
         return Jwts.builder()
                 .setHeader(header)
-                .setSubject(email) // 사용자 식별자값 (username vs email?)
+                .setSubject(email) // 사용자 식별자값
                 .setClaims(claims) // username, email, role 포함
                 .setIssuedAt(date) // 발급시간
                 .setExpiration(new Date(date.getTime() + expiredTime)) // 만료 시간

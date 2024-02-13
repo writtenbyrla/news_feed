@@ -16,6 +16,7 @@ import java.util.Date;
 public class PostDetailDto {
 
     private Long postId;
+    private String title;
     private String content;
     @JsonProperty("user_id")
     private Long userId;
@@ -26,6 +27,7 @@ public class PostDetailDto {
     public static PostDetailDto createPostDto(Post post) {
         return new PostDetailDto(
                 post.getPostId(),
+                post.getTitle(),
                 post.getContent(),
                 post.getUser().getUserId(),
                 post.getUser().getUsername(),

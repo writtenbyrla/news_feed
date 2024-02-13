@@ -18,7 +18,6 @@ public class UserDetailDto {
     private Long userId;
     private String username;
     private String email;
-    private String phone;
     private String description;
     private String profileImg;
     private LocalDateTime createdAt;
@@ -30,7 +29,6 @@ public class UserDetailDto {
           user.getUserId(),
           user.getUsername(),
           user.getEmail(),
-          user.getPhone(),
           user.getDescription(),
           user.getProfileImg(),
           user.getCreatedAt(),

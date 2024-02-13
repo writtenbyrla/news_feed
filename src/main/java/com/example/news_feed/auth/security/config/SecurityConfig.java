@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,6 +25,11 @@ public class SecurityConfig {
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers( "/favicon.ico");
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
@@ -41,10 +47,12 @@ public class SecurityConfig {
         // authorizeRequests: HttpSecurity 메소드, 주로 URL 패턴에 따라 특정 경로에 대한 권한을 설정
         // auth: HttpSecurity의 다른 메소드에서 사용되는 함수형 인터페이스
         http
-                .authorizeRequests((auth) ->
-                        auth
+                .authorizeRequests((authorizeRequests) ->
+                        authorizeRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //정적 리소스
                                 .requestMatchers("/").permitAll()
+                                .requestMatchers("/home").permitAll()
+                                .requestMatchers("/signup-page").permitAll() // 회원가입 페이지
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()

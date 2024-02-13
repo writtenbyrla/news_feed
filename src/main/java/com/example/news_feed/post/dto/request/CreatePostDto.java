@@ -16,6 +16,7 @@ import java.util.Date;
 public class CreatePostDto {
 
     private Long postId;
+    private String title;
     private String content;
 
     @JsonProperty("user_id")
@@ -24,6 +25,7 @@ public class CreatePostDto {
     public static CreatePostDto createPostDto(Post post) {
         return new CreatePostDto(
                 post.getPostId(),
+                post.getTitle(),
                 post.getContent(),
                 post.getUser().getUserId()
         );

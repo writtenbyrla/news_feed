@@ -24,6 +24,9 @@ public class Post extends TimeStamp {
     @Column(name = "post_id")
     private Long postId;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -46,7 +49,8 @@ public class Post extends TimeStamp {
     public void patch(UpdatePostDto updatePostDto) {
         if (this.postId != updatePostDto.getPostId())
             throw new IllegalArgumentException("게시글 수정 실패! postId가 잘못 입력되었습니다.");
-
+        if (updatePostDto.getTitle() != null)
+            this.content = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)
             this.content = updatePostDto.getContent();
     }

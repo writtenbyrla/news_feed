@@ -21,7 +21,6 @@ public class PostLikeDto {
     @JsonProperty("user_id")
     private Long userId;
 
-
     public static PostLikeDto createPostLikeDto(PostLike postlike) {
         return new PostLikeDto(
                 postlike.getPostlikeId(),

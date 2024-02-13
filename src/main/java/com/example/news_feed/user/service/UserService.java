@@ -85,6 +85,8 @@ public class UserService {
 
         String username = user.getUsername();
         UserRoleEnum role = user.getRole();
+
+        log.info(user.getPwd());
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }

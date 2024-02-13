@@ -17,6 +17,7 @@ import java.util.Date;
 public class UpdatePostDto {
 
     private Long postId;
+    private String title;
     private String content;
 
     @JsonProperty("user_id")
@@ -25,6 +26,7 @@ public class UpdatePostDto {
     public static UpdatePostDto updatePostDto(Post post) {
         return new UpdatePostDto(
                 post.getPostId(),
+                post.getTitle(),
                 post.getContent(),
                 post.getUser().getUserId()
         );
