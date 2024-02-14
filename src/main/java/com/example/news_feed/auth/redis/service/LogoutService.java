@@ -34,7 +34,7 @@ public class LogoutService {
             throw new IllegalArgumentException("이메일 정보가 일치하지 않습니다.");
         }
 
-        String redisKey = "RefreshToken" + email;
+        String redisKey = "RefreshToken:" + email;
         if(redisService.getValue(redisKey) != null){
             redisService.deleteKey(redisKey);
         }

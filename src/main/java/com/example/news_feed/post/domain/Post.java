@@ -42,6 +42,7 @@ public class Post extends TimeStamp {
 
     public Post(CreatePostDto createPostDto, User user) {
         this.postId = createPostDto.getPostId();
+        this.title = createPostDto.getTitle();
         this.content = createPostDto.getContent();
         this.user = user;
     }

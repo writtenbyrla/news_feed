@@ -12,7 +12,7 @@
             <li><a href="#">Home</a></li>
             <li><a href="#">Post</a></li>
             <li><a href="#">MyPage</a></li>
-            <li><a href="#">Logout</a></li>
+            <li sec:authorize="isAuthenticated()"><a href="#">Logout</a></li>
             <li sec:authorize="hasAuthority('ADMIN')"><a  href="#">Admin</a></li>
         </ul>
     </nav>

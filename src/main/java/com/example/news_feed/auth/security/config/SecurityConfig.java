@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 .requestMatchers("/signup-page").permitAll() // 회원가입 페이지
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()
                                 .requestMatchers( "/admin/**").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
