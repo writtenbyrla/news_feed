@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 
     @Query(value = "SELECT * FROM postlike WHERE user_id =:userId AND post_id =:postId", nativeQuery = true)
-    PostLike findByUserIdPostId(@Param("userId") Long userId, @Param("postId") Long postId);
+    Optional<PostLike> findByUserIdPostId(@Param("userId") Long userId, @Param("postId") Long postId);
 }

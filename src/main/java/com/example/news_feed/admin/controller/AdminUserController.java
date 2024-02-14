@@ -4,6 +4,7 @@ import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.admin.dto.response.UserUpdateResponseDto;
 import com.example.news_feed.admin.service.AdminUserService;
 import com.example.news_feed.user.domain.UserRoleEnum;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin/")
 public class AdminUserController {
 
-    @Autowired
-    private AdminUserService adminUserService;
+    private final AdminUserService adminUserService;
 
     // 유저 전체 목록
     @GetMapping("/user")
@@ -25,9 +26,7 @@ public class AdminUserController {
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
-    // 엔드포인트에 전달되는 권한 키워드 확인하여 역할 변경하는 하나의 api로 합칠지
-    // 각각의 api로 나누는게 좋은지 잘 모르겠음..(service단 로직은 하나로 사용)
-    // 사용자 권한 변경(유저 -> 관리자)
+    // 사용자 권한 변경
     @PatchMapping("/user/{userId}/role")
     public ResponseEntity<UserUpdateResponseDto> changeUserToAdmin(@PathVariable Long userId,
                                                                    @RequestParam("role") UserRoleEnum role){
@@ -46,9 +45,7 @@ public class AdminUserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
-    // 사용자 권한 변경과 마찬가지로 api 분리할지 합칠지 고민
-    // 강제 탈퇴
+    // 강제 탈퇴, 복구
     @PatchMapping("/user/{userId}/status")
     public ResponseEntity<UserUpdateResponseDto> deleteUser(@PathVariable Long userId,
                                                             @RequestParam("status") String status) {

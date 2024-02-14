@@ -1,15 +1,18 @@
 package com.example.news_feed.post.domain;
 
 import com.example.news_feed.comment.domain.Comment;
+import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
-import com.example.news_feed.common.TimeStamp;
+import com.example.news_feed.common.timestamp.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -48,8 +51,8 @@ public class Post extends TimeStamp {
     }
 
     public void patch(UpdatePostDto updatePostDto) {
-        if (this.postId != updatePostDto.getPostId())
-            throw new IllegalArgumentException("게시글 수정 실패! postId가 잘못 입력되었습니다.");
+        if (!this.postId.equals(updatePostDto.getPostId()))
+            throw new HttpException(false, "게시글 수정 실패! postId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
         if (updatePostDto.getTitle() != null)
             this.content = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)

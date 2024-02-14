@@ -5,44 +5,43 @@ import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.repository.CommentRepository;
+import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class CommentService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
-
+    // 댓글 작성
     @Transactional
     public CreateCommentDto create(Long postId, CreateCommentDto createCommentDto) {
 
         // 사용자 정보
-        User user = userRepository.findById(createCommentDto.getUserId())
-                .orElseThrow( () -> new IllegalArgumentException("등록된 사용자가 없습니다."));
+        User user = checkUser(createCommentDto.getUserId());
 
         // 게시글 정보
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 게시물이 없습니다."));
-
+        Post post = checkPost(postId);
 
         // 엔티티 생성
         Comment comment = new Comment(createCommentDto, post, user);
@@ -51,24 +50,21 @@ public class CommentService {
         Comment created = commentRepository.save(comment);
 
         // Dto로 변경하여 반환
-        return createCommentDto.createCommentDto(created);
+        return CreateCommentDto.createCommentDto(created);
     }
+
+    // 댓글 수정
     @Transactional
     public UpdateCommentDto update(Long commentId, UpdateCommentDto updateCommentDto) {
 
         // 사용자 정보
-        User user = userRepository.findById(updateCommentDto.getUserId())
-                .orElseThrow( () -> new IllegalArgumentException("등록된 사용자가 없습니다."));
-
+        User user = checkUser(updateCommentDto.getUserId());
 
         // 댓글 정보
-        Comment target = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 댓글이 없습니다."));
+        Comment target = checkComment(commentId);
 
-        // 작성자가 일치하거나 ADMIN인 경우에만 수정 가능
-        if ((updateCommentDto.getUserId() != target.getUser().getUserId()) && (!user.getRole().toString().equals("ADMIN"))){
-            throw new IllegalArgumentException("본인이 작성한 댓글이 아닙니다. 삭제가 불가능합니다.");
-        }
+        // 작성자가 일치할 경우에만 수정 가능
+        isWrittenbyUser(updateCommentDto.getUserId(), target.getUser().getUserId());
 
         // 댓글 수정
         target.patch(commentId, updateCommentDto);
@@ -80,25 +76,24 @@ public class CommentService {
         return UpdateCommentDto.updateCommentDto(updated);
 
     }
+
+    // 댓글 삭제
     @Transactional
     public Comment delete(Long userId, Long commentId) {
         // 기존 유저정보 조회 및 예외 처리
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글 삭제 실패! 유저 정보가 없습니다."));
+        checkUser(userId);
 
         // 댓글 정보
-        Comment target = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 댓글이 없습니다."));
+        Comment target = checkComment(commentId);
 
         // 작성자가 일치하는 경우 수정 가능
-        if (userId != target.getUser().getUserId()){
-            throw new IllegalArgumentException("본인이 작성한 댓글이 아닙니다. 삭제가 불가능합니다.");
-        }
+        isWrittenbyUser(userId, target.getUser().getUserId());
 
         commentRepository.delete(target);
         return target;
     }
 
+    // 댓글 목록
     public List<CommentDetailDto> showAll(Long postId) {
 
         return commentRepository.findByPostId(postId)
@@ -107,6 +102,7 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    // 댓글 상세 보기
     public CommentDetailDto show(Long commentId) {
 
         return commentRepository.findById(commentId)
@@ -114,4 +110,30 @@ public class CommentService {
                 .orElse(null);
 
     }
+
+    // 유저 정보 확인
+    private User checkUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+    // 게시글 정보 확인
+    private Post checkPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new HttpException(false, "게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+    // 댓글 정보 확인
+    private Comment checkComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new HttpException(false, "댓글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+    // 댓글 작성자 확인
+    private void isWrittenbyUser(Long userId, Long commentUserId) {
+        if (!userId.equals(commentUserId)) {
+            throw new HttpException(false, "본인이 작성한 댓글이 아닙니다.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

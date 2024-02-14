@@ -6,6 +6,7 @@ import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class PostApiController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
     // 게시글 등록
     @PostMapping("/post")

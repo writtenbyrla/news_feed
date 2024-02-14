@@ -1,6 +1,5 @@
 package com.example.news_feed.auth.security;
 
-import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

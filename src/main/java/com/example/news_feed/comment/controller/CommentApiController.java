@@ -6,6 +6,7 @@ import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
 import com.example.news_feed.comment.service.CommentService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class CommentApiController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
     // 댓글 등록
     @PostMapping("/post/{postId}/comment")
     private ResponseEntity<CommentResponseDto> create(@PathVariable Long postId,
                                                       @RequestBody CreateCommentDto createCommentDto,
                                                       @AuthenticationPrincipal final UserDetailsImpl userDetails) {
-        createCommentDto.setUserId(userDetails.getId()); // 임의값 -> 나중에 로그인한 정보에서 받아와야 함
+        createCommentDto.setUserId(userDetails.getId());
 
         commentService.create(postId, createCommentDto);
         CommentResponseDto response = CommentResponseDto.res(HttpStatus.CREATED.value(), "댓글 등록 완료");

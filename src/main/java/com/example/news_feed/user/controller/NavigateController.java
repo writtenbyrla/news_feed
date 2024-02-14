@@ -1,4 +1,4 @@
-package com.example.news_feed.common.controller;
+package com.example.news_feed.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

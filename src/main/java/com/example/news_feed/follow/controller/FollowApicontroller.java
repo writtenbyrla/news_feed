@@ -4,6 +4,7 @@ import com.example.news_feed.follow.dto.response.FollowResponseDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
 import com.example.news_feed.follow.service.FollowService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class FollowApicontroller {
 
-    @Autowired
-    private FollowService followService;
+    private final FollowService followService;
 
     // 팔로우 등록
     @PostMapping("/follow/{followingId}")

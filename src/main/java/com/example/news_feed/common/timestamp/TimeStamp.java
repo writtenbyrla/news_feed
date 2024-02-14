@@ -1,4 +1,4 @@
-package com.example.news_feed.common;
+package com.example.news_feed.common.timestamp;
 
 import jakarta.persistence.*;
 import lombok.Getter;

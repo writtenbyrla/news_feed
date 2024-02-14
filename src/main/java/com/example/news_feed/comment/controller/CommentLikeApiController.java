@@ -3,6 +3,7 @@ package com.example.news_feed.comment.controller;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
 import com.example.news_feed.comment.service.CommentLikeService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class CommentLikeApiController {
 
-    @Autowired
-    private CommentLikeService commentLikeService;
+    private final CommentLikeService commentLikeService;
 
     // 좋아요 등록
     @PostMapping("/comment/{commentId}/like")

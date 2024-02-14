@@ -29,9 +29,13 @@ public class CommentLike {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    public CommentLike(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
+    }
+
     public static CommentLike createCommentLike(User user, Comment comment) {
         return new CommentLike(
-                null,
                 user,
                 comment
         );

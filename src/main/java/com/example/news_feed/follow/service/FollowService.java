@@ -1,5 +1,6 @@
 package com.example.news_feed.follow.service;
 
+import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.follow.domain.Follow;
 import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowResponseDto;
@@ -10,47 +11,42 @@ import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class FollowService {
 
-    @Autowired
-    private FollowRepository followRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final FollowRepository followRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CreateFollowDto create(Long followingId, Long followerId) {
-        // 사용자 정보
-        User following = userRepository.findById(followingId)
-                .orElseThrow( () -> new IllegalArgumentException("등록된 사용자가 없습니다."));
+        // 팔로잉 사용자 정보
+        User following = checkUser(followingId);
 
-        // 사용자 정보
-        User follower = userRepository.findById(followerId)
-                .orElseThrow( () -> new IllegalArgumentException("등록된 사용자가 없습니다."));
+        // 팔로워 사용자 정보
+        User follower =  checkUser(followerId);
 
         // 팔로우 자신을 팔로우하려는지 확인
         if (followingId.equals(followerId)) {
-            throw new IllegalArgumentException("자신을 팔로우할 수 없습니다.");
+            throw new HttpException(false, "자신을 팔로우할 수 없습니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 팔로우 정보
-        Follow target = followRepository.findByBothId(followingId, followerId);
-
-        if (target != null) {
-            throw new IllegalArgumentException("이미 팔로우중입니다.");
-        }
+        followRepository.findByBothId(followingId, followerId)
+                .ifPresent(follow -> {
+                    throw new HttpException(false, "이미 팔로우중입니다.", HttpStatus.BAD_REQUEST);
+                });
 
         Follow follow = Follow.createFollow(following, follower);
         Follow created = followRepository.save(follow);
@@ -60,24 +56,19 @@ public class FollowService {
     @Transactional
     public CreateFollowDto delete(Long followingId, Long followerId) {
         // 팔로우 정보
-        Follow target = followRepository.findByBothId(followingId, followerId);
-
-        if (target == null) {
-            throw new IllegalArgumentException("팔로우 취소 불가능! 팔로우 대상이 아닙니다.");
-        }
+        Follow target = followRepository.findByBothId(followingId, followerId)
+                .orElseThrow(() -> new HttpException(false,"팔로우 취소 불가능! 팔로우 대상이 아닙니다.", HttpStatus.BAD_REQUEST )
+                );
 
         followRepository.delete(target);
         return CreateFollowDto.createFollowDto(target);
     }
 
     // 내가 팔로우 한 유저의 게시글 보기
-    // 1. 내가 팔로우한 유저 목록 받아오기
-    // 2. 받아온 유저목록으로 게시글 조회
     public List<FollowingPostDto> showAll(Long followerId) {
 
         // 팔로우 목록
         List<Follow> follows = followRepository.findByFollowerId(followerId);
-        log.info(follows.toString());
 
         // 팔로우 목록에서 유저 추출
         List<User> followings = follows.stream()
@@ -90,4 +81,12 @@ public class FollowService {
                 .map(FollowingPostDto::createFollowingPostDto)
                 .collect(Collectors.toList());
     }
+
+    // 유저 정보 확인
+    private User checkUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+
 }

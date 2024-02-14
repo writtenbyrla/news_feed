@@ -9,12 +9,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Query(value = "SELECT * FROM follow WHERE following_id = :followingId and follower_id = :followerId", nativeQuery = true)
-    Follow findByBothId(@Param("followingId") Long followingId, @Param("followerId") Long followerId);
+    Optional<Follow> findByBothId(@Param("followingId") Long followingId, @Param("followerId") Long followerId);
 
     @Query(value = "SELECT * FROM follow WHERE follower_id = :followerId", nativeQuery = true)
     List<Follow> findByFollowerId(@Param("followerId") Long followerId);

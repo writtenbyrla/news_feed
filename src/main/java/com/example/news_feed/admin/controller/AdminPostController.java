@@ -6,6 +6,7 @@ import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin/*")
 public class AdminPostController {
 
-    @Autowired
-    private AdminPostService adminPostService;
-
-    @Autowired
-    private PostService postService;
+    private final AdminPostService adminPostService;
+    private final PostService postService;
 
     // 게시글 수정
     @PatchMapping("/post/{postId}")

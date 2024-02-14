@@ -6,6 +6,7 @@ import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
 import com.example.news_feed.comment.service.CommentService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin/*")
 public class AdminCommentController {
 
-    @Autowired
-    private AdminCommentService AdmincommentService;
-
-    @Autowired
-    private CommentService commentService;
+    private final AdminCommentService AdmincommentService;
+    private final CommentService commentService;
 
     // 댓글 수정
     @PatchMapping("/comments/{commentId}")

@@ -3,6 +3,7 @@ package com.example.news_feed.post.controller;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.PostLikeService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 public class PostLikeApiController {
 
-    @Autowired
-    private PostLikeService postLikeService;
+    private final PostLikeService postLikeService;
 
     // 좋아요 등록
     @PostMapping("/post/{postId}/like")

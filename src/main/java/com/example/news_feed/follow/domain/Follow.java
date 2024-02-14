@@ -1,6 +1,6 @@
 package com.example.news_feed.follow.domain;
 
-import com.example.news_feed.common.TimeStamp;
+import com.example.news_feed.common.timestamp.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,10 +27,13 @@ public class Follow extends TimeStamp {
     @JoinColumn(name="follower_id") // 현재 유저(팔로우를 하는 사람)
     private User follower;
 
+    public Follow(User following, User follower) {
+        this.following = following;
+        this.follower = follower;
+    }
 
     public static Follow createFollow(User following, User follower) {
         return new Follow(
-          null,
           following,
           follower
         );

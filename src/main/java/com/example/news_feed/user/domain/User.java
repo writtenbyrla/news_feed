@@ -1,12 +1,16 @@
 package com.example.news_feed.user.domain;
 
-import com.example.news_feed.common.TimeStamp;
+import com.example.news_feed.common.exception.HttpException;
+import com.example.news_feed.common.timestamp.TimeStamp;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.http.HttpStatus;
+
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -72,8 +76,8 @@ public class User extends TimeStamp {
 
     public void patchProfile(UserUpdateDto updateDto) {
 
-        if (this.userId != updateDto.getUserId())
-            throw new IllegalArgumentException("프로필 수정 실패! userId가 잘못 입력되었습니다.");
+        if (!this.userId.equals(updateDto.getUserId()))
+            throw new HttpException(false, "프로필 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
 
         if (updateDto.getUsername() != null)
             this.username = updateDto.getUsername();
@@ -84,8 +88,8 @@ public class User extends TimeStamp {
 
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
 
-        if (this.userId != pwdUpdateDto.getUserId())
-            throw new IllegalArgumentException("암호 수정 실패! userId가 잘못 입력되었습니다.");
+        if (!this.userId.equals(pwdUpdateDto.getUserId()))
+            throw new HttpException(false, "암호 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
 
         this.pwd = pwdUpdateDto.getNewPwd();
     }

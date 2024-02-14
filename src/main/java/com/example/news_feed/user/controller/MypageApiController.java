@@ -1,12 +1,11 @@
 package com.example.news_feed.user.controller;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
-import com.example.news_feed.user.dto.response.UserInfoDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
-import com.example.news_feed.user.service.UserService;
+import com.example.news_feed.user.service.MypageService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,11 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class MypageApiController {
 
-    @Autowired
-    private UserService userService;
+    private final MypageService mypageService;
 
     // 기본정보 수정
     @PatchMapping("/mypage/{userId}/profile")
@@ -39,7 +38,7 @@ public class MypageApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        userService.updateProfile(userId, userUpdateDto);
+        mypageService.updateProfile(userId, userUpdateDto);
 
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "프로필 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -63,7 +62,7 @@ public class MypageApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        userService.updatePwd(userId, pwdUpdateDto);
+        mypageService.updatePwd(userId, pwdUpdateDto);
 
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "비밀번호 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
