@@ -14,6 +14,6 @@ public class UserInfoDto {
     private Long userId;
     private String username;
     private String description;
-
+    private String profileImg;
 
 }

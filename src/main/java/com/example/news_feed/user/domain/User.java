@@ -84,6 +84,9 @@ public class User extends TimeStamp {
 
         if (updateDto.getDescription() != null)
             this.description = updateDto.getDescription();
+
+        if (updateDto.getProfileImg() != null)
+            this.profileImg= updateDto.getProfileImg();
     }
 
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {

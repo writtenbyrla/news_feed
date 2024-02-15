@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT * FROM user WHERE username = :username AND user_id != :userId", nativeQuery = true)
     Optional<User> findByNameAndUserIdNot(@Param("username") String username, @Param("userId") Long userId);
+
 }
