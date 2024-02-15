@@ -80,13 +80,12 @@ public class UserService {
                 () ->  new HttpException(false, "등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
         );
 
-        String username = user.getUsername();
-        UserRoleEnum role = user.getRole();
-
-        log.info(user.getPwd());
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
             throw new HttpException(false, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
+
+        String username = user.getUsername();
+        UserRoleEnum role = user.getRole();
 
         String accessToken = jwtTokenProvider.createToken(email, username, role, TokenType.ACCESS);
         String refreshToken = jwtTokenProvider.createToken(email, username, role, TokenType.REFRESH);

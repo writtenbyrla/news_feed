@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,8 +41,8 @@ public class UserApiController {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
 
             UserResponseDto response = UserResponseDto.res(HttpStatus.BAD_REQUEST.value(), errorMessages.toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -56,7 +57,6 @@ public class UserApiController {
     // 로그인
     @PostMapping("/user/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginReqDto, response));
     };
 
