@@ -30,8 +30,6 @@ public class MypageService {
     @Transactional
     public UserUpdateDto updateProfile(Long userId, UserUpdateDto updateDto) {
 
-        updateDto.setUserId(userId);
-
         // 본인 닉네임 제외해서 중복확인
         Optional<User> checkUsername = userRepository.findByNameAndUserIdNot(updateDto.getUsername(), userId);
         if (checkUsername.isPresent()) {
@@ -45,6 +43,7 @@ public class MypageService {
                 );
 
         // 프로필 수정
+        updateDto.setUserId(userId);
         target.patchProfile(updateDto);
 
         // DB
@@ -54,6 +53,26 @@ public class MypageService {
         return UserUpdateDto.createUserDto(updated);
     }
 
+    // 프로필 이미지 수정
+    @Transactional
+    public UserUpdateDto updateProfileImg(Long userId, UserUpdateDto updateDto) {
+
+        // 기존 유저정보 조회 및 예외 처리
+        User target = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new HttpException(false, "프로필 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
+                );
+
+        // 프로필 수정
+        updateDto.setUserId(userId);
+        target.patchProfile(updateDto);
+
+        // DB
+        User updated = userRepository.save(target);
+
+        // 엔티티를 DTO로 변환해서 반환
+        return UserUpdateDto.createUserDto(updated);
+    }
 
     // 패스워드 수정
     @Transactional
@@ -118,5 +137,13 @@ public class MypageService {
     private List<PwdHistory> showPwd(Long userId){
         List<PwdHistory> pwds = historyRepository.findByUserId(userId);
         return pwds;
+    }
+
+    // 회원정보 조회
+    public User showUser(Long userId){
+
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new HttpException(false, "회원정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+
     }
 }
