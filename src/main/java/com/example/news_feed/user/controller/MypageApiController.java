@@ -23,15 +23,12 @@ import java.util.stream.Collectors;
 public class MypageApiController {
 
     private final MypageService mypageService;
-    private final FileUploadService fileUploadService;
 
     // 프로필 수정
     @PatchMapping("/myPage/{userId}/profile")
-    public ResponseEntity<UserResponseDto> updateProfileTest(@PathVariable Long userId,
-                                                         @RequestPart(value = "data", required = false) @Valid UserUpdateDto userUpdateDto,
-                                                         @RequestPart(value = "files", required = false) MultipartFile file,
+    public ResponseEntity<UserResponseDto> updateProfile(@PathVariable Long userId,
+                                                         @RequestBody @Valid UserUpdateDto userUpdateDto,
                                                          BindingResult bindingResult){
-
         // 조건에 맞지 않으면 에러 메시지 출력
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
@@ -42,11 +39,17 @@ public class MypageApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // 프로필 이미지 s3 업로드 후  url 받아온 값 dto에 담아서 넘김
-        String profileUrl = fileUploadService.uploadProfile(file);
-        userUpdateDto.setProfileImg(profileUrl);
         mypageService.updateProfile(userId, userUpdateDto);
+        UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "프로필 수정 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    };
 
+    // 프로필 이미지 수정
+    @PatchMapping("/myPage/{userId}/profileImg")
+    public ResponseEntity<UserResponseDto> updateProfileImg(@PathVariable Long userId,
+                                                             @RequestPart(value = "file") MultipartFile file){
+
+        mypageService.updateProfileImg(userId, file);
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "프로필 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };

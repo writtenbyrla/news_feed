@@ -1,5 +1,6 @@
 package com.example.news_feed.user.service;
 
+import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.PwdHistory;
 import com.example.news_feed.user.domain.User;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ public class MypageService {
     private final UserRepository userRepository;
     private final AuthHistoryRepository historyRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final FileUploadService fileUploadService;
 
     // 기본 프로필 수정
     @Transactional
@@ -55,17 +57,16 @@ public class MypageService {
 
     // 프로필 이미지 수정
     @Transactional
-    public UserUpdateDto updateProfileImg(Long userId, UserUpdateDto updateDto) {
+    public UserUpdateDto updateProfileImg(Long userId, MultipartFile file) {
 
         // 기존 유저정보 조회 및 예외 처리
-        User target = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new HttpException(false, "프로필 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
-                );
+        User target = showUser(userId);
+
+        // s3에 파일 업로드
+        String profileUrl = fileUploadService.uploadProfile(file);
 
         // 프로필 수정
-        updateDto.setUserId(userId);
-        target.patchProfile(updateDto);
+        target.setProfileImg(profileUrl);
 
         // DB
         User updated = userRepository.save(target);
@@ -141,7 +142,6 @@ public class MypageService {
 
     // 회원정보 조회
     public User showUser(Long userId){
-
         return userRepository.findById(userId)
                 .orElseThrow(() -> new HttpException(false, "회원정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
 
