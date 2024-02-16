@@ -24,7 +24,6 @@ public class AdminPostService {
     @Transactional
     // 게시글 수정
     public UpdatePostDto update(Long postId, UpdatePostDto updatePostDto) {
-
         updatePostDto.setPostId(postId);
 
         // 기존 유저정보 조회 및 예외 처리
@@ -41,7 +40,6 @@ public class AdminPostService {
 
         // dto로 변환하여 반환
         return UpdatePostDto.updatePostDto(updated);
-
     }
 
     @Transactional

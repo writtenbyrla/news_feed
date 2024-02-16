@@ -3,6 +3,7 @@ package com.example.news_feed.post.service;
 import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.multimedia.domain.MultiMedia;
+import com.example.news_feed.multimedia.dto.MultiMediaDto;
 import com.example.news_feed.multimedia.repository.MultiMediaRepository;
 import com.example.news_feed.multimedia.service.MultiMediaService;
 import com.example.news_feed.post.domain.Post;
@@ -35,10 +36,9 @@ public class PostService {
     private final MultiMediaService multiMediaService;
 
 
-    // 게시글 등록(첨부파일 없을때)
+    // 게시글 등록
     @Transactional
     public CreatePostDto createPost(CreatePostDto createPostDto) {
-
         // 사용자 정보
         User user = checkUser(createPostDto.getUserId());
 
@@ -50,15 +50,11 @@ public class PostService {
         return CreatePostDto.createPostDto(created);
     }
 
-    // 게시글 등록(첨부파일 있을 때)
+    // 첨부파일 등록
     @Transactional
-    public CreatePostDto createWithFile(List<MultipartFile> files, CreatePostDto createPostDto) {
+    public void createFile(List<MultipartFile> files, Long postId) {
 
-        // 사용자 정보
-        User user = checkUser(createPostDto.getUserId());
-
-        // 엔티티 생성
-        Post post = new Post(createPostDto, user);
+        Post post = checkPost(postId);
 
         // 파일 s3 업로드, db 저장
         List<String> fileUrls = fileUploadService.uploadFiles(files);
@@ -66,10 +62,6 @@ public class PostService {
             MultiMedia multiMedia = new MultiMedia(url, post);
             multiMediaService.uploadFiles(multiMedia);
         }
-
-        // db 저장, DTO로 변경하여 반환
-        Post created = postRepository.save(post);
-        return CreatePostDto.createPostDto(created);
     }
 
     // 게시글 수정(기본)
@@ -95,50 +87,36 @@ public class PostService {
         return UpdatePostDto.updatePostDto(updated);
     }
 
-    // 게시글 수정(첨부파일 있을 때)
-
     /*
-     * 게시글 수정
+     * 첨부파일 수정
      * 1. 기존 유저정보 조회, 게시글 정보 조회(target), 작성자 여부 확인
      * 2. 게시글 id(target)로 기존 멀티미디어 db에서 삭제
      * 3. 멀티미디어 s3 등록, db 등록
-     * 4. 게시글 수정
      * */
     @Transactional
     @Modifying
-    public UpdatePostDto updateWithFile(Long postId, UpdatePostDto updatePostDto, List<MultipartFile> files) {
-
-        updatePostDto.setPostId(postId);
+    public void updateFile(Long postId, List<MultipartFile> files) {
 
         // 1.
-        // 기존 유저정보 조회 및 예외 처리
-        checkUser(updatePostDto.getUserId());
         // 수정하고자 하는 게시글 정보 조회
-        Post target = checkPost(postId);
+        Post post = checkPost(postId);
+        // 기존 유저정보 조회 및 예외 처리
+        checkUser(post.getUser().getUserId());
         // 작성자 여부 확인
-        isWrittenbyUser(updatePostDto.getUserId(), target.getUser().getUserId());
+        isWrittenbyUser(post.getUser().getUserId(), post.getUser().getUserId());
 
         // 2. 기존 멀티미디어 파일 db에서만 삭제
-        List<MultiMedia> currentFiles = multiMediaRepository.findByPostId(postId);
+        List<MultiMediaDto> currentFiles = multiMediaService.showFiles(postId);
         if (currentFiles != null){
-            multiMediaRepository.deleteByPostId(target.getPostId());
+            multiMediaRepository.deleteByPostId(post.getPostId());
         }
 
         // 3. 파일 s3 업로드, db 저장
             List<String> fileUrls = fileUploadService.uploadFiles(files);
             for (String url : fileUrls) {
-                MultiMedia multiMedia = new MultiMedia(url, target);
+                MultiMedia multiMedia = new MultiMedia(url, post);
                 multiMediaService.uploadFiles(multiMedia);
             }
-
-        // 4. 게시글 수정
-        target.patch(updatePostDto);
-
-        // 엔티티 db 저장
-        Post updated = postRepository.save(target);
-
-        // dto로 변환하여 반환
-        return UpdatePostDto.updatePostDto(updated);
     }
 
     @Transactional
