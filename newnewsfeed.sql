@@ -101,6 +101,6 @@ select * from follow;
 select * from post;
 select * from postlike;
 select * from user;
+select * from multimedia;
 
-
-select * from auth_history where user_id=1 order by updated_at desc limit 0, 3;
+use newnewsfeed;

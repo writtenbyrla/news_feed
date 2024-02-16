@@ -56,7 +56,6 @@ public class FileUploadService {
                 amazonS3Client.putObject(bucket, "post/"+ uuid + "_" + fileName, file.getInputStream(), metadata);
                 uploadedFileUrls.add(fileUrl);
             }
-            log.info("FileService : {}", uploadedFileUrls);
             return uploadedFileUrls;
         } catch (IOException e) {
             throw new HttpException(false, "이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);

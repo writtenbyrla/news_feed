@@ -2,6 +2,7 @@ package com.example.news_feed.post.domain;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.common.exception.HttpException;
+import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.common.timestamp.TimeStamp;
@@ -10,7 +11,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +46,9 @@ public class Post extends TimeStamp {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostLike> postLike = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<MultiMedia> multiMedia = new ArrayList<>();
+
     public Post(CreatePostDto createPostDto, User user) {
         this.postId = createPostDto.getPostId();
         this.title = createPostDto.getTitle();
@@ -54,7 +60,7 @@ public class Post extends TimeStamp {
         if (!this.postId.equals(updatePostDto.getPostId()))
             throw new HttpException(false, "게시글 수정 실패! postId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
         if (updatePostDto.getTitle() != null)
-            this.content = updatePostDto.getTitle();
+            this.title = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)
             this.content = updatePostDto.getContent();
     }

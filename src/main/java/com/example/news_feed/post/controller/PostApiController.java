@@ -8,11 +8,11 @@ import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,26 +23,42 @@ public class PostApiController {
 
     private final PostService postService;
 
-    // 게시글 등록
-    @PostMapping("/post")
-    public ResponseEntity<PostResponseDto> create(@RequestBody CreatePostDto createPostDto,
-                                                  @AuthenticationPrincipal final UserDetailsImpl userDetails) {
 
+    @PostMapping("/post")
+    public ResponseEntity<PostResponseDto> create(@RequestPart(value="data") CreatePostDto createPostDto,
+                                                  @RequestPart(value="files", required = false) List<MultipartFile> files,
+                                                  @AuthenticationPrincipal final UserDetailsImpl userDetails) {
+        // 로그인한 유저 정보 담기
         createPostDto.setUserId(userDetails.getId());
 
-        postService.create(createPostDto);
+        // 첨부파일 있을 경우, 없을 경우 service단 분리
+        if(files != null && !files.isEmpty()){
+            postService.createWithFile(files, createPostDto);
+        } else{
+            postService.createPost(createPostDto);
+        }
+
         PostResponseDto response = PostResponseDto.res(HttpStatus.CREATED.value(), "게시물 등록 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+
     // 게시글 수정
     @PatchMapping("/post/{postId}")
     public ResponseEntity<PostResponseDto> update(@PathVariable Long postId,
-                                                  @RequestBody UpdatePostDto updatePostDto,
+                                                  @RequestPart(value="data",  required = false) UpdatePostDto updatePostDto,
+                                                  @RequestPart(value ="files", required = false) List<MultipartFile> files,
                                                   @AuthenticationPrincipal final UserDetailsImpl userDetails) {
 
         updatePostDto.setUserId(userDetails.getId());
-        postService.update(postId, updatePostDto);
+
+        // 첨부파일 있을 경우, 없을 경우 service단 분리
+        if(files != null && !files.isEmpty()){
+            postService.updateWithFile(postId, updatePostDto, files);
+        } else{
+            postService.update(postId, updatePostDto);
+        }
+
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

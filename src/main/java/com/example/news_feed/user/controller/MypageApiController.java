@@ -29,7 +29,7 @@ public class MypageApiController {
     @PatchMapping("/myPage/{userId}/profile")
     public ResponseEntity<UserResponseDto> updateProfileTest(@PathVariable Long userId,
                                                          @RequestPart(value = "data", required = false) @Valid UserUpdateDto userUpdateDto,
-                                                         @RequestPart(name = "files", required = false) MultipartFile file,
+                                                         @RequestPart(value = "files", required = false) MultipartFile file,
                                                          BindingResult bindingResult){
 
         // 조건에 맞지 않으면 에러 메시지 출력
@@ -41,6 +41,7 @@ public class MypageApiController {
             UserResponseDto response = UserResponseDto.res(HttpStatus.BAD_REQUEST.value(), errorMessages.toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+
         // 프로필 이미지 s3 업로드 후  url 받아온 값 dto에 담아서 넘김
         String profileUrl = fileUploadService.uploadProfile(file);
         userUpdateDto.setProfileImg(profileUrl);
