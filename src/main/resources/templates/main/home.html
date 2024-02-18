@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>newsfeed</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/css/main/navbar.css}" >
+    <link rel="icon" href="data:;base64,=">
 </head>
 <body>
 <main>
@@ -11,4 +15,40 @@
     <div th:insert="~{main/navbar :: navbar}"></div>
 </main>
 </body>
+<script>
+    $(document).ready(function() {
+        const cookie = Cookies.get('Authorization')
+        console.log('cookie ', cookie);
+    })
+</script>
+<!-- 로그아웃 -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+    const accessToken = Cookies.get('Authorization')
+
+    const logoutBtn = document.querySelector("#logout-btn");
+
+    logoutBtn.addEventListener("click", function() {
+
+        $.ajax({
+            type: "POST",
+            url: "/user/logout",
+            contentType : "application/json",
+            headers: {
+                'Authorization' : accessToken,
+            },
+            success: function(data, status, xhr) {
+                alert("로그아웃 성공!");
+
+
+                window.location.href="/signup-page";
+            },
+            error: function(xhr, data) {
+                alert("로그아웃 실패");
+                window.location.reload();
+            }
+        });
+    });
+    })
+</script>
 </html>

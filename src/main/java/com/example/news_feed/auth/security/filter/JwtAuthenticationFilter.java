@@ -33,9 +33,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            // authorization 헤더에서 JWT 토큰 받아오기
             final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            final String token = parseBearerToken(authorizationHeader);
+            String token;
+
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                // HTTP 요청 헤더에서 토큰을 추출
+                token = parseBearerToken(authorizationHeader);
+                log.info("Filter Token : {}" , token);
+
+            } else {
+                // 클라이언트에서 보낸 쿠키에서 토큰을 추출
+                String tokenValue = jwtTokenProvider.getTokenFromRequest(request);
+                token = parseBearerToken(tokenValue);
+//                log.info("Filter Token : {}" , token);
+            }
 
             // 토큰 유효성 검사(email, userDetails)
             String email = jwtTokenProvider.getEmail(token, TokenType.ACCESS);
