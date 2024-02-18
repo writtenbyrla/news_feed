@@ -29,7 +29,7 @@ public class AdminCommentController {
                                                              @RequestBody UpdateCommentDto updateCommentDto,
                                                              @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         updateCommentDto.setUserId(userDetails.getId());
-        AdmincommentService.update(commentId, updateCommentDto);
+        commentService.update(commentId, updateCommentDto);
 
         CommentResponseDto response = CommentResponseDto.res(HttpStatus.OK.value(), "댓글 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -40,7 +40,7 @@ public class AdminCommentController {
     public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long commentId,
                                                             @AuthenticationPrincipal final UserDetailsImpl userDetails){
         Long userId = userDetails.getId();
-        AdmincommentService.delete(userId, commentId);
+        commentService.delete(userId, commentId);
         CommentResponseDto response =  CommentResponseDto.res(HttpStatus.OK.value(), "댓글 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

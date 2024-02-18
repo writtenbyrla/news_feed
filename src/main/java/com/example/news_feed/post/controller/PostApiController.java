@@ -41,7 +41,7 @@ public class PostApiController {
     @PostMapping("/post/{postId}/file")
     public ResponseEntity<PostResponseDto> createFile(@RequestPart(value="files", required = false) List<MultipartFile> files,
                                                       @PathVariable Long postId) {
-        postService.createFile(files, postId);
+        multiMediaService.createFile(files, postId);
         PostResponseDto response = PostResponseDto.res(HttpStatus.CREATED.value(), "게시물 등록 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -63,7 +63,7 @@ public class PostApiController {
     public ResponseEntity<PostResponseDto> updateFile(@PathVariable Long postId,
                                                   @RequestPart(value ="files", required = false) List<MultipartFile> files) {
 
-        postService.updateFile(postId, files);
+        multiMediaService.updateFile(postId, files);
 
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);

@@ -63,9 +63,11 @@ public class CommentService {
         // 댓글 정보
         Comment target = checkComment(commentId);
 
-        // 작성자가 일치할 경우에만 수정 가능
-        isWrittenbyUser(updateCommentDto.getUserId(), target.getUser().getUserId());
-
+        // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
+        if(user.getRole().getAuthority().equals("USER")) {
+            // 작성자가 일치할 경우에만 수정 가능
+            isWrittenbyUser(updateCommentDto.getUserId(), target.getUser().getUserId());
+        }
         // 댓글 수정
         target.patch(commentId, updateCommentDto);
 
@@ -81,13 +83,14 @@ public class CommentService {
     @Transactional
     public Comment delete(Long userId, Long commentId) {
         // 기존 유저정보 조회 및 예외 처리
-        checkUser(userId);
+        User user = checkUser(userId);
 
         // 댓글 정보
         Comment target = checkComment(commentId);
-
-        // 작성자가 일치하는 경우 수정 가능
-        isWrittenbyUser(userId, target.getUser().getUserId());
+        if(user.getRole().getAuthority().equals("USER")) {
+            // 작성자가 일치할 경우에만 삭제 가능
+            isWrittenbyUser(userId, target.getUser().getUserId());
+        }
 
         commentRepository.delete(target);
         return target;

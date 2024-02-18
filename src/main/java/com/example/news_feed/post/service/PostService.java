@@ -30,10 +30,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final UserRepository userRepository;
-    private final MultiMediaRepository multiMediaRepository;
     private final PostRepository postRepository;
-    private final FileUploadService fileUploadService;
-    private final MultiMediaService multiMediaService;
 
 
     // 게시글 등록
@@ -50,19 +47,6 @@ public class PostService {
         return CreatePostDto.createPostDto(created);
     }
 
-    // 첨부파일 등록
-    @Transactional
-    public void createFile(List<MultipartFile> files, Long postId) {
-
-        Post post = checkPost(postId);
-
-        // 파일 s3 업로드, db 저장
-        List<String> fileUrls = fileUploadService.uploadFiles(files);
-        for (String url : fileUrls) {
-            MultiMedia multiMedia = new MultiMedia(url, post);
-            multiMediaService.uploadFiles(multiMedia);
-        }
-    }
 
     // 게시글 수정(기본)
     @Transactional
@@ -71,11 +55,14 @@ public class PostService {
         updatePostDto.setPostId(postId);
 
         // 기존 유저정보 조회 및 예외 처리
-        checkUser(updatePostDto.getUserId());
+        User user = checkUser(updatePostDto.getUserId());
         // 수정하고자 하는 게시글 정보 조회
         Post target = checkPost(postId);
-        // 작성자 여부 확인
-        isWrittenbyUser(updatePostDto.getUserId(), target.getUser().getUserId());
+        // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
+        if(user.getRole().getAuthority().equals("USER")){
+            // 작성자 여부 확인
+            isWrittenbyUser(target.getUser().getUserId(), target.getUser().getUserId());
+        }
 
         // 게시글 수정
         target.patch(updatePostDto);
@@ -87,47 +74,21 @@ public class PostService {
         return UpdatePostDto.updatePostDto(updated);
     }
 
-    /*
-     * 첨부파일 수정
-     * 1. 기존 유저정보 조회, 게시글 정보 조회(target), 작성자 여부 확인
-     * 2. 게시글 id(target)로 기존 멀티미디어 db에서 삭제
-     * 3. 멀티미디어 s3 등록, db 등록
-     * */
-    @Transactional
-    @Modifying
-    public void updateFile(Long postId, List<MultipartFile> files) {
-
-        // 1.
-        // 수정하고자 하는 게시글 정보 조회
-        Post post = checkPost(postId);
-        // 기존 유저정보 조회 및 예외 처리
-        checkUser(post.getUser().getUserId());
-        // 작성자 여부 확인
-        isWrittenbyUser(post.getUser().getUserId(), post.getUser().getUserId());
-
-        // 2. 기존 멀티미디어 파일 db에서만 삭제
-        List<MultiMediaDto> currentFiles = multiMediaService.showFiles(postId);
-        if (currentFiles != null){
-            multiMediaRepository.deleteByPostId(post.getPostId());
-        }
-
-        // 3. 파일 s3 업로드, db 저장
-            List<String> fileUrls = fileUploadService.uploadFiles(files);
-            for (String url : fileUrls) {
-                MultiMedia multiMedia = new MultiMedia(url, post);
-                multiMediaService.uploadFiles(multiMedia);
-            }
-    }
 
     @Transactional
     // 게시글 삭제
     public Post delete(Long userId, Long postId) {
         // 기존 유저정보 조회 및 예외 처리
-        checkUser(userId);
+        User user = checkUser(userId);
 
         // 게시글 확인
         Post target = checkPost(postId);
 
+        // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
+        if(user.getRole().getAuthority().equals("USER")){
+            // 작성자 여부 확인
+            isWrittenbyUser(target.getUser().getUserId(), target.getUser().getUserId());
+        }
         // 작성자 일치 여부 확인
         isWrittenbyUser(userId,target.getUser().getUserId());
 

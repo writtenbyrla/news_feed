@@ -1,6 +1,7 @@
 package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.admin.service.AdminPostService;
+import com.example.news_feed.multimedia.service.MultiMediaService;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,8 +22,9 @@ import java.util.List;
 @RequestMapping("/admin/*")
 public class AdminPostController {
 
-    private final AdminPostService adminPostService;
     private final PostService postService;
+    private final MultiMediaService multiMediaService;
+
 
     // 게시글 수정
     @PatchMapping("/post/{postId}")
@@ -29,7 +32,7 @@ public class AdminPostController {
                                                   @RequestBody UpdatePostDto updatePostDto,
                                                   @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         updatePostDto.setUserId(userDetails.getId());
-        adminPostService.update(postId, updatePostDto);
+        postService.update(postId, updatePostDto);
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -39,7 +42,7 @@ public class AdminPostController {
     public ResponseEntity<PostResponseDto> deletePost(@PathVariable Long postId,
                                                   @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long userId = userDetails.getId();
-        adminPostService.delete(userId, postId);
+        postService.delete(userId, postId);
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -51,5 +54,25 @@ public class AdminPostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
+    // 멀티미디어 수정
+    @PatchMapping("/post/{postId}/file")
+    public ResponseEntity<PostResponseDto> updateFile(@PathVariable Long postId,
+                                                      @RequestPart(value ="files", required = false) List<MultipartFile> files) {
+
+        multiMediaService.updateFile(postId, files);
+
+        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 멀티미디어 삭제
+    @DeleteMapping("/post/{multiMediaId}/file")
+    public ResponseEntity<PostResponseDto> deleteFile(@PathVariable Long multiMediaId,
+                                                      @AuthenticationPrincipal final UserDetailsImpl userDetails) {
+        Long userId = userDetails.getId();
+        multiMediaService.deleteFiles(userId, multiMediaId);
+        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 삭제 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }
