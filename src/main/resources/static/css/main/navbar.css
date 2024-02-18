@@ -30,6 +30,18 @@ main
 .navbar > ul li
 {
     display: inline-block;
+    color: #fff;
+
+}
+.navbar > ul li span
+{
+    text-decoration: none;
+    color: #fff;
+    width: 200px;
+    display: inline-block;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
 }
 .navbar > ul li a
 {

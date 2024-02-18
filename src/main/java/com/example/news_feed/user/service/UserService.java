@@ -80,6 +80,12 @@ public class UserService {
                 () ->  new HttpException(false, "등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
         );
 
+        log.info(user.getStatus());
+
+        if (user.getStatus().equals("N")){
+            throw new HttpException(false, "탈퇴한 회원입니다!", HttpStatus.BAD_REQUEST);
+        }
+
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
             throw new HttpException(false, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
@@ -99,6 +105,7 @@ public class UserService {
 
         return new LoginResponseDto(accessToken, refreshToken, email, username, role);
     };
+
 
 
 }

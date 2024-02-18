@@ -44,7 +44,7 @@
 <!-- 회원가입 -->
 <script th:inline="javascript">
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#signupForm").submit(function(event) {
             event.preventDefault();
 
@@ -55,19 +55,21 @@
                 email: $("#email").val(),
             };
 
-            const url = "/user/signup";
-            fetch(url, {
-                method: "post",
-                body: JSON.stringify(signupReqDTO),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(response => {
-                response.json().then(data => {
+            $.ajax({
+                type: "POST",
+                url: "/user/signup",
+                data: JSON.stringify(signupReqDTO),
+                contentType : "application/json",
+                success: function(data, xhr) {
                     alert(JSON.stringify(data));
                     window.location.reload();
-                });
-            })
+                },
+                error: function(xhr) {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.message);
+                    window.location.href="/signup-page";
+                }
+            });
         });
     });
 </script>
@@ -93,7 +95,7 @@
                 contentType : "application/json",
                 success: function(data, status, xhr) {
 
-                    alert(JSON.stringify("로그인 성공!"));
+                    alert("로그인 성공!");
 
                     // 토큰 쿠키에 담기
                     const token = xhr.getResponseHeader("Authorization");
@@ -101,8 +103,9 @@
 
                     window.location.href="/home";
                 },
-                error: function(xhr, data) {
-                    alert("로그인 실패");
+                error: function(xhr) {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.message);
                     window.location.href="/signup-page";
                 }
             });

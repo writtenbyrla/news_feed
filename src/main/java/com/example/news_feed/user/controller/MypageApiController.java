@@ -1,4 +1,5 @@
 package com.example.news_feed.user.controller;
+import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
@@ -58,7 +59,7 @@ public class MypageApiController {
     // 프로필 이미지 받아오기
     @GetMapping("/myPage/{userId}/profileImg")
     public ResponseEntity<String> profileImg(@PathVariable Long userId){
-        User user = mypageService.showUser(userId);
+        UserDetailDto user = mypageService.showUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(user.getProfileImg());
     }
 

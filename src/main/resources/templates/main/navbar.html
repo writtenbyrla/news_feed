@@ -11,6 +11,9 @@
 <body>
 <nav class="navbar" th:fragment="navbar">
     <ul>
+        <li>
+            <span sec:authorize="isAuthenticated()" th:text="${user.username} + '님, 안녕하세요!'"></span>
+        </li>
         <li><a href="#">Home</a></li>
         <li><a href="#">Post</a></li>
         <li><a href="#">MyPage</a></li>

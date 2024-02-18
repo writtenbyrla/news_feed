@@ -40,8 +40,7 @@ public class PostApiController {
     // 멀티미디어 추가
     @PostMapping("/post/{postId}/file")
     public ResponseEntity<PostResponseDto> createFile(@RequestPart(value="files", required = false) List<MultipartFile> files,
-                                                      @PathVariable Long postId,
-                                                      @AuthenticationPrincipal final UserDetailsImpl userDetails) {
+                                                      @PathVariable Long postId) {
         postService.createFile(files, postId);
         PostResponseDto response = PostResponseDto.res(HttpStatus.CREATED.value(), "게시물 등록 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

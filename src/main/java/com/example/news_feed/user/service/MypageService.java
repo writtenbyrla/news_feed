@@ -1,5 +1,6 @@
 package com.example.news_feed.user.service;
 
+import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.PwdHistory;
@@ -60,16 +61,16 @@ public class MypageService {
     public UserUpdateDto updateProfileImg(Long userId, MultipartFile file) {
 
         // 기존 유저정보 조회 및 예외 처리
-        User target = showUser(userId);
+        User user = checkUser(userId);
 
         // s3에 파일 업로드
         String profileUrl = fileUploadService.uploadProfile(file);
 
         // 프로필 수정
-        target.setProfileImg(profileUrl);
+        user.setProfileImg(profileUrl);
 
         // DB
-        User updated = userRepository.save(target);
+        User updated = userRepository.save(user);
 
         // 엔티티를 DTO로 변환해서 반환
         return UserUpdateDto.createUserDto(updated);
@@ -141,9 +142,19 @@ public class MypageService {
     }
 
     // 회원정보 조회
-    public User showUser(Long userId){
+    public UserDetailDto showUser(Long userId){
+//        return userRepository.findById(userId)
+//                .orElseThrow(() -> new HttpException(false, "회원정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException(false, "회원정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
-
+                .map(UserDetailDto::createUserDetailDto)
+                .orElse(null);
     }
+
+    // 유저 정보 확인
+    private User checkUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+
 }
