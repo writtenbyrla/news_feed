@@ -159,8 +159,8 @@ public class JwtTokenProvider {
 
 
     // cookie에서 jwt 토큰 추출하는 경우
-    public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
+    public String getTokenFromRequest(HttpServletRequest reqest) {
+        Cookie[] cookies = reqest.getCookies();
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {

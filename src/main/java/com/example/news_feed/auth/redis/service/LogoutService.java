@@ -20,6 +20,7 @@ public class LogoutService {
     @Transactional
     public void logout(HttpServletRequest request, String userEmail) {
         String accessToken = jwtTokenProvider.resolveAccessToken(request);
+//        String accessToken = jwtTokenProvider.getTokenFromRequest(request);
 
         if(!jwtTokenProvider.isExpired(accessToken, TokenType.ACCESS)){
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
