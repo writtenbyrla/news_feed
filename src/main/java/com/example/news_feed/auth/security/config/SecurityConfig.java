@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //정적 리소스
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/home").permitAll()
-                                .requestMatchers("/signup-page").permitAll() // 회원가입 페이지
+                                .requestMatchers("/signup-page").permitAll() // 회원가입, 로그인 페이지
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
 //                                .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()
