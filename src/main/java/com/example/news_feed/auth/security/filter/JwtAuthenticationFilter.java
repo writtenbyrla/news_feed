@@ -39,13 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 // HTTP 요청 헤더에서 토큰을 추출
                 token = parseBearerToken(authorizationHeader);
-                log.info("Filter Token : {}" , token);
-
             } else {
                 // 클라이언트에서 보낸 쿠키에서 토큰을 추출
                 String tokenValue = jwtTokenProvider.getTokenFromRequest(request);
                 token = parseBearerToken(tokenValue);
-//                log.info("Filter Token : {}" , token);
             }
 
             // 토큰 유효성 검사(email, userDetails)
@@ -65,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.error(e.getMessage());
+//            log.error(e.getMessage());
         } finally {
             filterChain.doFilter(request, response);
         }

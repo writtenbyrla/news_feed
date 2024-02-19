@@ -1,5 +1,6 @@
 package com.example.news_feed.post.controller;
 
+import com.example.news_feed.common.aop.annotation.RunningTime;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
 import com.example.news_feed.multimedia.service.MultiMediaService;
 import com.example.news_feed.post.dto.request.CreatePostDto;
@@ -91,6 +92,7 @@ public class PostApiController {
 
 
     // 게시글 목록
+//    @RunningTime
     @GetMapping("/post")
     public ResponseEntity<List<PostDetailDto>> showAll(){
         List<PostDetailDto> posts = postService.showAll();

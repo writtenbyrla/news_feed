@@ -80,8 +80,6 @@ public class UserService {
                 () ->  new HttpException(false, "등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
         );
 
-        log.info(user.getStatus());
-
         if (user.getStatus().equals("N")){
             throw new HttpException(false, "탈퇴한 회원입니다!", HttpStatus.BAD_REQUEST);
         }
