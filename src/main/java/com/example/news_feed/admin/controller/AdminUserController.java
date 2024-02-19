@@ -2,10 +2,9 @@ package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.admin.dto.response.UserUpdateResponseDto;
-import com.example.news_feed.admin.service.AdminUserService;
+import com.example.news_feed.admin.serviceImpl.AdminUserServiceImpl;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +16,12 @@ import java.util.List;
 @RequestMapping("/admin/")
 public class AdminUserController {
 
-    private final AdminUserService adminUserService;
+    private final AdminUserServiceImpl adminUserServiceImpl;
 
     // 유저 전체 목록
     @GetMapping("/user")
     public ResponseEntity<List<UserDetailDto>> showAllUser(){
-        List<UserDetailDto> users = adminUserService.showAll();
+        List<UserDetailDto> users = adminUserServiceImpl.showAll();
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
@@ -34,10 +33,10 @@ public class AdminUserController {
         String message = null;
 
         if (role.equals(UserRoleEnum.ADMIN)){
-            adminUserService.changeUserRole(userId, UserRoleEnum.ADMIN);
+            adminUserServiceImpl.changeUserRole(userId, UserRoleEnum.ADMIN);
             message = "유저 권한이 관리자로 변경되었습니다.";
         } else if (role.equals(UserRoleEnum.USER)){
-            adminUserService.changeUserRole(userId, UserRoleEnum.USER);
+            adminUserServiceImpl.changeUserRole(userId, UserRoleEnum.USER);
             message = "유저 권한이 사용자로 변경되었습니다.";
         }
 
@@ -53,10 +52,10 @@ public class AdminUserController {
         String message=null;
 
         if (status.equals("N")){
-            adminUserService.changeStatus(userId, status);
+            adminUserServiceImpl.changeStatus(userId, status);
             message = "유저 강제탈퇴 성공!";
         } else if(status.equals("Y")){
-            adminUserService.changeStatus(userId, status);
+            adminUserServiceImpl.changeStatus(userId, status);
             message = "유저 복구 성공!";
         }
 

@@ -14,17 +14,17 @@ import org.springframework.stereotype.Component;
 public class DebuggingAspect {
 
     // 대상 메소드 선택
-    @Pointcut("execution(* com.example.news_feed.user.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.user.serviceImpl..*.*(..))")
     private void userCut(){}
-    @Pointcut("execution(* com.example.news_feed.post.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.post.serviceImpl..*.*(..))")
     private void postCut(){}
-    @Pointcut("execution(* com.example.news_feed.comment.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.comment.serviceImpl..*.*(..))")
     private void commentCut(){}
-    @Pointcut("execution(* com.example.news_feed.admin.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.admin.serviceImpl..*.*(..))")
     private void adminCut(){}
-    @Pointcut("execution(* com.example.news_feed.follow.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.follow.serviceImpl..*.*(..))")
     private void followCut(){}
-    @Pointcut("execution(* com.example.news_feed.multimedia.service..*.*(..))")
+    @Pointcut("execution(* com.example.news_feed.multimedia.serviceImpl..*.*(..))")
     private void multiMediaCut(){}
 
     // 실행 시점 설정: cut()의 대상이 수행되기 이전에 수행

@@ -1,4 +1,4 @@
-package com.example.news_feed.user.service;
+package com.example.news_feed.user.serviceImpl;
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
 import com.example.news_feed.common.aws.FileUploadService;
@@ -9,6 +9,7 @@ import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.repository.AuthHistoryRepository;
 import com.example.news_feed.user.repository.UserRepository;
+import com.example.news_feed.user.service.MyPageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MypageService {
+public class MyPageServiceImpl implements MyPageService {
 
     private final UserRepository userRepository;
     private final AuthHistoryRepository historyRepository;

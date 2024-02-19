@@ -1,11 +1,9 @@
 package com.example.news_feed.user.controller;
 import com.example.news_feed.admin.dto.response.UserDetailDto;
-import com.example.news_feed.common.aws.FileUploadService;
-import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
-import com.example.news_feed.user.service.MypageService;
+import com.example.news_feed.user.serviceImpl.MyPageServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MypageApiController {
 
-    private final MypageService mypageService;
+    private final MyPageServiceImpl mypageServiceImpl;
 
     // 프로필 수정
     @PatchMapping("/myPage/{userId}/profile")
@@ -40,7 +38,7 @@ public class MypageApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        mypageService.updateProfile(userId, userUpdateDto);
+        mypageServiceImpl.updateProfile(userId, userUpdateDto);
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "프로필 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };
@@ -50,7 +48,7 @@ public class MypageApiController {
     public ResponseEntity<UserResponseDto> updateProfileImg(@PathVariable Long userId,
                                                              @RequestPart(value = "file") MultipartFile file){
 
-        mypageService.updateProfileImg(userId, file);
+        mypageServiceImpl.updateProfileImg(userId, file);
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "프로필 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };
@@ -59,7 +57,7 @@ public class MypageApiController {
     // 프로필 이미지 받아오기
     @GetMapping("/myPage/{userId}/profileImg")
     public ResponseEntity<String> profileImg(@PathVariable Long userId){
-        UserDetailDto user = mypageService.showUser(userId);
+        UserDetailDto user = mypageServiceImpl.showUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(user.getProfileImg());
     }
 
@@ -80,7 +78,7 @@ public class MypageApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        mypageService.updatePwd(userId, pwdUpdateDto);
+        mypageServiceImpl.updatePwd(userId, pwdUpdateDto);
 
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "비밀번호 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
