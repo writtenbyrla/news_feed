@@ -38,7 +38,7 @@ public class AdminUserService {
 
         // 같은 권한으로 변경하려 할 경우
         if (target.getRole().equals(newRole)) {
-            throw new HttpException(false, "이미 해당 권한을 가지고 있습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("이미 해당 권한을 가지고 있습니다.", HttpStatus.BAD_REQUEST);
         }
 
         target.setRole(newRole);
@@ -51,7 +51,7 @@ public class AdminUserService {
         User target = checkUser(userId);
 
         if (target.getStatus().equals(status)) {
-            throw new HttpException(false, "변경할 상태가 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("변경할 상태가 없습니다.", HttpStatus.BAD_REQUEST);
         }
         target.setStatus(status);
         userRepository.save(target);
@@ -60,6 +60,6 @@ public class AdminUserService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 }

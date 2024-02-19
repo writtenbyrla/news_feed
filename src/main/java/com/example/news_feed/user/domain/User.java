@@ -76,7 +76,7 @@ public class User extends TimeStamp {
     public void patchProfile(UserUpdateDto updateDto) {
 
         if (!this.userId.equals(updateDto.getUserId()))
-            throw new HttpException(false, "프로필 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("프로필 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
 
         if (updateDto.getUsername() != null)
             this.username = updateDto.getUsername();
@@ -91,7 +91,7 @@ public class User extends TimeStamp {
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
 
         if (!this.userId.equals(pwdUpdateDto.getUserId()))
-            throw new HttpException(false, "암호 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("암호 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
 
         this.pwd = pwdUpdateDto.getNewPwd();
     }

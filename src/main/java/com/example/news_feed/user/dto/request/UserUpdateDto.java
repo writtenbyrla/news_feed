@@ -22,11 +22,6 @@ public class UserUpdateDto {
     private String description;
     private String profileImg;
 
-    public UserUpdateDto(Long userId, String profileUrl) {
-        this.userId = userId;
-        this.profileImg = profileUrl;
-    }
-
     public static UserUpdateDto createUserDto(User user) {
         return new UserUpdateDto(
                 user.getUserId(),

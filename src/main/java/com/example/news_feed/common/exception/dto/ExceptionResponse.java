@@ -1,4 +1,4 @@
-package com.example.news_feed.common.exception;
+package com.example.news_feed.common.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,12 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ExceptionResponse {
-    private Boolean ok;
     private int statusCode;
     private String message;
 
     public ExceptionResponse(String message, int statusCode) {
-        this.ok = false;
         this.message = message;
         this.statusCode = statusCode;
     }

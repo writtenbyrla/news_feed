@@ -37,7 +37,7 @@ public class FileUploadService {
             return amazonS3Client.getUrl(bucket, "profile/"+ uuid + "_"+fileName).toString();
 
         } catch (IOException e) {
-            throw new HttpException(false, "프로필 이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);        }
+            throw new HttpException("프로필 이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);        }
     }
 
 
@@ -58,7 +58,7 @@ public class FileUploadService {
             }
             return uploadedFileUrls;
         } catch (IOException e) {
-            throw new HttpException(false, "이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);
         }
 
     }

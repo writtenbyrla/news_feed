@@ -41,7 +41,7 @@ public class FileController {
             }
             return uploadedFileUrls;
         } catch (IOException e) {
-            throw new HttpException(false, "이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("이미지 등록에 실패하였습니다.", HttpStatus.BAD_REQUEST);
         }
 
     }

@@ -92,7 +92,7 @@ public class MultiMediaService {
 
         // 파일 정보 확인
         MultiMedia target = multiMediaRepository.findById(multiMediaId)
-                .orElseThrow(() -> new HttpException(false, "파일을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("파일을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
 
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")){
@@ -107,18 +107,18 @@ public class MultiMediaService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
     // 본인 작성 여부 확인
     private void isWrittenbyUser(Long userId, Long postUserId) {
         if (!userId.equals(postUserId)) {
-            throw new HttpException(false, "본인이 작성한 게시글이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("본인이 작성한 게시글이 아닙니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException(false, "게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 }

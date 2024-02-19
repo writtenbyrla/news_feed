@@ -50,13 +50,13 @@ public class UserService {
         // 유저네임 중복확인
         Optional<User> checkUsername = userRepository.findByName(username);
         if(checkUsername.isPresent()){
-            throw new HttpException(false, "중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 이메일 중복확인
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if(checkEmail.isPresent()) {
-            throw new HttpException(false, "중복된 Email 입니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("중복된 Email 입니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 유저 엔티티 생성
@@ -77,15 +77,15 @@ public class UserService {
 
         // 사용자 확인(email)
         User user = userRepository.findByEmail(email).orElseThrow(
-                () ->  new HttpException(false, "등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
+                () ->  new HttpException("등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
         );
 
         if (user.getStatus().equals("N")){
-            throw new HttpException(false, "탈퇴한 회원입니다!", HttpStatus.BAD_REQUEST);
+            throw new HttpException("탈퇴한 회원입니다!", HttpStatus.BAD_REQUEST);
         }
 
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
-            throw new HttpException(false, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
         String username = user.getUsername();
