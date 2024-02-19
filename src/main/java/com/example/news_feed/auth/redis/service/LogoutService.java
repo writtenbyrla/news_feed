@@ -1,5 +1,7 @@
 package com.example.news_feed.auth.redis.service;
 
+import com.example.news_feed.auth.exception.AuthErrorCode;
+import com.example.news_feed.auth.exception.AuthException;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,16 +25,16 @@ public class LogoutService {
 //        String accessToken = jwtTokenProvider.getTokenFromRequest(request);
 
         if(!jwtTokenProvider.isExpired(accessToken, TokenType.ACCESS)){
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN);
         }
 
         if(redisService.keyExists(accessToken)){
-            throw new IllegalArgumentException("이미 로그아웃하셨습니다.");
+            throw new AuthException(AuthErrorCode.ALREADY_LOGOUT);
         }
 
         String email = jwtTokenProvider.getEmail(accessToken, TokenType.ACCESS);
         if (!email.equals(userEmail)){
-            throw new IllegalArgumentException("이메일 정보가 일치하지 않습니다.");
+            throw new AuthException(AuthErrorCode.INVALID_EMAIL);
         }
 
         String redisKey = "RefreshToken:" + email;

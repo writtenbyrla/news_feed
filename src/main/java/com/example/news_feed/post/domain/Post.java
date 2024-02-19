@@ -6,6 +6,8 @@ import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.common.timestamp.TimeStamp;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -58,7 +60,7 @@ public class Post extends TimeStamp {
 
     public void patch(UpdatePostDto updatePostDto) {
         if (!this.postId.equals(updatePostDto.getPostId()))
-            throw new HttpException("게시글 수정 실패! postId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new PostException(PostErrorCode.POST_NOT_EXIST);
         if (updatePostDto.getTitle() != null)
             this.title = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)

@@ -61,9 +61,10 @@ public class PostApiController {
     // 멀티미디어 수정
     @PatchMapping("/post/{postId}/file")
     public ResponseEntity<PostResponseDto> updateFile(@PathVariable Long postId,
-                                                  @RequestPart(value ="files", required = false) List<MultipartFile> files) {
+                                                      @AuthenticationPrincipal final UserDetailsImpl userDetails,
+                                                      @RequestPart(value ="files", required = false) List<MultipartFile> files) {
 
-        multiMediaServiceImpl.updateFile(postId, files);
+        multiMediaServiceImpl.updateFile(userDetails, postId, files);
 
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);

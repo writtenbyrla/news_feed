@@ -1,11 +1,15 @@
 package com.example.news_feed.auth.service;
 
 import com.example.news_feed.auth.dto.response.RefreshTokenDto;
+import com.example.news_feed.auth.exception.AuthErrorCode;
+import com.example.news_feed.auth.exception.AuthException;
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -26,24 +30,24 @@ public class RefreshTokenService {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 
         if (refreshToken == null || refreshToken.isEmpty()) {
-            throw new HttpException("refreshToken이 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new AuthException(AuthErrorCode.NOT_FOUND_TOKEN);
         }
 
         String email = jwtTokenProvider.getEmail(refreshToken, TokenType.REFRESH);
 
         String redisRefreshToken = redisService.getValue("RefreshToken:" + email);
         if(!redisService.checkExistsValue(redisRefreshToken)){
-            throw new HttpException("refreshToken이 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN);
         }
 
         if(refreshToken.equals(redisRefreshToken)){
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new HttpException("유저 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+                    .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXIST));
             String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getUsername(), user.getRole(), TokenType.ACCESS);
             return new RefreshTokenDto(accessToken, refreshToken, email, user.getUsername(), user.getRole());
 
         } else{
-            throw new HttpException("refreshToken이 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new AuthException(AuthErrorCode.MISMATCH_REFRESH_TOKEN);
         }
 
     }

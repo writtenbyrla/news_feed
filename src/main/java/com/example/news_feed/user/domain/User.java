@@ -6,6 +6,8 @@ import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.dto.response.UserInfoDto;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -76,7 +78,7 @@ public class User extends TimeStamp {
     public void patchProfile(UserUpdateDto updateDto) {
 
         if (!this.userId.equals(updateDto.getUserId()))
-            throw new HttpException("프로필 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.USER_NOT_EXIST);
 
         if (updateDto.getUsername() != null)
             this.username = updateDto.getUsername();
@@ -91,7 +93,7 @@ public class User extends TimeStamp {
     public void patchPwd(PwdUpdateDto pwdUpdateDto) {
 
         if (!this.userId.equals(pwdUpdateDto.getUserId()))
-            throw new HttpException("암호 수정 실패! userId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.USER_NOT_EXIST);
 
         this.pwd = pwdUpdateDto.getNewPwd();
     }

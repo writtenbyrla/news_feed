@@ -2,6 +2,7 @@ package com.example.news_feed.user.service;
 
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
@@ -23,7 +24,7 @@ public interface MyPageService {
      * @param userId 프로필 수정 요청자
      * @return 프로필 이미지 수정 결과
      */
-    UserUpdateDto updateProfileImg(Long userId, MultipartFile file);
+    UserUpdateDto updateProfileImg(UserDetailsImpl userDetails, Long userId, MultipartFile file);
 
     /*
      * 패스워드 수정
@@ -31,7 +32,7 @@ public interface MyPageService {
      * @param userId 패스워드 수정 요청자
      * @return 패스워드 수정 결과
      */
-    PwdUpdateDto updatePwd(Long userId, PwdUpdateDto pwdUpdateDto);
+    PwdUpdateDto updatePwd(UserDetailsImpl userDetails, Long userId, PwdUpdateDto pwdUpdateDto);
 
     /*
      * 패스워드 히스토리 저장

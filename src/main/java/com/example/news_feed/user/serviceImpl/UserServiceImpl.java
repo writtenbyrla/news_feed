@@ -9,6 +9,8 @@ import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import com.example.news_feed.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static com.example.news_feed.user.exception.UserErrorCode.DUPLICATE_USERNAME_FOUND;
 
 @Service
 @Slf4j
@@ -44,13 +48,13 @@ public class UserServiceImpl implements UserService {
         // 유저네임 중복확인
         Optional<User> checkUsername = userRepository.findByName(username);
         if(checkUsername.isPresent()){
-            throw new HttpException("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.DUPLICATE_USERNAME_FOUND);
         }
 
         // 이메일 중복확인
         Optional<User> checkEmail = userRepository.findByEmail(email);
-        if(checkEmail.isPresent()) {
-            throw new HttpException("중복된 Email 입니다.", HttpStatus.BAD_REQUEST);
+        if(checkEmail.isPresent()){
+            throw new UserException(UserErrorCode.DUPLICATE_EMAIL_FOUND);
         }
 
         // 유저 엔티티 생성
@@ -71,15 +75,15 @@ public class UserServiceImpl implements UserService {
 
         // 사용자 확인(email)
         User user = userRepository.findByEmail(email).orElseThrow(
-                () ->  new HttpException("등록된 사용자가 없습니다.", HttpStatus.BAD_REQUEST)
+                () ->  new UserException(UserErrorCode.USER_NOT_EXIST)
         );
 
         if (user.getStatus().equals("N")){
-            throw new HttpException("탈퇴한 회원입니다!", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.USER_DELETED);
         }
 
         if(!bCryptPasswordEncoder.matches(pwd, user.getPwd())){
-            throw new HttpException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.MISMATCH_PASSWORD);
         }
 
         String username = user.getUsername();

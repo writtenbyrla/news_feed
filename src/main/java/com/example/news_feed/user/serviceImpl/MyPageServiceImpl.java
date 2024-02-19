@@ -1,12 +1,15 @@
 package com.example.news_feed.user.serviceImpl;
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.PwdHistory;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.AuthHistoryRepository;
 import com.example.news_feed.user.repository.UserRepository;
 import com.example.news_feed.user.service.MyPageService;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 @Service
 @Slf4j
@@ -36,15 +40,15 @@ public class MyPageServiceImpl implements MyPageService {
 
         // 본인 닉네임 제외해서 중복확인
         Optional<User> checkUsername = userRepository.findByNameAndUserIdNot(updateDto.getUsername(), userId);
-        if (checkUsername.isPresent()) {
-            throw new HttpException("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
+        if(checkUsername.isPresent()){
+            throw new UserException(UserErrorCode.DUPLICATE_USERNAME_FOUND);
         }
 
         // 기존 유저정보 조회 및 예외 처리
-        User target = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new HttpException("프로필 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
-                );
+        User target = checkUser(userId);
+
+        // 본인 여부 확인
+        isValidUser(target.getUserId(), updateDto.getUserId());
 
         // 프로필 수정
         updateDto.setUserId(userId);
@@ -59,10 +63,13 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 프로필 이미지 수정
     @Transactional
-    public UserUpdateDto updateProfileImg(Long userId, MultipartFile file) {
+    public UserUpdateDto updateProfileImg(UserDetailsImpl userDetails, Long userId, MultipartFile file) {
 
         // 기존 유저정보 조회 및 예외 처리
         User user = checkUser(userId);
+
+        // 본인 여부 확인
+        isValidUser(user.getUserId(), userDetails.getId());
 
         // s3에 파일 업로드
         String profileUrl = fileUploadService.uploadProfile(file);
@@ -79,22 +86,22 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 패스워드 수정
     @Transactional
-    public PwdUpdateDto updatePwd(Long userId, PwdUpdateDto pwdUpdateDto) {
+    public PwdUpdateDto updatePwd(UserDetailsImpl userDetails, Long userId, PwdUpdateDto pwdUpdateDto) {
 
         pwdUpdateDto.setUserId(userId);
         String oldPwd = pwdUpdateDto.getOldPwd(); // 현재 비밀번호 입력값
 
         // 기존 유저정보 조회 및 예외 처리
-        User target = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new HttpException("비밀번호 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
-                );
+        User target = checkUser(userId);
+
+        // 본인 여부 확인
+        isValidUser(target.getUserId(), userDetails.getId());
 
         // 기존 등록된 비밀번호와 현재 비밀번호 입력값이 일치하는지 확인
         String currnetPwd = target.getPwd();
 
         if (!bCryptPasswordEncoder.matches(oldPwd, currnetPwd)) {
-            throw new HttpException("현재 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.MISMATCH_PASSWORD);
         }
 
         // 1.최근 사용한 패스워드 3개 일치여부 확인 후
@@ -123,7 +130,7 @@ public class MyPageServiceImpl implements MyPageService {
             // 엔티티를 DTO로 변환해서 반환
             return PwdUpdateDto.createResponseDto(updated);
         } else {
-            throw new HttpException("최근에 사용한 비밀번호입니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.RECENTLY_USED_PASSWORD);
         }
     }
 
@@ -144,8 +151,6 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 회원정보 조회
     public UserDetailDto showUser(Long userId){
-//        return userRepository.findById(userId)
-//                .orElseThrow(() -> new HttpException(false, "회원정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
         return userRepository.findById(userId)
                 .map(UserDetailDto::createUserDetailDto)
                 .orElse(null);
@@ -154,7 +159,14 @@ public class MyPageServiceImpl implements MyPageService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
+    }
+
+    // 본인 여부 확인
+    private void isValidUser(Long targetUserId, Long currentUserId) {
+        if (!currentUserId.equals(targetUserId)) {
+            throw new UserException(UserErrorCode.UNAUTHORIZED_USER);
+        }
     }
 
 

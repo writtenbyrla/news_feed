@@ -2,6 +2,8 @@ package com.example.news_feed.comment.domain;
 
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
+import com.example.news_feed.comment.exception.CommentErrorCode;
+import com.example.news_feed.comment.exception.CommentException;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.common.timestamp.TimeStamp;
@@ -49,8 +51,9 @@ public class Comment extends TimeStamp {
     }
 
     public void patch(Long commentId, UpdateCommentDto updateCommentDto) {
-        if (!this.commentId.equals(commentId))
-            throw new HttpException("댓글 수정 실패! 잘못된 댓글 번호가 입력되었습니다.", HttpStatus.BAD_REQUEST);
+        if (!this.commentId.equals(commentId)) {
+            throw new CommentException(CommentErrorCode.NOT_FOUND_COMMENT);
+        }
 
         if (updateCommentDto.getContent() != null) {
             this.content = updateCommentDto.getContent();

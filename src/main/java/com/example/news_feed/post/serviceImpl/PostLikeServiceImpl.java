@@ -4,10 +4,14 @@ import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.domain.PostLike;
 import com.example.news_feed.post.dto.request.PostLikeDto;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostLikeRepository;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.post.service.PostLikeService;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +41,14 @@ public class PostLikeServiceImpl implements PostLikeService {
 
         // 자신의 게시글인 경우 좋아요 불가능
         if (userId.equals(post.getUser().getUserId())){
-            throw new HttpException("자신의 게시글은 좋아요를 할 수 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new PostException(PostErrorCode.IS_SELF_LIKE);
         }
 
         // 이미 좋아요 한 경우 다시 좋아요 불가능
         postLikeRepository.findByUserIdPostId(userId, postId)
                 .ifPresent(like -> {
-                    throw new HttpException("이 게시글을 이미 좋아합니다!", HttpStatus.BAD_REQUEST);});
+                    throw new PostException(PostErrorCode.ALREADY_LIKE);
+                });
 
         // 엔티티 생성
         PostLike postLike = PostLike.createPostLike(user, post);
@@ -68,21 +73,25 @@ public class PostLikeServiceImpl implements PostLikeService {
         return PostLikeDto.createPostLikeDto(target);
     }
 
+
+    // 게시글 좋아요 정보 확인
+    private PostLike checkPostLike(Long postLikeId) {
+        return postLikeRepository.findById(postLikeId)
+                .orElseThrow(() ->  new PostException(PostErrorCode.POSTLIKE_NOT_EXIST));
+    }
+
+
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 
-    // 게시글 좋아요 정보 확인
-    private PostLike checkPostLike(Long postLikeId) {
-        return postLikeRepository.findById(postLikeId)
-                .orElseThrow(() -> new HttpException("게시글 좋아요 정보가 없습니다.", HttpStatus.BAD_REQUEST));
-    }
+
 }

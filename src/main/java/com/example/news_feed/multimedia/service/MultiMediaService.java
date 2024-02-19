@@ -1,5 +1,6 @@
 package com.example.news_feed.multimedia.service;
 
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +21,7 @@ public interface MultiMediaService {
      * @param postId 게시글 번호
      * @return 멀티미디어 수정 결과
      */
-    void updateFile(Long postId, List<MultipartFile> files);
+    void updateFile(UserDetailsImpl userDetails, Long postId, List<MultipartFile> files);
 
     /*
      * 멀티미디어 목록

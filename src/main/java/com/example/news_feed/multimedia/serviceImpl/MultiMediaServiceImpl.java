@@ -1,14 +1,21 @@
 package com.example.news_feed.multimedia.serviceImpl;
 
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.common.aws.FileUploadService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
+import com.example.news_feed.multimedia.exception.MultiMediaErrorCode;
+import com.example.news_feed.multimedia.exception.MultiMediaException;
 import com.example.news_feed.multimedia.repository.MultiMediaRepository;
 import com.example.news_feed.multimedia.service.MultiMediaService;
 import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +58,7 @@ public class MultiMediaServiceImpl implements MultiMediaService {
      * */
     @Transactional
     @Modifying
-    public void updateFile(Long postId, List<MultipartFile> files) {
+    public void updateFile(UserDetailsImpl userDetails, Long postId, List<MultipartFile> files) {
 
         // 1.
         // 수정하고자 하는 게시글 정보 조회
@@ -61,8 +68,9 @@ public class MultiMediaServiceImpl implements MultiMediaService {
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")){
             // 작성자 여부 확인
-            isWrittenbyUser(post.getUser().getUserId(), post.getUser().getUserId());
+            isWrittenByUser(post.getUser().getUserId(), userDetails.getId());
         }
+
         // 2. 기존 멀티미디어 파일 db에서만 삭제
         List<MultiMediaDto> currentFiles = showFiles(postId);
         if (currentFiles != null){
@@ -93,12 +101,12 @@ public class MultiMediaServiceImpl implements MultiMediaService {
 
         // 파일 정보 확인
         MultiMedia target = multiMediaRepository.findById(multiMediaId)
-                .orElseThrow(() -> new HttpException("파일을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new MultiMediaException(MultiMediaErrorCode.NOT_FOUND_FILE));
 
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")){
             // 작성자 여부 확인
-            isWrittenbyUser(userId,target.getPost().getUser().getUserId());
+            isWrittenByUser(userId,target.getPost().getUser().getUserId());
         }
 
         multiMediaRepository.delete(target);
@@ -108,18 +116,19 @@ public class MultiMediaServiceImpl implements MultiMediaService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
+
     // 본인 작성 여부 확인
-    private void isWrittenbyUser(Long userId, Long postUserId) {
+    private void isWrittenByUser(Long userId, Long postUserId) {
         if (!userId.equals(postUserId)) {
-            throw new HttpException("본인이 작성한 게시글이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.UNAUTHORIZED_USER);
         }
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 }

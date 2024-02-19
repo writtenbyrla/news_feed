@@ -1,11 +1,15 @@
 package com.example.news_feed.admin.serviceImpl;
 
 import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.admin.exception.AdminErrorCode;
+import com.example.news_feed.admin.exception.AdminException;
 import com.example.news_feed.admin.repository.AdminUserRepository;
 import com.example.news_feed.admin.service.AdminUserService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +43,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         // 같은 권한으로 변경하려 할 경우
         if (target.getRole().equals(newRole)) {
-            throw new HttpException("이미 해당 권한을 가지고 있습니다.", HttpStatus.BAD_REQUEST);
+            throw new AdminException(AdminErrorCode.ALREADY_HAS_ROLE);
         }
 
         target.setRole(newRole);
@@ -52,7 +56,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         User target = checkUser(userId);
 
         if (target.getStatus().equals(status)) {
-            throw new HttpException("변경할 상태가 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new AdminException(AdminErrorCode.ALREADY_HAS_STATUS);
         }
         target.setStatus(status);
         userRepository.save(target);
@@ -61,6 +65,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 }

@@ -4,11 +4,15 @@ import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.follow.domain.Follow;
 import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
+import com.example.news_feed.follow.exception.FollowErrorCode;
+import com.example.news_feed.follow.exception.FollowException;
 import com.example.news_feed.follow.repository.FollowRepository;
 import com.example.news_feed.follow.service.FollowService;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,13 +42,13 @@ public class FollowServiceImpl implements FollowService {
 
         // 팔로우 자신을 팔로우하려는지 확인
         if (followingId.equals(followerId)) {
-            throw new HttpException("자신을 팔로우할 수 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new FollowException(FollowErrorCode.IS_SELF_FOLLOW);
         }
 
         // 팔로우 정보
         followRepository.findByBothId(followingId, followerId)
                 .ifPresent(follow -> {
-                    throw new HttpException("이미 팔로우중입니다.", HttpStatus.BAD_REQUEST);
+                    throw new FollowException(FollowErrorCode.ALREADY_FOLLOWING);
                 });
 
         Follow follow = Follow.createFollow(following, follower);
@@ -56,7 +60,7 @@ public class FollowServiceImpl implements FollowService {
     public CreateFollowDto delete(Long followingId, Long followerId) {
         // 팔로우 정보
         Follow target = followRepository.findByBothId(followingId, followerId)
-                .orElseThrow(() -> new HttpException("팔로우 취소 불가능! 팔로우 대상이 아닙니다.", HttpStatus.BAD_REQUEST )
+                .orElseThrow(() -> new FollowException(FollowErrorCode.NOT_FOUND_FOLLOW)
                 );
 
         followRepository.delete(target);
@@ -84,7 +88,7 @@ public class FollowServiceImpl implements FollowService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 
 

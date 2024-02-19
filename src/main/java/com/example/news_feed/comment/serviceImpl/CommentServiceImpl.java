@@ -4,12 +4,18 @@ import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
+import com.example.news_feed.comment.exception.CommentErrorCode;
+import com.example.news_feed.comment.exception.CommentException;
 import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.comment.service.CommentService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")) {
             // 작성자가 일치할 경우에만 수정 가능
-            isWrittenbyUser(updateCommentDto.getUserId(), target.getUser().getUserId());
+            isWrittenByUser(updateCommentDto.getUserId(), target.getUser().getUserId());
         }
         // 댓글 수정
         target.patch(commentId, updateCommentDto);
@@ -85,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
         Comment target = checkComment(commentId);
         if(user.getRole().getAuthority().equals("USER")) {
             // 작성자가 일치할 경우에만 삭제 가능
-            isWrittenbyUser(userId, target.getUser().getUserId());
+            isWrittenByUser(userId, target.getUser().getUserId());
         }
 
         commentRepository.delete(target);
@@ -113,26 +119,27 @@ public class CommentServiceImpl implements CommentService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 
     // 댓글 정보 확인
     private Comment checkComment(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new HttpException("댓글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new CommentException(CommentErrorCode.NOT_FOUND_COMMENT));
     }
 
     // 댓글 작성자 확인
-    private void isWrittenbyUser(Long userId, Long commentUserId) {
+    private void isWrittenByUser(Long userId, Long commentUserId) {
         if (!userId.equals(commentUserId)) {
-            throw new HttpException("본인이 작성한 댓글이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.UNAUTHORIZED_USER);
         }
     }
+
 
 }

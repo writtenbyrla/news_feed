@@ -5,9 +5,13 @@ import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.exception.UserErrorCode;
+import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +59,7 @@ public class PostServiceImpl implements PostService {
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")){
             // 작성자 여부 확인
-            isWrittenbyUser(target.getUser().getUserId(), target.getUser().getUserId());
+            isWrittenByUser(target.getUser().getUserId(), updatePostDto.getUserId());
         }
 
         // 게시글 수정
@@ -81,10 +85,8 @@ public class PostServiceImpl implements PostService {
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
         if(user.getRole().getAuthority().equals("USER")){
             // 작성자 여부 확인
-            isWrittenbyUser(target.getUser().getUserId(), target.getUser().getUserId());
+            isWrittenByUser(target.getUser().getUserId(), userId);
         }
-        // 작성자 일치 여부 확인
-        isWrittenbyUser(userId,target.getUser().getUserId());
 
         postRepository.delete(target);
         return target;
@@ -109,19 +111,19 @@ public class PostServiceImpl implements PostService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->  new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 
     // 본인 작성 여부 확인
-    private void isWrittenbyUser(Long userId, Long postUserId) {
+    private void isWrittenByUser(Long userId, Long postUserId) {
         if (!userId.equals(postUserId)) {
-            throw new HttpException("본인이 작성한 게시글이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new UserException(UserErrorCode.UNAUTHORIZED_USER);
         }
     }
 
