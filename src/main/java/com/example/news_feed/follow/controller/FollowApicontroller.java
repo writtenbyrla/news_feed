@@ -2,10 +2,9 @@ package com.example.news_feed.follow.controller;
 
 import com.example.news_feed.follow.dto.response.FollowResponseDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
-import com.example.news_feed.follow.service.FollowService;
+import com.example.news_feed.follow.serviceImpl.FollowServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FollowApicontroller {
 
-    private final FollowService followService;
+    private final FollowServiceImpl followServiceImpl;
 
     // 팔로우 등록
     @PostMapping("/follow/{followingId}")
     public ResponseEntity<FollowResponseDto> create(@PathVariable Long followingId,
                                                     @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long followerId = userDetails.getId();
-        followService.create(followingId, followerId);
+        followServiceImpl.create(followingId, followerId);
         FollowResponseDto response = FollowResponseDto.res(HttpStatus.CREATED.value(), "팔로우 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -34,7 +33,7 @@ public class FollowApicontroller {
     public ResponseEntity<FollowResponseDto> delete(@PathVariable Long followingId,
                                                     @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long followerId = userDetails.getId();
-        followService.delete(followingId, followerId);
+        followServiceImpl.delete(followingId, followerId);
         FollowResponseDto response = FollowResponseDto.res(HttpStatus.CREATED.value(), "팔로우 취소 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -43,7 +42,7 @@ public class FollowApicontroller {
     @GetMapping("/follow/post")
     public ResponseEntity<List<FollowingPostDto>> show(@AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long followerId = userDetails.getId();
-        List<FollowingPostDto> posts = followService.showAll(followerId);
+        List<FollowingPostDto> posts = followServiceImpl.showAll(followerId);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 }

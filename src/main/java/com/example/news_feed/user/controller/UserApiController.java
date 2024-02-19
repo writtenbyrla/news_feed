@@ -7,7 +7,7 @@ import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
-import com.example.news_feed.user.service.UserService;
+import com.example.news_feed.user.serviceImpl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,14 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class UserApiController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
     private final LogoutService logoutService;
 
     // 회원가입
@@ -49,7 +48,7 @@ public class UserApiController {
         }
 
         // 회원가입 성공시
-        userService.signup(signupReqDto);
+        userServiceImpl.signup(signupReqDto);
         UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "회원 가입 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     };
@@ -57,7 +56,7 @@ public class UserApiController {
     // 로그인
     @PostMapping("/user/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginReqDto, response));
+        return ResponseEntity.status(HttpStatus.OK).body(userServiceImpl.login(loginReqDto, response));
     };
 
     // 로그아웃
