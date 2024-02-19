@@ -117,25 +117,25 @@ public class CommentService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 
     // 게시글 정보 확인
     private Post checkPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new HttpException(false, "게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("게시글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 
     // 댓글 정보 확인
     private Comment checkComment(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new HttpException(false, "댓글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("댓글 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 
     // 댓글 작성자 확인
     private void isWrittenbyUser(Long userId, Long commentUserId) {
         if (!userId.equals(commentUserId)) {
-            throw new HttpException(false, "본인이 작성한 댓글이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("본인이 작성한 댓글이 아닙니다.", HttpStatus.BAD_REQUEST);
         }
     }
 

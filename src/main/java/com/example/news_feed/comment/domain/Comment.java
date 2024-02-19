@@ -50,7 +50,7 @@ public class Comment extends TimeStamp {
 
     public void patch(Long commentId, UpdateCommentDto updateCommentDto) {
         if (!this.commentId.equals(commentId))
-            throw new HttpException(false, "댓글 수정 실패! 잘못된 댓글 번호가 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("댓글 수정 실패! 잘못된 댓글 번호가 입력되었습니다.", HttpStatus.BAD_REQUEST);
 
         if (updateCommentDto.getContent() != null) {
             this.content = updateCommentDto.getContent();

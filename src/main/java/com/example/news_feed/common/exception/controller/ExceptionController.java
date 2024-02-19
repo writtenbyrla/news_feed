@@ -1,11 +1,14 @@
-package com.example.news_feed.common.exception;
+package com.example.news_feed.common.exception.controller;
 
+import com.example.news_feed.common.exception.dto.ExceptionResponse;
+import com.example.news_feed.common.exception.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionController {
 
     @ExceptionHandler(HttpException.class)

@@ -36,13 +36,13 @@ public class MypageService {
         // 본인 닉네임 제외해서 중복확인
         Optional<User> checkUsername = userRepository.findByNameAndUserIdNot(updateDto.getUsername(), userId);
         if (checkUsername.isPresent()) {
-            throw new HttpException(false, "중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 기존 유저정보 조회 및 예외 처리
         User target = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new HttpException(false, "프로필 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
+                        new HttpException("프로필 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
                 );
 
         // 프로필 수정
@@ -86,14 +86,14 @@ public class MypageService {
         // 기존 유저정보 조회 및 예외 처리
         User target = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new HttpException(false, "비밀번호 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
+                        new HttpException("비밀번호 수정 실패! 유저 정보가 없습니다.", HttpStatus.BAD_REQUEST)
                 );
 
         // 기존 등록된 비밀번호와 현재 비밀번호 입력값이 일치하는지 확인
         String currnetPwd = target.getPwd();
 
         if (!bCryptPasswordEncoder.matches(oldPwd, currnetPwd)) {
-            throw new HttpException(false, "현재 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("현재 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 1.최근 사용한 패스워드 3개 일치여부 확인 후
@@ -122,7 +122,7 @@ public class MypageService {
             // 엔티티를 DTO로 변환해서 반환
             return PwdUpdateDto.createResponseDto(updated);
         } else {
-            throw new HttpException(false, "최근에 사용한 비밀번호입니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("최근에 사용한 비밀번호입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -153,7 +153,7 @@ public class MypageService {
     // 유저 정보 확인
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new HttpException(false, "유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpException("유저 정보가 없습니다.", HttpStatus.BAD_REQUEST));
     }
 
 

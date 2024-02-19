@@ -58,7 +58,7 @@ public class Post extends TimeStamp {
 
     public void patch(UpdatePostDto updatePostDto) {
         if (!this.postId.equals(updatePostDto.getPostId()))
-            throw new HttpException(false, "게시글 수정 실패! postId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
+            throw new HttpException("게시글 수정 실패! postId가 잘못 입력되었습니다.", HttpStatus.BAD_REQUEST);
         if (updatePostDto.getTitle() != null)
             this.title = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)
