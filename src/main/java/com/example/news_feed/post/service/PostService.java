@@ -44,4 +44,18 @@ public interface PostService {
      * @return 게시글 정보
      */
     PostDetailDto show(Long postId);
+
+    /*
+     * 게시글 검색(keyword -> 제목 또는 내용)
+     * @param title 기존 게시글 번호
+     * @return 게시글 정보
+     */
+    List<PostDetailDto> findBySearchOption(String keyword);
+
+    /*
+     * 게시글 검색(username)
+     * @param username 작성자 유저네임
+     * @return 게시글 정보
+     */
+    List<PostDetailDto> findByUser(String username);
 }

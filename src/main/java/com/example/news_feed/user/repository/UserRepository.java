@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
 
     @Query(value="select * from user where username = :username", nativeQuery = true)
     Optional<User> findByName(@Param("username") String username);
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM user WHERE username = :username AND user_id != :userId", nativeQuery = true)
     Optional<User> findByNameAndUserIdNot(@Param("username") String username, @Param("userId") Long userId);
 
+    @Query(value = "SELECT * FROM user WHERE status = 'Y'", nativeQuery = true)
+    List<User> showAllUser();
 }

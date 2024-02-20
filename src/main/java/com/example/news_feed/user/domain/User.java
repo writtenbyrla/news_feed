@@ -1,17 +1,14 @@
 package com.example.news_feed.user.domain;
 
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.common.timestamp.TimeStamp;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
-import com.example.news_feed.user.dto.response.UserInfoDto;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.http.HttpStatus;
 
 @Entity
 @AllArgsConstructor

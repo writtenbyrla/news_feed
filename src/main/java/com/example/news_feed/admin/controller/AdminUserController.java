@@ -1,6 +1,6 @@
 package com.example.news_feed.admin.controller;
 
-import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.dto.response.UserUpdateResponseDto;
 import com.example.news_feed.admin.serviceImpl.AdminUserServiceImpl;
 import com.example.news_feed.user.domain.UserRoleEnum;

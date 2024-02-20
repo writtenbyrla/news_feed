@@ -1,7 +1,7 @@
 package com.example.news_feed.user.service;
 
 
-import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;

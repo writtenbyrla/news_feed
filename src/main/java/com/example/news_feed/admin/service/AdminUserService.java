@@ -1,6 +1,6 @@
 package com.example.news_feed.admin.service;
 
-import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.user.domain.UserRoleEnum;
 
 import java.util.List;

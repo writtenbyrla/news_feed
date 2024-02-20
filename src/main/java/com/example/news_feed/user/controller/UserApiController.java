@@ -1,5 +1,6 @@
 package com.example.news_feed.user.controller;
 
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.dto.response.LogoutResponseDto;
 import com.example.news_feed.auth.redis.service.LogoutService;
 import com.example.news_feed.auth.security.UserDetailsImpl;
@@ -18,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -67,4 +66,20 @@ public class UserApiController {
         LogoutResponseDto response = LogoutResponseDto.res(HttpStatus.OK.value(), "로그아웃 완료!");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 유저 목록(탈퇴한 회원 제외)
+    @GetMapping("/user/list")
+    public ResponseEntity<List<UserDetailDto>> showAll() {
+        List<UserDetailDto> users = userServiceImpl.showAllUser();
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+    // 유저 검색
+    @GetMapping("/user/search")
+    public ResponseEntity<List<UserDetailDto>> findByUsername(@RequestParam("username") String username) {
+        List<UserDetailDto> users = userServiceImpl.findByUsername(username);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+
 }

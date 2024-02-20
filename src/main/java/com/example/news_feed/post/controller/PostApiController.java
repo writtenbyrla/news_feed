@@ -1,5 +1,6 @@
 package com.example.news_feed.post.controller;
 
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
 import com.example.news_feed.multimedia.serviceImpl.MultiMediaServiceImpl;
 import com.example.news_feed.post.dto.request.CreatePostDto;
@@ -111,5 +112,21 @@ public class PostApiController {
     public ResponseEntity<List<MultiMediaDto>> showFile(@PathVariable Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(multiMediaServiceImpl.showFiles(postId));
     }
+
+
+    // 게시글 검색(제목, 내용)
+    @GetMapping("/post/search/keyword")
+    public ResponseEntity<List<PostDetailDto>> searchByKeyword(@RequestParam("keyword") String keyword){
+        List<PostDetailDto> posts = postServiceImpl.findBySearchOption(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
+    // 게시글 검색(작성자)
+    @GetMapping("/post/search/user")
+    public ResponseEntity<List<PostDetailDto>> searchByUser(@RequestParam("username") String username){
+        List<PostDetailDto> posts = postServiceImpl.findByUser(username);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
 
 }

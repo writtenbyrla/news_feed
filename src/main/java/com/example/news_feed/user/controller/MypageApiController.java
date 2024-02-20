@@ -1,5 +1,5 @@
 package com.example.news_feed.user.controller;
-import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
@@ -89,7 +89,7 @@ public class MypageApiController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     };
 
-    // 회원정보 조회
+    // 내 정보 조회
 
     // 내가 쓴 게시글 조회
 

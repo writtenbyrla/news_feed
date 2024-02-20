@@ -1,4 +1,4 @@
-package com.example.news_feed.admin.dto.response;
+package com.example.news_feed.user.dto.response;
 
 import com.example.news_feed.user.domain.User;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
