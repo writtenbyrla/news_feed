@@ -1,7 +1,7 @@
 package com.example.news_feed.post.controller;
 
 import com.example.news_feed.post.dto.response.PostResponseDto;
-import com.example.news_feed.post.serviceImpl.PostLikeServiceImpl;
+import com.example.news_feed.post.service.serviceImpl.PostLikeServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

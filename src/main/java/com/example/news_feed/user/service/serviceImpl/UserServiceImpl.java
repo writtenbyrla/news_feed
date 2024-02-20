@@ -1,4 +1,4 @@
-package com.example.news_feed.user.serviceImpl;
+package com.example.news_feed.user.service.serviceImpl;
 
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;

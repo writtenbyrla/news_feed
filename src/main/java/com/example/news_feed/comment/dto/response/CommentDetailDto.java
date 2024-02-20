@@ -26,7 +26,8 @@ public class CommentDetailDto {
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
+    @JsonProperty("like")
+    private int like;
 
 
     public static CommentDetailDto createCommentDetailDto(Comment comment) {
@@ -37,7 +38,8 @@ public class CommentDetailDto {
                 comment.getUser().getUserId(),
                 comment.getUser().getUsername(),
                 comment.getCreatedAt(),
-                comment.getModifiedAt()
+                comment.getModifiedAt(),
+                comment.getCommentLike().size()
         );
     }
 

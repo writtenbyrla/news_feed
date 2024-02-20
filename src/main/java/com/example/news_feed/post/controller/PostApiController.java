@@ -1,19 +1,17 @@
 package com.example.news_feed.post.controller;
 
-import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.common.aop.annotation.RunningTime;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
-import com.example.news_feed.multimedia.serviceImpl.MultiMediaServiceImpl;
+import com.example.news_feed.multimedia.service.serviceImpl.MultiMediaServiceImpl;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
-import com.example.news_feed.post.serviceImpl.PostServiceImpl;
+import com.example.news_feed.post.service.serviceImpl.PostServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

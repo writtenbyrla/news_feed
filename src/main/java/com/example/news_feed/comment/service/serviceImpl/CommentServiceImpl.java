@@ -1,4 +1,4 @@
-package com.example.news_feed.comment.serviceImpl;
+package com.example.news_feed.comment.service.serviceImpl;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.CreateCommentDto;

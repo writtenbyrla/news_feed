@@ -1,7 +1,7 @@
 package com.example.news_feed.comment.controller;
 
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
-import com.example.news_feed.comment.serviceImpl.CommentLikeServiceImpl;
+import com.example.news_feed.comment.service.serviceImpl.CommentLikeServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

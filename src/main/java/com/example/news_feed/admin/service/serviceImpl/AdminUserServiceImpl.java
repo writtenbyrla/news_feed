@@ -1,4 +1,4 @@
-package com.example.news_feed.admin.serviceImpl;
+package com.example.news_feed.admin.service.serviceImpl;
 
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.dto.response.UserDetailDto;

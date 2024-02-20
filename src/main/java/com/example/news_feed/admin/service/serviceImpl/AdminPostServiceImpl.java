@@ -1,4 +1,4 @@
-package com.example.news_feed.admin.serviceImpl;
+package com.example.news_feed.admin.service.serviceImpl;
 
 import com.example.news_feed.admin.service.AdminPostService;
 import com.example.news_feed.common.exception.HttpException;

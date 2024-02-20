@@ -1,4 +1,4 @@
-package com.example.news_feed.user.serviceImpl;
+package com.example.news_feed.user.service.serviceImpl;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;

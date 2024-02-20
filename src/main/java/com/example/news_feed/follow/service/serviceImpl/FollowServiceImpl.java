@@ -1,4 +1,4 @@
-package com.example.news_feed.follow.serviceImpl;
+package com.example.news_feed.follow.service.serviceImpl;
 
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.follow.domain.Follow;

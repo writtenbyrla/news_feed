@@ -2,11 +2,10 @@ package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.dto.response.UserUpdateResponseDto;
-import com.example.news_feed.admin.serviceImpl.AdminUserServiceImpl;
+import com.example.news_feed.admin.service.serviceImpl.AdminUserServiceImpl;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,8 +13,6 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
