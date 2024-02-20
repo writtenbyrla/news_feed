@@ -8,6 +8,8 @@ import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.exception.PostErrorCode;
 import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
+import com.example.news_feed.post.repository.PostRepositoryCustom;
+import com.example.news_feed.post.repository.PostRepositoryImpl;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
@@ -106,6 +108,16 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(postId)
                 .map(PostDetailDto::createPostDto)
                 .orElse(null);
+    }
+
+
+    // 게시글 목록(제목, 내용, 작성자로 검색)
+    public List<PostDetailDto> findBySearchOption(String title, String content, String username) {
+
+        List<Post> filteredPosts = postRepository.findBySearchOption(title, content, username);
+        return filteredPosts.stream()
+                .map(PostDetailDto::createPostDto)
+                .collect(Collectors.toList());
     }
 
     // 유저 정보 확인

@@ -1,6 +1,5 @@
 package com.example.news_feed.post.serviceImpl;
 
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.domain.PostLike;
 import com.example.news_feed.post.dto.request.PostLikeDto;
@@ -15,7 +14,6 @@ import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service

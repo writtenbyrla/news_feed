@@ -1,5 +1,6 @@
 package com.example.news_feed.post.dto.response;
 
+import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,5 +39,6 @@ public class PostDetailDto {
                 post.getModifiedAt()
         );
     }
+
 
 }
