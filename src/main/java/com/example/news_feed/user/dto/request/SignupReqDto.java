@@ -1,22 +1,14 @@
 package com.example.news_feed.user.dto.request;
 
-import com.example.news_feed.comment.domain.Comment;
-import com.example.news_feed.comment.dto.request.CreateCommentDto;
-import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.time.LocalDateTime;
-import java.util.Date;
+import lombok.*;
 
 @AllArgsConstructor
 @ToString
 @Getter
 @Setter
+@Builder
 public class SignupReqDto {
 
     private Long userId;
@@ -31,5 +23,6 @@ public class SignupReqDto {
     private String email;
     private String status;
     private UserRoleEnum role;
+
 
 }
