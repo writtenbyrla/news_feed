@@ -1,5 +1,6 @@
 package com.example.news_feed.admin.serviceImpl;
 
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.exception.AdminErrorCode;
 import com.example.news_feed.admin.exception.AdminException;
@@ -11,6 +12,9 @@ import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +30,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     private UserRepository userRepository;
 
     // 유저 전체 목록(탈퇴회원 포함)
-    public List<UserDetailDto> showAll() {
-
-        return adminUserRepository.findAll()
-                .stream()
-                .map(UserDetailDto::createUserDetailDto)
-                .collect(Collectors.toList());
+    public Page<UserDetailDto> showAll(Pageable pageable) {
+        Page<User> user = adminUserRepository.findAll(pageable);
+        return new PageImpl<>(
+                user.getContent().stream()
+                        .map(UserDetailDto::createUserDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                user.getTotalElements()
+        );
     }
 
     // 유저 권한 변경

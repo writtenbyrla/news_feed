@@ -1,16 +1,19 @@
 package com.example.news_feed.multimedia.repository;
 
 import com.example.news_feed.multimedia.domain.MultiMedia;
+import com.example.news_feed.user.domain.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@RepositoryDefinition(domainClass =  MultiMedia.class, idClass = Long.class)
 public interface MultiMediaRepository extends JpaRepository<MultiMedia, Long> {
     @Modifying
     @Transactional

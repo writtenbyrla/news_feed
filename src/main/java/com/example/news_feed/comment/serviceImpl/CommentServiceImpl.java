@@ -10,6 +10,7 @@ import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.comment.service.CommentService;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.exception.PostErrorCode;
 import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
@@ -20,6 +21,9 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -99,12 +103,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // 댓글 목록
-    public List<CommentDetailDto> showAll(Long postId) {
+    public Page<CommentDetailDto> showAll(Long postId, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+        return new PageImpl<>(
+                comments.getContent().stream()
+                        .map(CommentDetailDto::createCommentDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                comments.getTotalElements()
+        );
 
-        return commentRepository.findByPostId(postId)
-                .stream()
-                .map(CommentDetailDto::createCommentDetailDto)
-                .collect(Collectors.toList());
     }
 
     // 댓글 상세 보기

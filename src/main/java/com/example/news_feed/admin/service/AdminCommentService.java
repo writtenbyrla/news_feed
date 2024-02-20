@@ -24,10 +24,4 @@ public interface AdminCommentService {
      */
     Comment delete(Long userId, Long commentId);
 
-    /*
-     * 댓글 목록
-     * @return 댓글 전체 목록
-     */
-    List<CommentDetailDto> showAll();
-
 }

@@ -59,13 +59,6 @@ public class AdminCommentServiceImpl implements AdminCommentService {
         return target;
     }
 
-    // 댓글 전체 조회
-    public List<CommentDetailDto> showAll() {
-        return commentRepository.findAll()
-                .stream()
-                .map(CommentDetailDto::createCommentDetailDto)
-                .collect(Collectors.toList());
-    }
 
     // 유저 정보 확인
     private User checkUser(Long userId) {

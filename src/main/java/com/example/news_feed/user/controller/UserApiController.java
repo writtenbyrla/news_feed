@@ -15,6 +15,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -69,15 +75,18 @@ public class UserApiController {
 
     // 유저 목록(탈퇴한 회원 제외)
     @GetMapping("/user/list")
-    public ResponseEntity<List<UserDetailDto>> showAll() {
-        List<UserDetailDto> users = userServiceImpl.showAllUser();
+    public ResponseEntity<Page<UserDetailDto>> showAll(@PageableDefault(value=10)
+                                                           @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<UserDetailDto> users = userServiceImpl.showAllUser(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     // 유저 검색
     @GetMapping("/user/search")
-    public ResponseEntity<List<UserDetailDto>> findByUsername(@RequestParam("username") String username) {
-        List<UserDetailDto> users = userServiceImpl.findByUsername(username);
+    public ResponseEntity<Page<UserDetailDto>> findByUsername(@RequestParam("username") String username,
+                                                             @PageableDefault(value=10)
+                                                             @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<UserDetailDto> users = userServiceImpl.findByUsername(username, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 

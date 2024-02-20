@@ -2,15 +2,15 @@ package com.example.news_feed.admin.service;
 
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.user.domain.UserRoleEnum;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface AdminUserService {
     /*
      * 유저 목록
      * @return 유저 전체 목록
      */
-    List<UserDetailDto> showAll();
+    Page<UserDetailDto> showAll(Pageable pageable);
 
     /*
      * 유저 권한 변경

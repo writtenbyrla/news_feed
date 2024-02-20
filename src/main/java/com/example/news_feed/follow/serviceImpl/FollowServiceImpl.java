@@ -9,6 +9,9 @@ import com.example.news_feed.follow.exception.FollowException;
 import com.example.news_feed.follow.repository.FollowRepository;
 import com.example.news_feed.follow.service.FollowService;
 import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.dto.response.PostDetailDto;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
@@ -17,6 +20,9 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +73,9 @@ public class FollowServiceImpl implements FollowService {
         return CreateFollowDto.createFollowDto(target);
     }
 
+
     // 내가 팔로우 한 유저의 게시글 보기
-    public List<FollowingPostDto> showAll(Long followerId) {
+    public Page<FollowingPostDto> showAll(Long followerId, Pageable pageable) {
 
         // 팔로우 목록
         List<Follow> follows = followRepository.findByFollowerId(followerId);
@@ -79,10 +86,17 @@ public class FollowServiceImpl implements FollowService {
                 .collect(Collectors.toList());
 
         // 유저 정보로 post 조회 후 리스트 반환
-        List<Post> posts = postRepository.findByUserIn(followings);
-        return posts.stream()
-                .map(FollowingPostDto::createFollowingPostDto)
-                .collect(Collectors.toList());
+        Page<Post> posts = postRepository.findByUserIn(followings, pageable);
+        if(posts.isEmpty()){
+            throw new PostException(PostErrorCode.POST_NOT_EXIST);
+        }
+        return new PageImpl<>(
+                posts.getContent().stream()
+                        .map(FollowingPostDto::createFollowingPostDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                posts.getTotalElements()
+        );
     }
 
     // 유저 정보 확인

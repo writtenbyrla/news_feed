@@ -25,7 +25,7 @@ public class NavigateController {
     @GetMapping("/home")
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null){
-            UserDetailDto user = mypageServiceImpl.showUser(userDetails.getId());
+            UserDetailDto user = mypageServiceImpl.findById(userDetails, userDetails.getId());
             model.addAttribute("user", user);
         }
         return "main/home";

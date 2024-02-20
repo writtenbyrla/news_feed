@@ -4,6 +4,8 @@ import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ public interface CommentService {
      * @param postId 기존 게시글 정보
      * @return 해당 게시물의 댓글 목록
      */
-    List<CommentDetailDto> showAll(Long postId);
+    Page<CommentDetailDto> showAll(Long postId, Pageable pageable);
 
     /*
      * 댓글 상세

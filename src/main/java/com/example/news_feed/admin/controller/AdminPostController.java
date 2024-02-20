@@ -7,6 +7,12 @@ import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.serviceImpl.PostServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,8 +53,9 @@ public class AdminPostController {
 
     // 게시글 목록 조회
     @GetMapping("/post")
-    public ResponseEntity<List<PostDetailDto>> showAll(){
-        List<PostDetailDto> posts = postServiceImpl.showAll();
+    public ResponseEntity<Page<PostDetailDto>> showAll(@PageableDefault(value=10)
+                                                           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostDetailDto> posts = postServiceImpl.showAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
@@ -57,10 +64,7 @@ public class AdminPostController {
     public ResponseEntity<PostResponseDto> updateFile(@PathVariable Long postId,
                                                       @RequestPart(value ="files", required = false) List<MultipartFile> files,
                                                       @AuthenticationPrincipal final UserDetailsImpl userDetails) {
-
-
         multiMediaServiceImpl.updateFile(userDetails, postId, files);
-
         PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 수정 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

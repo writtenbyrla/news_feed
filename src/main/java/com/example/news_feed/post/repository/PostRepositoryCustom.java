@@ -1,12 +1,15 @@
 package com.example.news_feed.post.repository;
 
 import com.example.news_feed.post.domain.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface PostRepositoryCustom {
 
-        List<Post> findBySearchOption(String keyword);
+        Page<Post> findByOption(String keyword, Pageable pageable);
 
-        List<Post> findByUser(String username);
+        Page<Post> findByUser(String username, Pageable pageable);
+
 }
