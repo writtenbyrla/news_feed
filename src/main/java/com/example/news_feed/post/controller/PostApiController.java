@@ -1,16 +1,21 @@
 package com.example.news_feed.post.controller;
 
-import com.example.news_feed.comment.dto.response.CommentDetailDto;
+import com.example.news_feed.common.aop.annotation.RunningTime;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
-import com.example.news_feed.multimedia.serviceImpl.MultiMediaServiceImpl;
+import com.example.news_feed.multimedia.service.serviceImpl.MultiMediaServiceImpl;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
-import com.example.news_feed.post.serviceImpl.PostServiceImpl;
+import com.example.news_feed.post.service.serviceImpl.PostServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -95,11 +100,11 @@ public class PostApiController {
     // 게시글 목록
 //    @RunningTime
     @GetMapping("/post")
-    public ResponseEntity<List<PostDetailDto>> showAll(){
-        List<PostDetailDto> posts = postServiceImpl.showAll();
+    public ResponseEntity<Page<PostDetailDto>> showAll(@PageableDefault(value=10)
+                                                           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostDetailDto> posts = postServiceImpl.showAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
-
 
     // 게시글 상세
     @GetMapping("/post/{postId}")
@@ -107,26 +112,26 @@ public class PostApiController {
         return ResponseEntity.status(HttpStatus.OK).body(postServiceImpl.show(postId));
     }
 
+
     // 멀티미디어 조회
     @GetMapping("/post/{postId}/file")
     public ResponseEntity<List<MultiMediaDto>> showFile(@PathVariable Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(multiMediaServiceImpl.showFiles(postId));
     }
 
-
     // 게시글 검색(제목, 내용)
+    @RunningTime
     @GetMapping("/post/search/keyword")
-    public ResponseEntity<List<PostDetailDto>> searchByKeyword(@RequestParam("keyword") String keyword){
-        List<PostDetailDto> posts = postServiceImpl.findBySearchOption(keyword);
+    public ResponseEntity<Page<PostDetailDto>> searchByKeyword(@RequestParam("keyword") String keyword, @PageableDefault(size = 10) Pageable pageable){
+        Page<PostDetailDto> posts = postServiceImpl.findByOption(keyword, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     // 게시글 검색(작성자)
     @GetMapping("/post/search/user")
-    public ResponseEntity<List<PostDetailDto>> searchByUser(@RequestParam("username") String username){
-        List<PostDetailDto> posts = postServiceImpl.findByUser(username);
+    public ResponseEntity<Page<PostDetailDto>> searchByUser(@RequestParam("username") String username, @PageableDefault(size = 10) Pageable pageable){
+        Page<PostDetailDto> posts = postServiceImpl.findByUser(username, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
-
 
 }

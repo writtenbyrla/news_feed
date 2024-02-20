@@ -1,4 +1,4 @@
-package com.example.news_feed.multimedia.serviceImpl;
+package com.example.news_feed.multimedia.service.serviceImpl;
 
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.common.aws.FileUploadService;

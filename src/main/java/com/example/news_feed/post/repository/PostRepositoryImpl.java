@@ -1,15 +1,23 @@
 package com.example.news_feed.post.repository;
 
 import com.example.news_feed.post.domain.Post;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
 import static com.example.news_feed.post.domain.QPost.post;
+
 
 public class PostRepositoryImpl extends QuerydslRepositorySupport implements PostRepositoryCustom {
 
@@ -22,20 +30,40 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
 
     // 제목, 내용 검색
     @Override
-    public List<Post> findBySearchOption(String keyword) {
-        JPQLQuery<Post> query = queryFactory.select(post)
+    public Page<Post> findByOption(String keyword, Pageable pageable) {
+        var query = queryFactory.select(post)
                 .from(post)
-                        .where(containTitle(keyword).or(containContent(keyword)));
-        return query.fetch();
+                .where(containTitle(keyword).or(containContent(keyword)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        query.orderBy(post.createdAt.desc());
+
+        var posts = query.fetch();
+        long totalSize = queryFactory.select(Wildcard.count)
+                .from(post)
+                .where(containTitle(keyword).or(containContent(keyword)))
+                .fetch().get(0);
+        return PageableExecutionUtils.getPage(posts, pageable, () -> totalSize);
+
     }
 
     // 작성자 이름으로 게시글 검색
     @Override
-    public List<Post> findByUser(String username) {
-        JPQLQuery<Post> query = queryFactory.select(post)
+    public Page<Post> findByUser(String username, Pageable pageable) {
+        var query = queryFactory.select(post)
                 .from(post)
-                .where(eqUsername(username));
-        return query.fetch();
+                .where(eqUsername(username))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+        query.orderBy(post.createdAt.desc());
+        var posts = query.fetch();
+
+        long totalSize = queryFactory.select(Wildcard.count)
+                .from(post)
+                .where(eqUsername(username))
+                .fetch().get(0);
+        return PageableExecutionUtils.getPage(posts, pageable, () -> totalSize);
     }
 
     // 제목

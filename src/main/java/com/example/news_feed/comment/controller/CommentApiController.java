@@ -4,16 +4,19 @@ import com.example.news_feed.comment.dto.request.CreateCommentDto;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
-import com.example.news_feed.comment.serviceImpl.CommentServiceImpl;
+import com.example.news_feed.comment.service.serviceImpl.CommentServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,8 +62,10 @@ public class CommentApiController {
 
     // 댓글 목록
     @GetMapping("/post/{postId}/comment")
-    public ResponseEntity<List<CommentDetailDto>> showAll(@PathVariable Long postId){
-        List<CommentDetailDto> comments = commentServiceImpl.showAll(postId);
+    public ResponseEntity<Page<CommentDetailDto>> showAll(@PathVariable Long postId,
+                                                          @PageableDefault(value=10)
+                                                          @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CommentDetailDto> comments = commentServiceImpl.showAll(postId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 

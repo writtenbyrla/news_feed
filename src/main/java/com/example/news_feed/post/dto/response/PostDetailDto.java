@@ -27,6 +27,8 @@ public class PostDetailDto {
     private String username;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAT;
+    @JsonProperty("like")
+    private int like;
 
     public static PostDetailDto createPostDto(Post post) {
         return new PostDetailDto(
@@ -36,7 +38,8 @@ public class PostDetailDto {
                 post.getUser().getUserId(),
                 post.getUser().getUsername(),
                 post.getCreatedAt(),
-                post.getModifiedAt()
+                post.getModifiedAt(),
+                post.getPostLike().size()
         );
     }
 

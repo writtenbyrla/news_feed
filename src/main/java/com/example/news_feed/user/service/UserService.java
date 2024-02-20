@@ -6,6 +6,8 @@ import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -29,12 +31,12 @@ public interface UserService {
      * 유저 목록
      * @return 유저 전체 목록(탈퇴한 회원 제외)
      */
-    List<UserDetailDto> showAllUser();
+    Page<UserDetailDto> showAllUser(Pageable pageable);
 
     /*
      * 유저 검색
      * @param username 검색할 유저 이름
      * @return 유저 목록
      */
-    List<UserDetailDto> findByUsername(String username);
+    Page<UserDetailDto> findByUsername(String username, Pageable pageable);
 }

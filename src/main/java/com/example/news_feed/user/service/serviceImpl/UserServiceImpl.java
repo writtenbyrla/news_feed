@@ -1,9 +1,10 @@
-package com.example.news_feed.user.serviceImpl;
+package com.example.news_feed.user.service.serviceImpl;
 
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.common.exception.HttpException;
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
@@ -18,6 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -107,22 +111,33 @@ public class UserServiceImpl implements UserService {
 
     // 유저 전체 목록(탈퇴 회원 제외)
     @Override
-    public List<UserDetailDto> showAllUser() {
-        return userRepository.showAllUser()
-                .stream()
-                .map(UserDetailDto::createUserDetailDto)
-                .collect(Collectors.toList());
+    public Page<UserDetailDto> showAllUser(Pageable pageable) {
+        Page<User> users = userRepository.showAllUser(pageable);
+
+        return new PageImpl<>(
+                users.getContent().stream()
+                        .map(UserDetailDto::createUserDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                users.getTotalElements()
+        );
     }
 
     // 유저 검색
     @Override
-    public List<UserDetailDto> findByUsername(String username) {
-        List<User> filteredUser = userRepository.findByUsername(username);
+    public Page<UserDetailDto> findByUsername(String username, Pageable pageable) {
+        Page<User> filteredUser = userRepository.findByUsername(username, pageable);
         if(filteredUser.isEmpty()){
             throw new UserException(UserErrorCode.USER_NOT_EXIST);
         }
-        return filteredUser.stream()
-                .map(UserDetailDto::createUserDetailDto)
-                .collect(Collectors.toList());
+        return new PageImpl<>(
+                filteredUser.getContent().stream()
+                        .map(UserDetailDto::createUserDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredUser.getTotalElements()
+        );
+
+
     }
 }

@@ -1,14 +1,21 @@
 package com.example.news_feed.user.controller;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
+import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
 import com.example.news_feed.user.dto.response.UserResponseDto;
-import com.example.news_feed.user.serviceImpl.MyPageServiceImpl;
+import com.example.news_feed.user.service.serviceImpl.MyPageServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,13 +27,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/myPage/*")
 @Slf4j
 public class MypageApiController {
 
     private final MyPageServiceImpl mypageServiceImpl;
 
     // 프로필 수정
-    @PatchMapping("/myPage/{userId}/profile")
+    @PatchMapping("/{userId}/profile")
     public ResponseEntity<UserResponseDto> updateProfile(@PathVariable Long userId,
                                                          @RequestBody @Valid UserUpdateDto userUpdateDto,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -47,7 +55,7 @@ public class MypageApiController {
     };
 
     // 프로필 이미지 수정
-    @PatchMapping("/myPage/{userId}/profileImg")
+    @PatchMapping("/{userId}/profileImg")
     public ResponseEntity<UserResponseDto> updateProfileImg(@PathVariable Long userId,
                                                              @RequestPart(value = "file") MultipartFile file,
                                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -59,14 +67,16 @@ public class MypageApiController {
 
 
     // 프로필 이미지 받아오기
-    @GetMapping("/myPage/{userId}/profileImg")
-    public ResponseEntity<String> profileImg(@PathVariable Long userId){
-        UserDetailDto user = mypageServiceImpl.showUser(userId);
+    @GetMapping("/{userId}/profileImg")
+    public ResponseEntity<String> profileImg(@PathVariable Long userId,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        UserDetailDto user = mypageServiceImpl.findById(userDetails, userId);
         return ResponseEntity.status(HttpStatus.OK).body(user.getProfileImg());
     }
 
     // 패스워드 수정
-    @PatchMapping("/myPage/{userId}")
+    @PatchMapping("/{userId}/pwd")
     public ResponseEntity<UserResponseDto> updatePwd(@PathVariable Long userId,
                                                      @RequestBody @Valid PwdUpdateDto pwdUpdateDto,
                                                      BindingResult bindingResult,
@@ -90,13 +100,50 @@ public class MypageApiController {
     };
 
     // 내 정보 조회
+    @GetMapping("/{userId}/info")
+    public ResponseEntity<UserDetailDto> myInfo(@PathVariable Long userId,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.status(HttpStatus.OK).body(mypageServiceImpl.findById(userDetails, userId));
+    }
 
-    // 내가 쓴 게시글 조회
+    // 내가 쓴 게시글 목록
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<Page<PostDetailDto>> showMyPost(@PathVariable Long userId,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                          @PageableDefault(value=10)
+                                                              @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostDetailDto> posts = mypageServiceImpl.showMyPost(userId, userDetails, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
 
-    // 내가 쓴 댓글 조회
+    // 내가 쓴 댓글 목록
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<Page<CommentDetailDto>> showMyComment(@PathVariable Long userId,
+                                                             @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                @PageableDefault(value=10)
+                                                                    @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CommentDetailDto> comments = mypageServiceImpl.showMyComment(userId, userDetails, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    }
 
     // 내가 팔로우한 사람
+    @GetMapping("/{userId}/followings")
+    public ResponseEntity<Page<UserDetailDto>> showMyFollowings(@PathVariable Long userId,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                @PageableDefault(value = 10)
+                                                                    @SortDefault(sort = "username", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<UserDetailDto> users = mypageServiceImpl.showMyFollowings(userId, userDetails, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
 
     // 나를 팔로우한 사람
+    @GetMapping("/{userId}/followers")
+    public ResponseEntity<Page<UserDetailDto>> showMyFollowers(@PathVariable Long userId,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                @PageableDefault(value = 10)
+                                                                @SortDefault(sort = "username", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<UserDetailDto> users = mypageServiceImpl.showMyFollowers(userId, userDetails, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
 
 }

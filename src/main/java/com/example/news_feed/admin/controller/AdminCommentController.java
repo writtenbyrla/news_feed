@@ -1,18 +1,21 @@
 package com.example.news_feed.admin.controller;
 
-import com.example.news_feed.admin.serviceImpl.AdminCommentServiceImpl;
+import com.example.news_feed.admin.service.serviceImpl.AdminCommentServiceImpl;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
 import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.dto.response.CommentResponseDto;
-import com.example.news_feed.comment.serviceImpl.CommentServiceImpl;
+import com.example.news_feed.comment.service.serviceImpl.CommentServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,16 +49,10 @@ public class AdminCommentController {
 
     // 특정 게시글의 댓글 목록 조회
     @GetMapping("/post/{postId}/comment")
-    public ResponseEntity<List<CommentDetailDto>> showAll(@PathVariable Long postId){
-        List<CommentDetailDto> comments = commentServiceImpl.showAll(postId);
+    public ResponseEntity<Page<CommentDetailDto>> showAll(@PathVariable Long postId,
+                                                          @PageableDefault(value=10)
+                                                          @SortDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CommentDetailDto> comments = commentServiceImpl.showAll(postId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
-
-    // 전체 댓글 목록 조회
-    @GetMapping("/post/comment")
-    public ResponseEntity<List<CommentDetailDto>> showAllComment(){
-        List<CommentDetailDto> comments = admincommentServiceImpl.showAll();
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
-    }
-
 }

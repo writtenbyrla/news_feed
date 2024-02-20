@@ -1,6 +1,6 @@
-package com.example.news_feed.post.serviceImpl;
+package com.example.news_feed.post.service.serviceImpl;
 
-import com.example.news_feed.common.exception.HttpException;
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
@@ -8,8 +8,6 @@ import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.exception.PostErrorCode;
 import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
-import com.example.news_feed.post.repository.PostRepositoryCustom;
-import com.example.news_feed.post.repository.PostRepositoryImpl;
 import com.example.news_feed.post.service.PostService;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
@@ -18,7 +16,9 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -95,12 +95,16 @@ public class PostServiceImpl implements PostService {
     }
 
     // 게시글 목록
-    public List<PostDetailDto> showAll() {
-        return postRepository.findAll()
-                .stream()
-                .map(PostDetailDto::createPostDto)
-                .collect(Collectors.toList());
+    public Page<PostDetailDto> showAll(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
 
+        return new PageImpl<>(
+                posts.getContent().stream()
+                        .map(PostDetailDto::createPostDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                posts.getTotalElements()
+        );
     }
 
     // 게시글 상세
@@ -110,28 +114,37 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 
-
     // 게시글 목록(제목, 내용 검색)
-    public List<PostDetailDto> findBySearchOption(String keyword) {
+    public Page<PostDetailDto> findByOption(String keyword, Pageable pageable) {
 
-        List<Post> filteredPosts = postRepository.findBySearchOption(keyword);
+        Page<Post> filteredPosts = postRepository.findByOption(keyword, pageable);
         if (filteredPosts.isEmpty()){
             throw new PostException(PostErrorCode.POST_NOT_EXIST);
         }
-        return filteredPosts.stream()
-                .map(PostDetailDto::createPostDto)
-                .collect(Collectors.toList());
+        return new PageImpl<>(
+                filteredPosts.getContent().stream()
+                        .map(PostDetailDto::createPostDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredPosts.getTotalElements()
+        );
     }
 
+
+
     // 게시글 목록(username으로 검색)
-    public List<PostDetailDto> findByUser(String username) {
-        List<Post> filteredPosts = postRepository.findByUser(username);
+    public Page<PostDetailDto> findByUser(String username, Pageable pageable) {
+        Page<Post> filteredPosts = postRepository.findByUser(username, pageable);
         if (filteredPosts.isEmpty()){
             throw new PostException(PostErrorCode.POST_NOT_EXIST);
         }
-        return filteredPosts.stream()
-                .map(PostDetailDto::createPostDto)
-                .collect(Collectors.toList());
+        return new PageImpl<>(
+                filteredPosts.getContent().stream()
+                        .map(PostDetailDto::createPostDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredPosts.getTotalElements()
+        );
     }
 
     // 유저 정보 확인
@@ -152,6 +165,5 @@ public class PostServiceImpl implements PostService {
             throw new UserException(UserErrorCode.UNAUTHORIZED_USER);
         }
     }
-
 
 }

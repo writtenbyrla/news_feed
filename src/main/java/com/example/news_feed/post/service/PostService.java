@@ -1,9 +1,12 @@
 package com.example.news_feed.post.service;
 
+import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -36,7 +39,7 @@ public interface PostService {
      * 게시글 목록
      * @return 게시글 전체 목록
      */
-    List<PostDetailDto> showAll();
+    Page<PostDetailDto> showAll(Pageable pageable);
 
     /*
      * 게시글 상세
@@ -50,12 +53,12 @@ public interface PostService {
      * @param title 기존 게시글 번호
      * @return 게시글 정보
      */
-    List<PostDetailDto> findBySearchOption(String keyword);
+    Page<PostDetailDto> findByOption(String keyword, Pageable pageable) ;
 
     /*
      * 게시글 검색(username)
      * @param username 작성자 유저네임
      * @return 게시글 정보
      */
-    List<PostDetailDto> findByUser(String username);
+    Page<PostDetailDto> findByUser(String username, Pageable pageable);
 }

@@ -3,6 +3,8 @@ package com.example.news_feed.follow.service;
 import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
 import com.example.news_feed.user.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -24,12 +26,11 @@ public interface FollowService {
     CreateFollowDto delete(Long followingId, Long followerId);
 
     /*
-     * 나의 팔로우 목록
+     * 내가 팔로우한 유저들의 게시글
      * @param followerId 팔로우 하는 사람
      * @return 팔로우 유저 목록
      */
-
-    List<FollowingPostDto> showAll(Long followerId);
+    Page<FollowingPostDto> showAll(Long followerId, Pageable pageable);
 
 
 }

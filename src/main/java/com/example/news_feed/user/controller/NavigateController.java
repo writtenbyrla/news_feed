@@ -2,7 +2,7 @@ package com.example.news_feed.user.controller;
 
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.security.UserDetailsImpl;
-import com.example.news_feed.user.serviceImpl.MyPageServiceImpl;
+import com.example.news_feed.user.service.serviceImpl.MyPageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ public class NavigateController {
     @GetMapping("/home")
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null){
-            UserDetailDto user = mypageServiceImpl.showUser(userDetails.getId());
+            UserDetailDto user = mypageServiceImpl.findById(userDetails, userDetails.getId());
             model.addAttribute("user", user);
         }
         return "main/home";

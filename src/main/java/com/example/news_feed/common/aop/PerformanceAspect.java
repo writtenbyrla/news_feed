@@ -22,7 +22,7 @@ public class PerformanceAspect {
 
     // 실행 시점 설정: 두 조건을 모두 만족하는 대상을 전후로 부가 기능 삽입
     @Around("cut() && enableRunningTime()")
-    public void  loggingRunningTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object loggingRunningTime(ProceedingJoinPoint joinPoint) throws Throwable {
         // 메소드 수행 전, 측정 시작
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -35,6 +35,7 @@ public class PerformanceAspect {
         String methodName = joinPoint.getSignature()
                 .getName();
         log.info("{}의 총 수행 시간 => {} sec", methodName, stopWatch.getTotalTimeSeconds());
+        return returningObj;
     }
 
 }

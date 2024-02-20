@@ -2,14 +2,17 @@ package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.dto.response.UserUpdateResponseDto;
-import com.example.news_feed.admin.serviceImpl.AdminUserServiceImpl;
+import com.example.news_feed.admin.service.serviceImpl.AdminUserServiceImpl;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +23,9 @@ public class AdminUserController {
 
     // 유저 전체 목록
     @GetMapping("/user")
-    public ResponseEntity<List<UserDetailDto>> showAllUser(){
-        List<UserDetailDto> users = adminUserServiceImpl.showAll();
+    public ResponseEntity<Page<UserDetailDto>> showAllUser(@PageableDefault(value=10)
+                                                               @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<UserDetailDto> users = adminUserServiceImpl.showAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 

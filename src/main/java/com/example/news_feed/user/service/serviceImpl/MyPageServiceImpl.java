@@ -1,5 +1,19 @@
-package com.example.news_feed.user.serviceImpl;
+package com.example.news_feed.user.service.serviceImpl;
 
+import com.example.news_feed.comment.domain.Comment;
+import com.example.news_feed.comment.dto.response.CommentDetailDto;
+import com.example.news_feed.comment.exception.CommentErrorCode;
+import com.example.news_feed.comment.exception.CommentException;
+import com.example.news_feed.comment.repository.CommentRepository;
+import com.example.news_feed.follow.domain.Follow;
+import com.example.news_feed.follow.exception.FollowErrorCode;
+import com.example.news_feed.follow.exception.FollowException;
+import com.example.news_feed.follow.repository.FollowRepository;
+import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.dto.response.PostDetailDto;
+import com.example.news_feed.post.exception.PostErrorCode;
+import com.example.news_feed.post.exception.PostException;
+import com.example.news_feed.post.repository.PostRepository;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.common.aws.FileUploadService;
@@ -15,18 +29,26 @@ import com.example.news_feed.user.service.MyPageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
     private final AuthHistoryRepository historyRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FileUploadService fileUploadService;
@@ -146,11 +168,104 @@ public class MyPageServiceImpl implements MyPageService {
         return pwds;
     }
 
-    // 회원정보 조회
-    public UserDetailDto showUser(Long userId){
+    // 내 정보 조회
+    public UserDetailDto findById(UserDetailsImpl userDetails, Long userId){
+        isValidUser(userDetails.getId(), userId);
+
         return userRepository.findById(userId)
                 .map(UserDetailDto::createUserDetailDto)
                 .orElse(null);
+    }
+
+    // 내가 쓴 게시글 목록
+    public Page<PostDetailDto> showMyPost(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
+        isValidUser(userDetails.getId(), userId);
+
+        Page<Post> filteredPosts = postRepository.findByUserId(userId, pageable);
+        if (filteredPosts.isEmpty()){
+            throw new PostException(PostErrorCode.POST_NOT_EXIST);
+        }
+        return new PageImpl<>(
+                filteredPosts.getContent().stream()
+                        .map(PostDetailDto::createPostDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredPosts.getTotalElements()
+        );
+    }
+
+    // 내가 쓴 댓글 목록
+    public Page<CommentDetailDto> showMyComment(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
+        isValidUser(userDetails.getId(), userId);
+        Page<Comment> filteredComments = commentRepository.findByUserId(userId, pageable);
+        if (filteredComments.isEmpty()){
+            throw new CommentException(CommentErrorCode.NOT_FOUND_COMMENT);
+        }
+        return new PageImpl<>(
+                filteredComments.getContent().stream()
+                        .map(CommentDetailDto::createCommentDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredComments.getTotalElements()
+        );
+    }
+
+    // 내가 팔로우하는 유저 목록
+    public Page<UserDetailDto> showMyFollowings(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
+        isValidUser(userDetails.getId(), userId);
+
+        // 팔로우 목록
+        List<Follow> follows = followRepository.findByFollowerId(userId);
+
+        // 팔로우 목록에서 유저 ID 추출
+        List<Long> followingIds = follows.stream()
+                .map(Follow::getFollowing)
+                .map(User::getUserId)
+                .collect(Collectors.toList());
+
+        // 유저 정보 조회 후 리스트 반환
+
+        Page<User> filteredUsers = userRepository.findByUserIdIn(followingIds, pageable);
+
+        if (filteredUsers.isEmpty()){
+            throw new FollowException(FollowErrorCode.NOT_FOUND_FOLLOW);
+        }
+        return new PageImpl<>(
+                filteredUsers.getContent().stream()
+                        .map(UserDetailDto::createUserDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredUsers.getTotalElements()
+        );
+    }
+
+    @Override
+    public Page<UserDetailDto> showMyFollowers(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
+        isValidUser(userDetails.getId(), userId);
+
+        // 팔로워 목록
+        List<Follow> followers = followRepository.findByFollowingId(userId);
+
+        // 팔로워 목록에서 유저 ID 추출
+        List<Long> followingIds = followers.stream()
+                .map(Follow::getFollower)
+                .map(User::getUserId)
+                .collect(Collectors.toList());
+
+        // 유저 정보 조회 후 리스트 반환
+
+        Page<User> filteredUsers = userRepository.findByUserIdIn(followingIds, pageable);
+
+        if (filteredUsers.isEmpty()){
+            throw new FollowException(FollowErrorCode.NOT_FOUND_FOLLOW);
+        }
+        return new PageImpl<>(
+                filteredUsers.getContent().stream()
+                        .map(UserDetailDto::createUserDetailDto)
+                        .collect(Collectors.toList()),
+                pageable,
+                filteredUsers.getTotalElements()
+        );
     }
 
     // 유저 정보 확인
