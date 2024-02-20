@@ -107,14 +107,28 @@ public class PostServiceImpl implements PostService {
     public PostDetailDto show(Long postId) {
         return postRepository.findById(postId)
                 .map(PostDetailDto::createPostDto)
-                .orElse(null);
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_EXIST));
     }
 
 
-    // 게시글 목록(제목, 내용, 작성자로 검색)
-    public List<PostDetailDto> findBySearchOption(String title, String content, String username) {
+    // 게시글 목록(제목, 내용 검색)
+    public List<PostDetailDto> findBySearchOption(String keyword) {
 
-        List<Post> filteredPosts = postRepository.findBySearchOption(title, content, username);
+        List<Post> filteredPosts = postRepository.findBySearchOption(keyword);
+        if (filteredPosts.isEmpty()){
+            throw new PostException(PostErrorCode.POST_NOT_EXIST);
+        }
+        return filteredPosts.stream()
+                .map(PostDetailDto::createPostDto)
+                .collect(Collectors.toList());
+    }
+
+    // 게시글 목록(username으로 검색)
+    public List<PostDetailDto> findByUser(String username) {
+        List<Post> filteredPosts = postRepository.findByUser(username);
+        if (filteredPosts.isEmpty()){
+            throw new PostException(PostErrorCode.POST_NOT_EXIST);
+        }
         return filteredPosts.stream()
                 .map(PostDetailDto::createPostDto)
                 .collect(Collectors.toList());

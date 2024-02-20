@@ -114,13 +114,19 @@ public class PostApiController {
     }
 
 
-    // 게시글 검색(제목, 내용, 유저네임)
-    @GetMapping("/post/searchBy")
-    public ResponseEntity<List<PostDetailDto>> showAll(@RequestParam("title") String title,
-                                                       @RequestParam("content") String content,
-                                                       @RequestParam("username") String username){
-        List<PostDetailDto> posts = postServiceImpl.findBySearchOption(title, content, username);
+    // 게시글 검색(제목, 내용)
+    @GetMapping("/post/search/keyword")
+    public ResponseEntity<List<PostDetailDto>> searchByKeyword(@RequestParam("keyword") String keyword){
+        List<PostDetailDto> posts = postServiceImpl.findBySearchOption(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
+
+    // 게시글 검색(작성자)
+    @GetMapping("/post/search/user")
+    public ResponseEntity<List<PostDetailDto>> searchByUser(@RequestParam("username") String username){
+        List<PostDetailDto> posts = postServiceImpl.findByUser(username);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
 
 }

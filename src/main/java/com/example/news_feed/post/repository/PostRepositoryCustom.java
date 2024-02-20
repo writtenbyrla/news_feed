@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface PostRepositoryCustom {
 
-        List<Post> findBySearchOption(String title, String content, String username);
+        List<Post> findBySearchOption(String keyword);
+
+        List<Post> findByUser(String username);
 }

@@ -4,7 +4,10 @@ import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 public interface UserService {
     /*
@@ -22,4 +25,16 @@ public interface UserService {
      */
     LoginResponseDto login(LoginReqDto loginReqDto, HttpServletResponse response);
 
+    /*
+     * 유저 목록
+     * @return 유저 전체 목록(탈퇴한 회원 제외)
+     */
+    List<UserDetailDto> showAllUser();
+
+    /*
+     * 유저 검색
+     * @param username 검색할 유저 이름
+     * @return 유저 목록
+     */
+    List<UserDetailDto> findByUsername(String username);
 }

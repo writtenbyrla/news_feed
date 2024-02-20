@@ -1,18 +1,16 @@
 package com.example.news_feed.admin.serviceImpl;
 
-import com.example.news_feed.admin.dto.response.UserDetailDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.exception.AdminErrorCode;
 import com.example.news_feed.admin.exception.AdminException;
 import com.example.news_feed.admin.repository.AdminUserRepository;
 import com.example.news_feed.admin.service.AdminUserService;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

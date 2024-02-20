@@ -9,6 +9,7 @@ import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.response.LoginResponseDto;
+import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
@@ -21,8 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.example.news_feed.user.exception.UserErrorCode.DUPLICATE_USERNAME_FOUND;
 
@@ -100,8 +103,26 @@ public class UserServiceImpl implements UserService {
         jwtTokenProvider.refreshTokenSetHeader(refreshToken, response);
 
         return new LoginResponseDto(accessToken, refreshToken, email, username, role);
-    };
+    }
 
+    // 유저 전체 목록(탈퇴 회원 제외)
+    @Override
+    public List<UserDetailDto> showAllUser() {
+        return userRepository.showAllUser()
+                .stream()
+                .map(UserDetailDto::createUserDetailDto)
+                .collect(Collectors.toList());
+    }
 
-
+    // 유저 검색
+    @Override
+    public List<UserDetailDto> findByUsername(String username) {
+        List<User> filteredUser = userRepository.findByUsername(username);
+        if(filteredUser.isEmpty()){
+            throw new UserException(UserErrorCode.USER_NOT_EXIST);
+        }
+        return filteredUser.stream()
+                .map(UserDetailDto::createUserDetailDto)
+                .collect(Collectors.toList());
+    }
 }
