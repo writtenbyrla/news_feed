@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface AuthHistoryRepository extends JpaRepository<PwdHistory, Long> {
-    @Query(value="select * from auth_history where user_id = :userId order by modified_at desc limit 0, 3", nativeQuery = true)
+    @Query(value="select * from pwd_history where user_id = :userId order by modified_at desc limit 0, 3", nativeQuery = true)
     List<PwdHistory> findByUserId(@Param("userId") Long userId);
 
 }

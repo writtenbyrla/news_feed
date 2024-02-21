@@ -22,7 +22,7 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Builder
-    public UserDetailsImpl(Long userId, String email, String pwd, String username, UserRoleEnum role, final Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long userId, String email, String pwd, String username, final Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.email = email;
         this.pwd = pwd;
@@ -62,7 +62,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
