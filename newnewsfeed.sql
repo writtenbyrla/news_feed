@@ -98,7 +98,8 @@ select * from auth_history;
 select * from follow;
 select * from post;
 select * from postlike;
-select * from user;
+select * from member;
 select * from multimedia;
+select * from follow;
 
 use newnewsfeed;

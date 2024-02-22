@@ -17,6 +17,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter
 @Setter
 @DynamicInsert
+@Table(name="member")
 public class User extends TimeStamp {
 
     @Id

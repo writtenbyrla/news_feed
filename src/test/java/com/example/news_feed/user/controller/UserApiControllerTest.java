@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -36,7 +39,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2, replace = AutoConfigureTestDatabase.Replace.ANY)
+@TestPropertySource("classpath:application-test.yml")
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserApiControllerTest {
@@ -49,11 +53,11 @@ class UserApiControllerTest {
 
     private Authentication authentication;
 
-    @BeforeEach
-    void setup() {
-        UserDetails userDetails = new UserDetailsImpl(2L, "admin@gmail.com", "awsedr12!", "admin", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
+//    @BeforeEach
+//    void setup() {
+//        UserDetails userDetails = new UserDetailsImpl(2L, "admin@gmail.com", "awsedr12!", "admin", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+//        authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//    }
 
     @Nested
     @DisplayName("signup")
