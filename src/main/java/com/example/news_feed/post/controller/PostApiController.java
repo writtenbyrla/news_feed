@@ -92,7 +92,7 @@ public class PostApiController {
                                                       @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long userId = userDetails.getId();
         multiMediaServiceImpl.deleteFiles(userId, multiMediaId);
-        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 삭제 완료");
+        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "멀티미디어 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -121,7 +121,7 @@ public class PostApiController {
 
     // 게시글 검색(제목, 내용)
     @RunningTime
-    @GetMapping("/post/search/keyword")
+    @GetMapping("/post/search")
     public ResponseEntity<Page<PostDetailDto>> searchByKeyword(@RequestParam("keyword") String keyword, @PageableDefault(size = 10) Pageable pageable){
         Page<PostDetailDto> posts = postServiceImpl.findByOption(keyword, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(posts);

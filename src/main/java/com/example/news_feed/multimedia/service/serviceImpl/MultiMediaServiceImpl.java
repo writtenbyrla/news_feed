@@ -87,8 +87,15 @@ public class MultiMediaServiceImpl implements MultiMediaService {
 
     // 게시글의 멀티미디어 목록 보기
     public List<MultiMediaDto> showFiles(Long postId){
-        return multiMediaRepository.findByPostId(postId)
-                .stream()
+
+        checkPost(postId);
+
+        List<MultiMedia> multiMediaList = multiMediaRepository.findByPostId(postId);
+        if (multiMediaList.isEmpty()) {
+            throw new MultiMediaException(MultiMediaErrorCode.NOT_FOUND_FILE);
+        }
+
+        return multiMediaList.stream()
                 .map(MultiMediaDto::createMultimediaDto)
                 .collect(Collectors.toList());
     }

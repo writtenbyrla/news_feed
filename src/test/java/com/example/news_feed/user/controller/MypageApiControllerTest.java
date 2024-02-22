@@ -16,7 +16,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -280,7 +279,6 @@ class MypageApiControllerTest {
         @Test
         @Transactional
         void updatePwd_ok() throws Exception {
-
             // given
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Long userId = ((UserDetailsImpl) userDetails).getId();
@@ -309,31 +307,196 @@ class MypageApiControllerTest {
 
         @Test
         @Transactional
-        void updatePwd_fail_invalid_pwd() {
+        void updatePwd_fail_invalid_pwd() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+            String oldPwd = userDetails.getPassword();
+            String newPwd = "awsedr12";
+
+
+            // when(객체 변환)
+            String body = mapper.writeValueAsString(
+                    PwdUpdateDto.builder()
+                            .oldPwd(oldPwd)
+                            .newPwd(newPwd)
+                            .build()
+            );
+
+            // then
+            mvc.perform(patch("/myPage/"+userId+"/pwd")
+                            .content(body) // body
+                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("[비밀번호는 알파벳 대소문자, 숫자, 특수문자를 포함하여 8~15자여야 합니다.]"));
         }
 
         @Test
         @Transactional
-        void updatePwd_not_found_user() {
+        void updatePwd_not_found_user() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = 100L;
+            String oldPwd = userDetails.getPassword();
+            String newPwd = "awsedr12!";
+
+
+            // when(객체 변환)
+            String body = mapper.writeValueAsString(
+                    PwdUpdateDto.builder()
+                            .oldPwd(oldPwd)
+                            .newPwd(newPwd)
+                            .build()
+            );
+
+            // then
+            mvc.perform(patch("/myPage/"+userId+"/pwd")
+                            .content(body) // body
+                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("등록된 사용자가 없습니다."));
         }
 
         @Test
         @Transactional
-        void updatePwd_unauthorized_user() {
+        void updatePwd_missMatch_pwd() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+            String oldPwd = "abcd1234!";
+            String newPwd = "awsedr12!";
+
+
+            // when(객체 변환)
+            String body = mapper.writeValueAsString(
+                    PwdUpdateDto.builder()
+                            .oldPwd(oldPwd)
+                            .newPwd(newPwd)
+                            .build()
+            );
+
+            // then
+            mvc.perform(patch("/myPage/"+userId+"/pwd")
+                            .content(body) // body
+                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("비밀번호가 일치하지 않습니다."));
         }
 
+        @Test
+        @Transactional
+        void updatePwd_recently_used_pwd() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+            String oldPwd = "jidong123!";
+            String newPwd = "awsedr12!";
 
+            // when(객체 변환)
+            String body = mapper.writeValueAsString(
+                    PwdUpdateDto.builder()
+                            .oldPwd(oldPwd)
+                            .newPwd(newPwd)
+                            .build()
+            );
+
+            // then
+            mvc.perform(patch("/myPage/"+userId+"/pwd")
+                            .content(body) // body
+                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("최근에 사용한 비밀번호입니다."));
+        }
     }
 
     @Nested
     @DisplayName("myActivity")
     class myActivity{
         @Test
-        void showMyFollowings() {
+        void show_my_posts() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/posts")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isOk())
+                    .andDo(print());
         }
 
         @Test
-        void showMyFollowers() {
+        void show_my_posts_fail_not_found() throws Exception {
+            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            // given
+            Long userId = userDetails.getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/posts")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
+        }
+
+
+        @Test
+        void show_my_comments() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/comments")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isOk())
+                    .andDo(print());
+        }
+
+        @Test
+        void show_my_comments_fail_not_found() throws Exception {
+            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            // given
+            Long userId = userDetails.getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/comments")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("댓글 정보가 없습니다."));
         }
 
     }
@@ -342,12 +505,82 @@ class MypageApiControllerTest {
     @DisplayName("myFollow")
     class myFollow{
         @Test
-        void showMyFollowings() {
+        void showMyFollowings() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/followings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isOk())
+                    .andDo(print());
         }
 
         @Test
-        void showMyFollowers() {
+        void showMyFollowings_fail_not_found() throws Exception {
+            // given
+            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            // given
+            Long userId = userDetails.getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/followings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("팔로우 정보가 없습니다."));
         }
+
+
+        @Test
+        void showMyFollowers() throws Exception {
+            // given
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Long userId = ((UserDetailsImpl) userDetails).getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/followers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isOk())
+                    .andDo(print());
+        }
+
+        @Test
+        void showMyFollowers_fail_not_found() throws Exception {
+            // given
+            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            // given
+            Long userId = userDetails.getId();
+
+            // when
+
+            // then
+            mvc.perform(get("/myPage/"+userId+"/followers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(authentication(authentication))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.message").value("팔로우 정보가 없습니다."));
+        }
+
 
     }
 
