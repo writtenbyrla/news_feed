@@ -14,14 +14,21 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import java.util.Arrays;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+@TestPropertySource("classpath:application-test.yml")
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class MypageApiControllerTest {
@@ -34,18 +41,18 @@ class MypageApiControllerTest {
 
     private Authentication authentication;
 
-
     @BeforeEach
     void setup() {
-        UserDetails userDetails = new UserDetailsImpl(3L, "jidong@gmail.com", "jidong123!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+        // Spring Security 인증 객체 생성
+        UserDetails userDetails = new UserDetailsImpl(1L, "jidong@gmail.com", "awsedr12!", "jidong", List.of(new SimpleGrantedAuthority("ROLE_USER")));
         authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
-
 
     @Nested
     @DisplayName("myInfo")
     class myInfo{
         @Test
+        @Transactional
         void myInfo_ok() throws Exception {
             // given
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -63,14 +70,10 @@ class MypageApiControllerTest {
         }
 
         @Test
+        @Transactional
         void myInfo_fail_unauthorized_user() throws Exception {
-            // given
-            Long userId = 100L;
-
-            // when
-
             // then
-            mvc.perform(get("/myPage/"+userId+"/info")
+            mvc.perform(get("/myPage/"+2+"/info")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -167,7 +170,7 @@ class MypageApiControllerTest {
         @Transactional
         void update_fail_duplicated_username() throws Exception{
             // given
-            String username = "admin";
+            String username = "jieun";
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Long userId = ((UserDetailsImpl) userDetails).getId();
 
@@ -193,49 +196,6 @@ class MypageApiControllerTest {
     @Nested
     @DisplayName("updateProfileImg")
     class updateProfileImg{
-
-        // aws s3 이용할 경우 S3Mock 라이브러리 이용해야 함
-//        @Test
-//        @Transactional
-//        void update_profileImg_ok() throws Exception {
-//
-//            // given
-//            // 파일 이름과 경로
-//            String fileName = "ERD.png";
-//            String uuid = UUID.randomUUID().toString();
-//            String filePath;
-//            String filePath = "https:\\" + bucket  + ".s3.ap-northeast-2.amazonaws.com\\profile\\" + uuid + "_" + fileName;
-//            FileInputStream fileInputStream = new FileInputStream(filePath);
-//
-//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//            Long userId = ((UserDetailsImpl) userDetails).getId();
-//
-//            // MockMultipartFile 생성
-//            MockMultipartFile file = new MockMultipartFile(
-//                    "file",
-//                    "ERD.png",
-//                    MediaType.IMAGE_PNG_VALUE,
-//                    fileInputStream
-//            );
-//
-//            // when
-//
-//
-//            // then
-//            mvc.perform(multipart("/myPage/"+userId+"/profileImg", HttpMethod.PATCH)
-//                            .file(file)
-//                            .contentType(MediaType.MULTIPART_FORM_DATA)
-//                            .with(authentication(authentication))
-//                    )
-//                    .andExpect(status().isOk())
-//                    .andExpect(jsonPath("$.statusCode").value(200))
-//                    .andExpect(jsonPath("$.message").value("프로필 수정 완료"));
-//
-//        }
-//        @Test
-//        @Transactional
-//        void update_profileImg_fail_not_found_user() {}
-
         @Test
         void show_profileImg_ok() throws Exception {
             // given
@@ -256,13 +216,9 @@ class MypageApiControllerTest {
         @Test
         void show_profileImg_fail_unauthorized_user() throws Exception {
             // given
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Long userId = 10L;
-
             // when
-
             // then
-            mvc.perform(get("/myPage/"+userId+"/profileImg")
+            mvc.perform(get("/myPage/"+10+"/profileImg")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -339,7 +295,6 @@ class MypageApiControllerTest {
         void updatePwd_not_found_user() throws Exception {
             // given
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Long userId = 100L;
             String oldPwd = userDetails.getPassword();
             String newPwd = "awsedr12!";
 
@@ -353,7 +308,7 @@ class MypageApiControllerTest {
             );
 
             // then
-            mvc.perform(patch("/myPage/"+userId+"/pwd")
+            mvc.perform(patch("/myPage/"+10+"/pwd")
                             .content(body) // body
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
@@ -396,9 +351,12 @@ class MypageApiControllerTest {
         @Transactional
         void updatePwd_recently_used_pwd() throws Exception {
             // given
+            // 1차 비밀번호 변경
+            updatePwd_ok();
+
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Long userId = ((UserDetailsImpl) userDetails).getId();
-            String oldPwd = "jidong123!";
+            String oldPwd = "newpwd123!";
             String newPwd = "awsedr12!";
 
             // when(객체 변환)
@@ -425,6 +383,7 @@ class MypageApiControllerTest {
     @DisplayName("myActivity")
     class myActivity{
         @Test
+        @Transactional
         void show_my_posts() throws Exception {
             // given
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -438,12 +397,15 @@ class MypageApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].title").value("프로젝트중"))
+                    .andExpect(jsonPath("$.content[1].title").value("테스트코드 작성중"))
                     .andDo(print());
         }
 
         @Test
+        @Transactional
         void show_my_posts_fail_not_found() throws Exception {
-            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(4L, "newuser@gmail.com", "awsedr12!", "newuser", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // given
@@ -463,6 +425,7 @@ class MypageApiControllerTest {
 
 
         @Test
+        @Transactional
         void show_my_comments() throws Exception {
             // given
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -476,12 +439,15 @@ class MypageApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].content").value("빨리 해야겠다"))
+                    .andExpect(jsonPath("$.content[1].content").value("나도 아직 못함"))
                     .andDo(print());
         }
 
         @Test
+        @Transactional
         void show_my_comments_fail_not_found() throws Exception {
-            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(4L, "newuser@gmail.com", "awsedr12!", "newuser", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // given
@@ -518,13 +484,15 @@ class MypageApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].username").value("jieun"))
+                    .andExpect(jsonPath("$.content[1].username").value("newuser"))
                     .andDo(print());
         }
 
         @Test
         void showMyFollowings_fail_not_found() throws Exception {
             // given
-            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(4L, "newuser@gmail.com", "awsedr12!", "newuser", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // given
@@ -557,13 +525,14 @@ class MypageApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].username").value("jieun"))
                     .andDo(print());
         }
 
         @Test
         void showMyFollowers_fail_not_found() throws Exception {
             // given
-            UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@gmail.com", "awsedr12!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(5L, "user@gmail.com", "newsfeed12!", "user", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // given
@@ -580,9 +549,5 @@ class MypageApiControllerTest {
                     .andExpect(jsonPath("$.statusCode").value(400))
                     .andExpect(jsonPath("$.message").value("팔로우 정보가 없습니다."));
         }
-
-
     }
-
-
 }

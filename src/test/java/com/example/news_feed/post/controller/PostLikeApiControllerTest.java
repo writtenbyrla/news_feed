@@ -1,6 +1,11 @@
 package com.example.news_feed.post.controller;
 
 import com.example.news_feed.auth.security.UserDetailsImpl;
+import com.example.news_feed.post.domain.Post;
+import com.example.news_feed.post.domain.PostLike;
+import com.example.news_feed.post.repository.PostLikeRepository;
+import com.example.news_feed.user.domain.User;
+import com.example.news_feed.user.domain.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +20,14 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -26,6 +35,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestPropertySource("classpath:application-test.yml")
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class PostLikeApiControllerTest {
@@ -39,7 +50,8 @@ class PostLikeApiControllerTest {
 
     @BeforeEach
     void setup() {
-        UserDetails userDetails = new UserDetailsImpl(3L, "jidong@gmail.com", "jidong123!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+        // Spring Security 인증 객체 생성
+        UserDetails userDetails = new UserDetailsImpl(1L, "jidong@gmail.com", "awsedr12!", "jidong", List.of(new SimpleGrantedAuthority("ROLE_USER")));
         authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -52,7 +64,7 @@ class PostLikeApiControllerTest {
             // given
             // when
             // then
-            mvc.perform(post("/post/" + 1 +"/like")
+            mvc.perform(post("/post/" + 3 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -82,7 +94,7 @@ class PostLikeApiControllerTest {
             // given
             // when
             // then
-            mvc.perform(post("/post/" + 27 +"/like")
+            mvc.perform(post("/post/" + 1 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -95,9 +107,10 @@ class PostLikeApiControllerTest {
         @Transactional
         void create_post_like_fail_already_like() throws Exception {
             // given
+            create_post_like_ok();
             // when
             // then
-            mvc.perform(post("/post/" + 5 +"/like")
+            mvc.perform(post("/post/" + 3 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -113,7 +126,6 @@ class PostLikeApiControllerTest {
         @Test
         @Transactional
         void delete_post_like_ok() throws Exception {
-            // given
             // when
             // then
             mvc.perform(MockMvcRequestBuilders.delete("/post/" + 1 +"/like")

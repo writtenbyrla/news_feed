@@ -4,6 +4,7 @@ USE newnewsfeed;
 DROP TABLE COMMENTLIKE;
 DROP TABLE POSTLIKE;
 DROP TABLE COMMENT;
+DROP TABLE MULTIMEDIA;
 DROP TABLE POST;
 DROP TABLE FOLLOW;
 DROP TABLE PWD_HISTORY;
@@ -94,12 +95,15 @@ ALTER TABLE `follow` ADD CONSTRAINT `follower_user_fk` FOREIGN KEY (`follower_id
 -- SELECT
 SELECT * FROM comment;
 SELECT * FROM commentlike;
-select * from auth_history;
+select * from pwd_history;
 select * from follow;
 select * from post;
 select * from postlike;
-select * from member;
+select * from user;
 select * from multimedia;
 select * from follow;
 
 use newnewsfeed;
+use newsfeedtest;
+
+select * from user;

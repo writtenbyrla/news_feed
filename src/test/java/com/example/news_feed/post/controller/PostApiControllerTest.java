@@ -17,10 +17,13 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestPropertySource("classpath:application-test.yml")
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class PostApiControllerTest {
@@ -42,7 +47,8 @@ class PostApiControllerTest {
 
     @BeforeEach
     void setup() {
-        UserDetails userDetails = new UserDetailsImpl(3L, "jidong@gmail.com", "jidong123!", "jidong", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+        // Spring Security 인증 객체 생성
+        UserDetails userDetails = new UserDetailsImpl(1L, "jidong@gmail.com", "awsedr12!", "jidong", List.of(new SimpleGrantedAuthority("ROLE_USER")));
         authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -147,7 +153,7 @@ class PostApiControllerTest {
             );
 
             // then
-            mvc.perform(patch("/post/"+27)
+            mvc.perform(patch("/post/"+1)
                             .content(body) // body
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
@@ -170,7 +176,7 @@ class PostApiControllerTest {
             );
 
             // then
-            mvc.perform(patch("/post/"+27)
+            mvc.perform(patch("/post/"+1)
                             .content(body) // body
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
@@ -194,7 +200,7 @@ class PostApiControllerTest {
             );
 
             // then
-            mvc.perform(patch("/post/"+27)
+            mvc.perform(patch("/post/"+1)
                             .content(body) // body
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
@@ -246,7 +252,7 @@ class PostApiControllerTest {
             );
 
             // then
-            mvc.perform(patch("/post/"+1)
+            mvc.perform(patch("/post/"+3)
                             .content(body) // body
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
@@ -265,7 +271,7 @@ class PostApiControllerTest {
         void delete_ok() throws Exception {
 
             // then
-            mvc.perform(MockMvcRequestBuilders.delete("/post/"+27)
+            mvc.perform(MockMvcRequestBuilders.delete("/post/"+1)
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
                     )
@@ -293,7 +299,7 @@ class PostApiControllerTest {
         void delete_fail_unauthorized_user() throws Exception {
 
             // then
-            mvc.perform(MockMvcRequestBuilders.delete("/post/"+1)
+            mvc.perform(MockMvcRequestBuilders.delete("/post/"+3)
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -308,14 +314,15 @@ class PostApiControllerTest {
     class postList {
         @Test
         void postList_ok() throws Exception {
-            // given
-            // when
-            // then
             mvc.perform(get("/post")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].title").value("좋아요 눌러줘"))
+                    .andExpect(jsonPath("$.content[1].title").value("소셜로그인 언제하지"))
+                    .andExpect(jsonPath("$.content[2].title").value("프로젝트중"))
+                    .andExpect(jsonPath("$.content[3].title").value("테스트코드 작성중"))
                     .andDo(print());
         }
 
@@ -329,6 +336,7 @@ class PostApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.title").value("테스트코드 작성중"))
                     .andDo(print());
         }
 
@@ -353,7 +361,7 @@ class PostApiControllerTest {
         @Test
         void search_with_keyword_ok() throws Exception {
             // given
-            String keyword = "2";
+            String keyword = "중";
             // when
             // then
             mvc.perform(get("/post/search?keyword="+keyword)
@@ -361,13 +369,15 @@ class PostApiControllerTest {
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].title").value("프로젝트중"))
+                    .andExpect(jsonPath("$.content[1].title").value("테스트코드 작성중"))
                     .andDo(print());
         }
 
         @Test
         void search_with_keyword_fail_not_found_post() throws Exception {
             // given
-            String keyword = "실패";
+            String keyword = "안녕";
             // when
             // then
             mvc.perform(get("/post/search?keyword="+keyword)
@@ -382,7 +392,7 @@ class PostApiControllerTest {
         @Test
         void search_with_username_ok() throws Exception {
             // given
-            String username = "admin";
+            String username = "jieun";
             // when
             // then
             mvc.perform(get("/post/search/user?username="+username)
@@ -414,6 +424,7 @@ class PostApiControllerTest {
     @DisplayName("multiMedia")
     class multiMedia {
         @Test
+        @Transactional
         void multiMedia_list_ok() throws Exception {
             // given
             // when
@@ -427,6 +438,7 @@ class PostApiControllerTest {
         }
 
         @Test
+        @Transactional
         void multiMedia_list_fail_not_found_post() throws Exception {
             // given
             // when
@@ -441,11 +453,12 @@ class PostApiControllerTest {
         }
 
         @Test
+        @Transactional
         void multiMedia_list_fail_not_found_multimedia() throws Exception {
             // given
             // when
             // then
-            mvc.perform(get("/post/" + 2 +"/file")
+            mvc.perform(get("/post/" + 3 +"/file")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
@@ -457,9 +470,6 @@ class PostApiControllerTest {
         @Test
         @Transactional
         void delete_ok() throws Exception {
-            UserDetails userDetails = new UserDetailsImpl(2L, "admin@gmail.com", "awsedr12!", "admin", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
             // then
             mvc.perform(MockMvcRequestBuilders.delete("/post/"+1+"/file")
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
@@ -473,9 +483,6 @@ class PostApiControllerTest {
         @Test
         @Transactional
         void delete_fail_not_found_multimedia() throws Exception {
-            UserDetails userDetails = new UserDetailsImpl(2L, "admin@gmail.com", "awsedr12!", "admin", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
             // then
             mvc.perform(MockMvcRequestBuilders.delete("/post/"+100+"/file")
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
@@ -489,9 +496,11 @@ class PostApiControllerTest {
         @Test
         @Transactional
         void delete_fail_unauthorized_user() throws Exception {
+            UserDetailsImpl userDetails = new UserDetailsImpl(4L, "newuser@gmail.com", "awsedr12!", "newuser", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // then
-            mvc.perform(MockMvcRequestBuilders.delete("/post/"+1+"/file")
+            mvc.perform(MockMvcRequestBuilders.delete("/post/"+2+"/file")
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
                     )

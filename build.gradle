@@ -36,8 +36,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// test db
-//	runtimeOnly 'com.h2database:h2'
-	testImplementation 'com.h2database:h2'
+	testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+	testImplementation "org.testcontainers:junit-jupiter:1.16.3"
+	testImplementation "org.testcontainers:mysql:1.16.3"
 
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

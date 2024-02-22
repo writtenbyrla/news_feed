@@ -58,6 +58,13 @@ public class Post extends TimeStamp {
         this.user = user;
     }
 
+    public Post(Long id, String title, String content, User user) {
+        this.postId = id;
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
+
     public void patch(UpdatePostDto updatePostDto) {
         if (!this.postId.equals(updatePostDto.getPostId()))
             throw new PostException(PostErrorCode.POST_NOT_EXIST);

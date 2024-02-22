@@ -16,16 +16,16 @@ import java.util.Optional;
 @RepositoryDefinition(domainClass =  User.class, idClass = Long.class)
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
 
-    @Query(value="select * from member where username = :username", nativeQuery = true)
+    @Query(value="select * from user where username = :username", nativeQuery = true)
     Optional<User> findByName(@Param("username") String username);
 
-    @Query(value="select * from member where email = :email", nativeQuery = true)
+    @Query(value="select * from user where email = :email", nativeQuery = true)
     Optional<User> findByEmail(@Param("email") String email);
 
-    @Query(value = "SELECT * FROM member WHERE username = :username AND user_id != :userId", nativeQuery = true)
+    @Query(value = "SELECT * FROM user WHERE username = :username AND user_id != :userId", nativeQuery = true)
     Optional<User> findByNameAndUserIdNot(@Param("username") String username, @Param("userId") Long userId);
 
-    @Query(value = "SELECT * FROM member WHERE status = 'Y'", nativeQuery = true)
+    @Query(value = "SELECT * FROM user WHERE status = 'Y'", nativeQuery = true)
     Page<User> showAllUser(Pageable pageable);
 
     Page<User> findByUserIdIn(List<Long> followingIds, Pageable pageable);

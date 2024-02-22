@@ -1,6 +1,7 @@
 package com.example.news_feed.user.controller;
 
 import com.example.news_feed.common.exception.HttpException;
+import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.auth.dto.response.LogoutResponseDto;
 import com.example.news_feed.auth.redis.service.LogoutService;
@@ -52,8 +53,8 @@ public class UserApiController {
         }
 
         // 회원가입 성공시
-        userServiceImpl.signup(signupReqDto);
-        UserResponseDto response = UserResponseDto.res(HttpStatus.OK.value(), "회원 가입 완료");
+        User user = userServiceImpl.signup(signupReqDto);
+        UserResponseDto response = UserResponseDto.res(HttpStatus.CREATED.value(), "회원 가입 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     };
 
