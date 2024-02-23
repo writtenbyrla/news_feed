@@ -106,3 +106,9 @@ form input:focus {
     font-family: "Source Sans Pro", sans-serif;
     cursor: pointer;
 }
+#kakao-login-btn{
+    width: 315px;
+    background: #FEE500;
+    color: black;
+}
+

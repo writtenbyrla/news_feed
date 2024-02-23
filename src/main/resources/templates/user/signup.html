@@ -35,6 +35,8 @@
                 <input type="password" id="loginPwd" placeholder="Password">
                 <button class="button" id="login-btn" type="submit">Login</button>
             </form>
+            <a href=" https://kauth.kakao.com/oauth/authorize?client_id=6ad40621de90a7d1de66ad75d10d925e&redirect_uri=http://localhost:8080/kakao/login&response_type=code">
+            <button class="button" id="kakao-login-btn" onclick="location.href='${kakaoLogin}'">카카오 로그인</button></a>
         </div>
     </div>
 </div>
@@ -112,5 +114,21 @@
         });
     });
 </script>
+
+<!--카카오 로그인-->
+<!--<script>-->
+<!--    const kakaoLogin = document.querySelector("#kakao-login-btn");-->
+<!--    kakaoLogin.addEventListener("click", function(){-->
+<!--        $.ajax({-->
+<!--            type: "GET",-->
+<!--            url: "/kakao/login",-->
+<!--            contentType: "application/json",-->
+<!--            success: function() {-->
+<!--                window.location.href="/kakao/login";-->
+<!--            }-->
+<!--        })-->
+<!--    })-->
+
+<!--</script>-->
 </body>
 </html>

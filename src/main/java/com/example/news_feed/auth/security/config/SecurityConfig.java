@@ -51,7 +51,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //정적 리소스
                                 .requestMatchers("/").permitAll()
-                                .requestMatchers("/home").permitAll()
+                                .requestMatchers("/home", "/kakao/login").permitAll()
                                 .requestMatchers("/signup-page").permitAll() // 회원가입, 로그인 페이지
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()

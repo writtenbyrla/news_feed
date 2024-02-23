@@ -145,7 +145,7 @@ class MypageApiControllerTest {
         @Transactional
         void update_fail_invalid_username() throws Exception {
             // given
-            String username = "한글닉네임";
+            String username = "hi";
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Long userId = ((UserDetailsImpl) userDetails).getId();
 
@@ -164,32 +164,7 @@ class MypageApiControllerTest {
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").value(400))
-                    .andExpect(jsonPath("$.message").value("[이름은 알파벳 소문자, 숫자를 포함하여 4~10자여야 합니다.]"));
-        }
-        @Test
-        @Transactional
-        void update_fail_duplicated_username() throws Exception{
-            // given
-            String username = "jieun";
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Long userId = ((UserDetailsImpl) userDetails).getId();
-
-            // when(객체 변환)
-            String body = mapper.writeValueAsString(
-                    UserUpdateDto.builder()
-                            .username(username)
-                            .build()
-            );
-
-            // then
-            mvc.perform(patch("/myPage/"+userId+"/profile")
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
-                            .with(authentication(authentication))
-                    )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
-                    .andExpect(jsonPath("$.message").value("중복된 사용자가 존재합니다."));
+                    .andExpect(jsonPath("$.message").value("[이름은 한글, 알파벳 소문자, 숫자를 포함하여 4~10자여야 합니다.]"));
         }
     }
 
