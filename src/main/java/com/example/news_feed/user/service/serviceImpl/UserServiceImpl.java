@@ -3,8 +3,6 @@ package com.example.news_feed.user.service.serviceImpl;
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
-import com.example.news_feed.common.exception.HttpException;
-import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.domain.UserRoleEnum;
 import com.example.news_feed.user.dto.request.LoginReqDto;
@@ -22,16 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.example.news_feed.user.exception.UserErrorCode.DUPLICATE_USERNAME_FOUND;
 
 @Service
 @Slf4j
@@ -41,7 +36,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final RedisService redisService;
 
     // 회원가입
     @Transactional
@@ -51,12 +45,6 @@ public class UserServiceImpl implements UserService {
         String email = signupReqDto.getEmail();
 
         signupReqDto.setPwd(pwd);
-
-        // 유저네임 중복확인
-        Optional<User> checkUsername = userRepository.findByName(username);
-        if(checkUsername.isPresent()){
-            throw new UserException(UserErrorCode.DUPLICATE_USERNAME_FOUND);
-        }
 
         // 이메일 중복확인
         Optional<User> checkEmail = userRepository.findByEmail(email);
@@ -98,13 +86,6 @@ public class UserServiceImpl implements UserService {
 
         String accessToken = jwtTokenProvider.createToken(email, username, role, TokenType.ACCESS);
         String refreshToken = jwtTokenProvider.createToken(email, username, role, TokenType.REFRESH);
-
-        Long expiresTime = jwtTokenProvider.getExpiredTime(refreshToken, TokenType.REFRESH);
-        redisService.setValues("RefreshToken:" + user.getEmail(), refreshToken, expiresTime, TimeUnit.MILLISECONDS);
-
-        // 토큰을 헤더에 넣어서 클라이언트에게 전달
-        jwtTokenProvider.accessTokenSetHeader(accessToken, response);
-        jwtTokenProvider.refreshTokenSetHeader(refreshToken, response);
 
         return new LoginResponseDto(accessToken, refreshToken, email, username, role);
     }

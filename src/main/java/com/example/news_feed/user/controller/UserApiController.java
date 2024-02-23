@@ -1,5 +1,8 @@
 package com.example.news_feed.user.controller;
 
+import com.example.news_feed.auth.redis.service.RedisService;
+import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
+import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.dto.response.UserDetailDto;
@@ -29,6 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class UserApiController {
 
     private final UserServiceImpl userServiceImpl;
     private final LogoutService logoutService;
+    private final RedisService redisService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
     @PostMapping("/user/signup")
@@ -61,7 +67,18 @@ public class UserApiController {
     // 로그인
     @PostMapping("/user/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
-        return ResponseEntity.status(HttpStatus.OK).body(userServiceImpl.login(loginReqDto, response));
+        LoginResponseDto dto =  userServiceImpl.login(loginReqDto, response);
+        String accessToken = dto.getAccessToken();
+        String refreshToken = dto.getRefreshToken();
+
+        Long expiresTime = jwtTokenProvider.getExpiredTime(refreshToken, TokenType.REFRESH);
+        redisService.setValues("RefreshToken:" + dto.getEmail(), refreshToken, expiresTime, TimeUnit.MILLISECONDS);
+
+        // 토큰을 헤더에 넣어서 클라이언트에게 전달
+        jwtTokenProvider.accessTokenSetHeader(accessToken, response);
+        jwtTokenProvider.refreshTokenSetHeader(refreshToken, response);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     };
 
     // 로그아웃

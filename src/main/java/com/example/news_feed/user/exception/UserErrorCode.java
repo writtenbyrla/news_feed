@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum UserErrorCode {
-
-    DUPLICATE_USERNAME_FOUND(HttpStatus.BAD_REQUEST, "중복된 사용자가 존재합니다."),
     DUPLICATE_EMAIL_FOUND(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다."),
     USER_NOT_EXIST(HttpStatus.NOT_FOUND, "등록된 사용자가 없습니다."),
     USER_DELETED(HttpStatus.NOT_FOUND, "이미 탈퇴한 회원입니다."),

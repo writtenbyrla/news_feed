@@ -28,7 +28,7 @@ public class User extends TimeStamp {
     @Column(name="pwd", nullable = false)
     private String pwd;
 
-    @Column(name="username", nullable = false, unique = true)
+    @Column(name="username", nullable = false)
     private String username;
 
     @Column(name="email", nullable = false, unique = true)
@@ -47,8 +47,7 @@ public class User extends TimeStamp {
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
     
-    public User(Long userId, String username, String pwd, String email) {
-        this.userId = userId;
+    public User(String username, String pwd, String email) {
         this.username = username;
         this.pwd = pwd;
         this.email = email;
@@ -61,7 +60,6 @@ public class User extends TimeStamp {
 
     public static User createUser(SignupReqDto signupReqDto) {
         return new User(
-                signupReqDto.getUserId(),
                 signupReqDto.getUsername(),
                 signupReqDto.getPwd(),
                 signupReqDto.getEmail()

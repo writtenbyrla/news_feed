@@ -57,12 +57,6 @@ public class MyPageServiceImpl implements MyPageService {
     @Transactional
     public UserUpdateDto updateProfile(Long userId, UserUpdateDto updateDto) {
 
-        // 본인 닉네임 제외해서 중복확인
-        Optional<User> checkUsername = userRepository.findByNameAndUserIdNot(updateDto.getUsername(), userId);
-        if(checkUsername.isPresent()){
-            throw new UserException(UserErrorCode.DUPLICATE_USERNAME_FOUND);
-        }
-
         // 기존 유저정보 조회 및 예외 처리
         User target = checkUser(userId);
 
