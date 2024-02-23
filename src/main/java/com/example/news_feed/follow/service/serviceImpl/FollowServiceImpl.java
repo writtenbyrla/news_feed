@@ -79,6 +79,9 @@ public class FollowServiceImpl implements FollowService {
 
         // 팔로우 목록
         List<Follow> follows = followRepository.findByFollowerId(followerId);
+        if (follows.isEmpty()){
+            throw new FollowException(FollowErrorCode.NOT_FOUND_FOLLOW);
+        }
 
         // 팔로우 목록에서 유저 추출
         List<User> followings = follows.stream()

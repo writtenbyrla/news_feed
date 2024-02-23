@@ -2,10 +2,7 @@ package com.example.news_feed.comment.dto.request;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,6 +10,7 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
+@Builder
 public class UpdateCommentDto {
 
     private Long commentId;

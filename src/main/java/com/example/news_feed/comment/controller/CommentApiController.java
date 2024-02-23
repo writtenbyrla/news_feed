@@ -38,12 +38,11 @@ public class CommentApiController {
     }
 
     // 댓글 수정
-    @PatchMapping("/comments/{commentId}")
+    @PatchMapping("/comment/{commentId}")
     private ResponseEntity<CommentResponseDto> create(@PathVariable Long commentId,
                                                       @RequestBody UpdateCommentDto updateCommentDto,
                                                       @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         updateCommentDto.setUserId(userDetails.getId());
-        log.info("Controller userId {}", userDetails.getId());
         commentServiceImpl.update(commentId, updateCommentDto);
 
         CommentResponseDto response = CommentResponseDto.res(HttpStatus.OK.value(), "댓글 수정 완료");
@@ -51,7 +50,7 @@ public class CommentApiController {
     };
 
     // 댓글 삭제
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<CommentResponseDto> delete(@PathVariable Long commentId,
                                                      @AuthenticationPrincipal final UserDetailsImpl userDetails){
         Long userId = userDetails.getId();
@@ -71,7 +70,7 @@ public class CommentApiController {
 
 
     // 댓글 상세 조회
-    @GetMapping("/comments/{commentId}")
+    @GetMapping("/comment/{commentId}")
     public ResponseEntity<CommentDetailDto> show(@PathVariable Long commentId){
         return ResponseEntity.status(HttpStatus.OK).body(commentServiceImpl.show(commentId));
     }

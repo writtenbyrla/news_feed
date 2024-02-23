@@ -72,8 +72,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(post("/post")
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isCreated())
@@ -97,8 +97,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(post("/post")
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isBadRequest())
@@ -122,8 +122,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(post("/post")
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isBadRequest())
@@ -154,8 +154,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(patch("/post/"+1)
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
@@ -177,8 +177,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(patch("/post/"+1)
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
@@ -201,8 +201,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(patch("/post/"+1)
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
@@ -227,12 +227,12 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(patch("/post/"+100)
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
 
@@ -253,8 +253,8 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(patch("/post/"+3)
-                            .content(body) // body
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isBadRequest())
@@ -272,7 +272,7 @@ class PostApiControllerTest {
 
             // then
             mvc.perform(MockMvcRequestBuilders.delete("/post/"+1)
-                            .contentType(MediaType.APPLICATION_JSON) // 타입 명시
+                            .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
@@ -289,8 +289,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
 
@@ -313,6 +313,7 @@ class PostApiControllerTest {
     @DisplayName("postList")
     class postList {
         @Test
+        @Transactional
         void postList_ok() throws Exception {
             mvc.perform(get("/post")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -327,6 +328,7 @@ class PostApiControllerTest {
         }
 
         @Test
+        @Transactional
         void post_detail_ok() throws Exception {
             // given
             // when
@@ -341,6 +343,7 @@ class PostApiControllerTest {
         }
 
         @Test
+        @Transactional
         void post_detail_fail_not_found_post() throws Exception {
             // given
             // when
@@ -349,8 +352,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
     }
@@ -359,6 +362,7 @@ class PostApiControllerTest {
     @DisplayName("search")
     class search {
         @Test
+        @Transactional
         void search_with_keyword_ok() throws Exception {
             // given
             String keyword = "중";
@@ -375,6 +379,7 @@ class PostApiControllerTest {
         }
 
         @Test
+        @Transactional
         void search_with_keyword_fail_not_found_post() throws Exception {
             // given
             String keyword = "안녕";
@@ -384,12 +389,13 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
 
         @Test
+        @Transactional
         void search_with_username_ok() throws Exception {
             // given
             String username = "jieun";
@@ -405,6 +411,7 @@ class PostApiControllerTest {
 
 
         @Test
+        @Transactional
         void search_with_username_fail_not_found_post() throws Exception {
             // given
             String username = "newuser";
@@ -414,8 +421,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
     }
@@ -447,8 +454,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
 
@@ -462,8 +469,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("파일을 찾을 수 없습니다."));
         }
 
@@ -488,8 +495,8 @@ class PostApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("파일을 찾을 수 없습니다."));
         }
 

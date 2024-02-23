@@ -1,11 +1,6 @@
-package com.example.news_feed.post.controller;
+package com.example.news_feed.comment.controller;
 
 import com.example.news_feed.auth.security.UserDetailsImpl;
-import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.domain.PostLike;
-import com.example.news_feed.post.repository.PostLikeRepository;
-import com.example.news_feed.user.domain.User;
-import com.example.news_feed.user.domain.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +15,11 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-class PostLikeApiControllerTest {
+class CommentLikeApiControllerTest {
+
     @Autowired
     ObjectMapper mapper;
 
@@ -54,102 +48,98 @@ class PostLikeApiControllerTest {
         UserDetails userDetails = new UserDetailsImpl(1L, "jidong@gmail.com", "awsedr12!", "jidong", List.of(new SimpleGrantedAuthority("ROLE_USER")));
         authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
-
     @Nested
     @DisplayName("create")
     class create{
         @Test
         @Transactional
-        void create_post_like_ok() throws Exception {
-            // given
-            // when
-            // then
-            mvc.perform(post("/post/" + 3 +"/like")
+        void create_ok() throws Exception {
+            mvc.perform(post("/comment/" + 3 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.statusCode").value(201))
-                    .andExpect(jsonPath("$.message").value("게시글 좋아요 +1"));
+                    .andExpect(jsonPath("$.message").value("댓글 좋아요 +1"));
         }
 
         @Test
         @Transactional
-        void create_post_like_fail_not_found_post() throws Exception {
+        void create_fail_not_found_comment() throws Exception {
             // given
             // when
             // then
-            mvc.perform(post("/post/" + 100 +"/like")
+            mvc.perform(post("/comment/" + 100 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.statusCode").value(404))
-                    .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
+                    .andExpect(jsonPath("$.message").value("댓글 정보가 없습니다."));
         }
 
         @Test
         @Transactional
-        void create_post_like_fail_self_like() throws Exception {
+        void create_fail_self_like() throws Exception {
             // given
             // when
             // then
-            mvc.perform(post("/post/" + 1 +"/like")
+            mvc.perform(post("/comment/" + 1 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").value(400))
-                    .andExpect(jsonPath("$.message").value("본인의 글에는 좋아요를 할 수 없습니다."));
+                    .andExpect(jsonPath("$.message").value("본인의 댓글에는 좋아요를 할 수 없습니다."));
         }
 
         @Test
         @Transactional
-        void create_post_like_fail_already_like() throws Exception {
+        void create_fail_already_like() throws Exception {
             // given
-            create_post_like_ok();
-            // when
-            // then
-            mvc.perform(post("/post/" + 3 +"/like")
+            create_ok();
+
+            mvc.perform(post("/comment/" + 3 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").value(400))
-                    .andExpect(jsonPath("$.message").value("이미 이 게시글을 좋아합니다."));
+                    .andExpect(jsonPath("$.message").value("이미 이 댓글을 좋아합니다."));
         }
     }
+
 
     @Nested
     @DisplayName("delete")
     class delete{
         @Test
         @Transactional
-        void delete_post_like_ok() throws Exception {
+        void delete_ok() throws Exception {
             // when
             // then
-            mvc.perform(MockMvcRequestBuilders.delete("/post/" + 1 +"/like")
+            mvc.perform(MockMvcRequestBuilders.delete("/comment/" + 1 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.statusCode").value(200))
-                    .andExpect(jsonPath("$.message").value("게시글 좋아요 취소"));
+                    .andExpect(jsonPath("$.message").value("댓글 좋아요 취소"));
         }
 
         @Test
         @Transactional
-        void delete_post_like_fail_not_fount_post_like() throws Exception {
+        void delete_fail_not_found_comment_like() throws Exception {
             // given
             // when
             // then
-            mvc.perform(MockMvcRequestBuilders.delete("/post/" + 10 +"/like")
+            mvc.perform(MockMvcRequestBuilders.delete("/comment/" + 10 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.statusCode").value(404))
-                    .andExpect(jsonPath("$.message").value("게시글 좋아요 정보가 없습니다."));
+                    .andExpect(jsonPath("$.message").value("댓글 좋아요 정보가 없습니다."));
         }
     }
 }

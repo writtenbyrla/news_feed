@@ -37,8 +37,8 @@ public class FollowApicontroller {
                                                     @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long followerId = userDetails.getId();
         followServiceImpl.delete(followingId, followerId);
-        FollowResponseDto response = FollowResponseDto.res(HttpStatus.CREATED.value(), "팔로우 취소 완료");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        FollowResponseDto response = FollowResponseDto.res(HttpStatus.OK.value(), "팔로우 취소 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 팔로우하는 사용자의 게시물 보기

@@ -313,8 +313,8 @@ class MypageApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON) // 타입 명시
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("등록된 사용자가 없습니다."));
         }
 
@@ -418,8 +418,8 @@ class MypageApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("게시글 정보가 없습니다."));
         }
 
@@ -460,8 +460,8 @@ class MypageApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("댓글 정보가 없습니다."));
         }
 
@@ -492,10 +492,8 @@ class MypageApiControllerTest {
         @Test
         void showMyFollowings_fail_not_found() throws Exception {
             // given
-            UserDetailsImpl userDetails = new UserDetailsImpl(4L, "newuser@gmail.com", "awsedr12!", "newuser", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(5L, "user@gmail.com", "newsfeed12!", "user", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-            // given
             Long userId = userDetails.getId();
 
             // when
@@ -505,8 +503,8 @@ class MypageApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("팔로우 정보가 없습니다."));
         }
 
@@ -532,7 +530,7 @@ class MypageApiControllerTest {
         @Test
         void showMyFollowers_fail_not_found() throws Exception {
             // given
-            UserDetailsImpl userDetails = new UserDetailsImpl(5L, "user@gmail.com", "newsfeed12!", "user", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            UserDetailsImpl userDetails = new UserDetailsImpl(5L, "user@gmail.com", "newsfeed12!", "user", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
             authentication = new TestingAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // given
@@ -545,8 +543,8 @@ class MypageApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("팔로우 정보가 없습니다."));
         }
     }

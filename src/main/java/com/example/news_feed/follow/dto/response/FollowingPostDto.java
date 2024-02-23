@@ -24,6 +24,7 @@ public class FollowingPostDto {
 
     private String username; // 팔로우 당한 사람의 username
 
+    private String title;
     private String content;
 
     private LocalDateTime createdAt;
@@ -35,6 +36,7 @@ public class FollowingPostDto {
           post.getUser().getUserId(),
           post.getUser().getUserId(),
           post.getUser().getUsername(),
+          post.getTitle(),
           post.getContent(),
           post.getCreatedAt(),
           post.getModifiedAt()

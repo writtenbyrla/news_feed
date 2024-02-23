@@ -187,8 +187,8 @@ class UserApiControllerTest {
                             .content(body)
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("등록된 사용자가 없습니다."));
         }
 
@@ -212,8 +212,8 @@ class UserApiControllerTest {
                             .content(body)
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("이미 탈퇴한 회원입니다."));
         }
 
@@ -334,7 +334,12 @@ class UserApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isOk());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].username").value("user"))
+                    .andExpect(jsonPath("$.content[1].username").value("newuser"))
+                    .andExpect(jsonPath("$.content[2].username").value("jieun"))
+                    .andExpect(jsonPath("$.content[3].username").value("jidong"))
+                    .andDo(print());
         }
         @Test
         @Transactional
@@ -359,8 +364,8 @@ class UserApiControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
                     )
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").value(404))
                     .andExpect(jsonPath("$.message").value("등록된 사용자가 없습니다."));
         }
 
