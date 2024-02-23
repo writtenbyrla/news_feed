@@ -120,7 +120,7 @@ public class CommentServiceImpl implements CommentService {
 
         return commentRepository.findById(commentId)
                 .map(CommentDetailDto::createCommentDetailDto)
-                .orElse(null);
+                .orElseThrow(() -> new CommentException(CommentErrorCode.NOT_FOUND_COMMENT));
 
     }
 

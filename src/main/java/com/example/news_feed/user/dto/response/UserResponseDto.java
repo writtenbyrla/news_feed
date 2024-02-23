@@ -14,7 +14,6 @@ public class UserResponseDto {
 
     private int statusCode;
     private String Message;
-
     public static UserResponseDto res(int statusCode, String message) {
         return new UserResponseDto(
                 statusCode,

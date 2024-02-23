@@ -174,7 +174,7 @@ public class MyPageServiceImpl implements MyPageService {
 
         return userRepository.findById(userId)
                 .map(UserDetailDto::createUserDetailDto)
-                .orElse(null);
+                .orElseThrow(()->new UserException(UserErrorCode.USER_NOT_EXIST));
     }
 
     // 내가 쓴 게시글 목록

@@ -50,14 +50,6 @@ public class AdminPostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 게시글 목록 조회
-    @GetMapping("/post")
-    public ResponseEntity<Page<PostDetailDto>> showAll(@PageableDefault(value=10)
-                                                           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostDetailDto> posts = postServiceImpl.showAll(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
-    }
-
     // 멀티미디어 수정
     @PatchMapping("/post/{postId}/file")
     public ResponseEntity<PostResponseDto> updateFile(@PathVariable Long postId,
@@ -74,7 +66,7 @@ public class AdminPostController {
                                                       @AuthenticationPrincipal final UserDetailsImpl userDetails) {
         Long userId = userDetails.getId();
         multiMediaServiceImpl.deleteFiles(userId, multiMediaId);
-        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "게시물 삭제 완료");
+        PostResponseDto response = PostResponseDto.res(HttpStatus.OK.value(), "멀티미디어 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

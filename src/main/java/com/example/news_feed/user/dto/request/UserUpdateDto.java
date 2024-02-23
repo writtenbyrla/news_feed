@@ -3,16 +3,13 @@ package com.example.news_feed.user.dto.request;
 import com.example.news_feed.user.domain.User;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class UserUpdateDto {
 
     private Long userId;
@@ -31,4 +28,6 @@ public class UserUpdateDto {
         );
 
     }
+
+
 }

@@ -8,6 +8,7 @@ import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
@@ -46,13 +47,11 @@ public class User extends TimeStamp {
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
     
-    public User(Long userId, String username, String pwd, String email, String status, UserRoleEnum role) {
+    public User(Long userId, String username, String pwd, String email) {
         this.userId = userId;
         this.username = username;
         this.pwd = pwd;
         this.email = email;
-        this.status=status;
-        this.role = role;
     }
 
     public User(String email, String pwd) {
@@ -65,9 +64,7 @@ public class User extends TimeStamp {
                 signupReqDto.getUserId(),
                 signupReqDto.getUsername(),
                 signupReqDto.getPwd(),
-                signupReqDto.getEmail(),
-                signupReqDto.getStatus(),
-                signupReqDto.getRole()
+                signupReqDto.getEmail()
         );
 
     }

@@ -26,7 +26,7 @@ public class AdminCommentController {
     private final CommentServiceImpl commentServiceImpl;
 
     // 댓글 수정
-    @PatchMapping("/comments/{commentId}")
+    @PatchMapping("/comment/{commentId}")
     private ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId,
                                                              @RequestBody UpdateCommentDto updateCommentDto,
                                                              @AuthenticationPrincipal final UserDetailsImpl userDetails) {
@@ -38,7 +38,7 @@ public class AdminCommentController {
     };
 
     // 댓글 삭제
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long commentId,
                                                             @AuthenticationPrincipal final UserDetailsImpl userDetails){
         Long userId = userDetails.getId();
