@@ -88,11 +88,9 @@ public class SocialService {
 
         RestTemplate rt = new RestTemplate();
 
-        // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
@@ -104,13 +102,12 @@ public class SocialService {
                 .headers(headers)
                 .body(body);
 
-        // HTTP 요청 보내기
         ResponseEntity<String> response = rt.exchange(
                 requestEntity,
                 String.class
         );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
+
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
 
         String access_token = jsonNode.get("access_token").asText();
@@ -136,7 +133,6 @@ public class SocialService {
                 .headers(headers)
                 .body(new LinkedMultiValueMap<>());
 
-        // HTTP 요청 보내기
         ResponseEntity<String> response = rt.exchange(
                 requestEntity,
                 String.class
@@ -149,7 +145,6 @@ public class SocialService {
         String email = body.get("kakao_account")
                 .get("email").asText();
 
-        //가져온 사용자 정보를 객체로 만들어서 반환
         return new SocialLoginDto(nickname, email);
     }
 }
