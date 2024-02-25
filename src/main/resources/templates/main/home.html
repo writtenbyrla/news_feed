@@ -6,21 +6,25 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main/home.css}" >
     <link rel="stylesheet" type="text/css" th:href="@{/css/main/navbar.css}" >
+    <link rel="stylesheet" type="text/css" th:href="@{/css/post/post_main.css}" >
     <link rel="icon" href="data:;base64,=">
 </head>
-<body>
-<main>
+<header>
     <!--nav bar-->
-    <div th:insert="~{main/navbar :: navbar}"></div>
-</main>
+    <div class="navbar" th:insert="~{main/navbar :: navbar}"></div>
+</header>
+<body>
+    <!-- 최신글 -->
+    <div class="body" th:insert="~{post/post_main::recent-posts}"></div>
 </body>
-<script>
-    $(document).ready(function() {
-        const cookie = Cookies.get('Authorization')
-        console.log('cookie ', cookie);
-    })
-</script>
+<footer sec:authorize="!isAuthenticated()">
+    <div class="footer-area">
+        <div>더 많은 글을 보고싶으신가요? 뉴스피드와 함께하세요!</div>
+        <div class="button-area"><button class="button" onclick="location.href='signup-page'">회원가입 하러가기</button></div>
+    </div>
+</footer>
 <!-- 로그아웃 -->
 <script th:inline="javascript">
     $(document).ready(function() {
@@ -39,9 +43,8 @@
             },
             success: function(data, status, xhr) {
                 alert("로그아웃 성공!");
-
-
-                window.location.href="/signup-page";
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.reload();
             },
             error: function(xhr, data) {
                 alert("로그아웃 실패");

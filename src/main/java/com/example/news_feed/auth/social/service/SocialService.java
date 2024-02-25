@@ -140,6 +140,7 @@ public class SocialService {
 
         JsonNode body = new ObjectMapper().readTree(response.getBody());
         Long id = body.get("id").asLong();
+        log.info(String.valueOf(id));
         String nickname = body.get("properties")
                 .get("nickname").asText();
         String email = body.get("kakao_account")

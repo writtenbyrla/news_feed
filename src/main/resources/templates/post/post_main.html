@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/post/post.css}" >
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>    <link rel="icon" href="data:;base64,=">
+</head>
+<body th:fragment="recent-posts">
+    <div class="banner">
+        <h2>최신글</h2>
+    </div>
+    <ol class="activity-feed" th:each="post : ${postList}">
+        <li class="feed-item" data-content="🗨️" data-color="navy">
+            <section>
+                <input type="checkbox" th:id="'expand_' + ${post.postId}" name="expand_1" />
+                <label th:for="'expand_' + ${post.postId}">
+                    <div><b th:text="${post.title}"></b></div>
+                    <div class="post-info">
+                        <span class="user" th:text=" ${post.username}"></span>
+<!--                        <span class="createdAt" th:text="${post.createdAt}"></span>-->
+                        <span class="post-like">👍🏼 <span th:text="${post.like}"></span></span>
+                    </div>
+                </label>
+                <main class="content" sec:authorize="isAuthenticated()">
+                    <p th:text="${post.content}"></p>
+                    <div class="img" th:if="${post.fileUrls}">
+                        <img th:each="url : ${post.fileUrls}" th:src="${url}"/>
+                    </div>
+                </main>
+
+                <!-- 인증 안된 유저는 회원가입 버튼 활성화 -->
+                <main class="content" id="unauthenticated-content" sec:authorize="!isAuthenticated()">
+                    <p class="more-posts"> 뉴스피드와 함께하시면 더 많은 내용을 볼 수 있습니다!</p>
+                    <button class="button" onclick="location.href='signup-page'">회원가입 하러가기</button>
+                </main>
+
+
+            </section>
+        </li>
+    </ol>
+</body>
+</html>

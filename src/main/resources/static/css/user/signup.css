@@ -9,7 +9,8 @@ body, .message, .form, form {
 body {
     height: 100vh;
     background: #e8e8e8;
-    font-family: "Source Sans Pro", sans-serif;
+    /*font-family: "Source Sans Pro", sans-serif;*/
+    font-family: verdana,sans-serif;
     overflow: hidden;
 }
 .container {
@@ -61,7 +62,7 @@ body {
 .form--heading {
     font-size: 25px;
     height: 50px;
-    color: #129D72;
+    color: #3c3e5b;;
     font-family: "Source Sans Pro", sans-serif;
 }
 .form--signup {
@@ -96,13 +97,15 @@ form input:focus {
     width: 90%;
     height: 40px;
     border: 0;
+    border-radius: 10px;
+
     outline: 0;
     color: white;
     font-size: 15px;
     font-weight: 400;
     position: relative;
     z-index: 3;
-    background: #129D72;
+    background: #3c3e5b;
     font-family: "Source Sans Pro", sans-serif;
     cursor: pointer;
 }

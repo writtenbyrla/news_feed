@@ -27,11 +27,12 @@ public class SocialLoginController {
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping("/kakao/login")
-    public RedirectView kakaoLogin(@RequestParam String code, HttpServletResponse response, Model model) throws JsonProcessingException {
-
+    public RedirectView kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         SocialResponseDto dto = socialService.kakaoLogin(code, response);
         String accessToken = dto.getAccessToken();
         String refreshToken = dto.getRefreshToken();
+
+
 
         Long expiresTime = jwtTokenProvider.getExpiredTime(refreshToken, TokenType.REFRESH);
         redisService.setValues("RefreshToken:" + dto.getEmail(), refreshToken, expiresTime, TimeUnit.MILLISECONDS);
@@ -48,4 +49,6 @@ public class SocialLoginController {
 
         return new RedirectView("/home");
     }
+
+
 }

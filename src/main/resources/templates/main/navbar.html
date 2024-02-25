@@ -11,14 +11,20 @@
 <body>
 <nav class="navbar" th:fragment="navbar">
     <ul>
-        <li>
-            <span sec:authorize="isAuthenticated()" th:text="${user.username} + '님, 안녕하세요!'"></span>
-        </li>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Post</a></li>
-        <li><a href="#">MyPage</a></li>
-        <li><a href="#" id="logout-btn" sec:authorize="isAuthenticated()">Logout</a></li>
-        <li sec:authorize="hasAuthority('ADMIN')"><a  href="#">Admin</a></li>
+
+        <li><a href="/home">홈</a></li>
+
+
+        <!--인증이 안 된 경우 -->
+        <li><a href="/signup-page"  sec:authorize="!isAuthenticated()">로그인</a></li>
+
+        <!--로그인한 경우 -->
+        <li><a href="/feed" sec:authorize="isAuthenticated()">피드 보기</a></li>
+        <li><a href="#" sec:authorize="isAuthenticated()" th:text="${user.username}"></a></li>
+        <li><a href="#" id="logout-btn" sec:authorize="isAuthenticated()">로그아웃</a></li>
+
+        <!--관리자 -->
+        <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a  href="#">관리자 페이지</a></li>
     </ul>
 </nav>
 <script type="text/javascript" th:src="@{/js/main/navbar.js}"></script>
