@@ -37,6 +37,13 @@ public class PostServiceImpl implements PostService {
     // 게시글 등록
     @Transactional
     public CreatePostDto createPost(CreatePostDto createPostDto) {
+        if (createPostDto.getTitle() == null || createPostDto.getTitle().isEmpty()) {
+            throw new PostException(PostErrorCode.NOT_NULL_TITLE);
+        }
+        if (createPostDto.getContent() == null || createPostDto.getContent().isEmpty()) {
+            throw new PostException(PostErrorCode.NOT_NULL_CONTENT);
+        }
+
         // 사용자 정보
         User user = checkUser(createPostDto.getUserId());
 
@@ -52,9 +59,6 @@ public class PostServiceImpl implements PostService {
     // 게시글 수정(기본)
     @Transactional
     public UpdatePostDto update(Long postId, UpdatePostDto updatePostDto) {
-
-        updatePostDto.setPostId(postId);
-
         // 기존 유저정보 조회 및 예외 처리
         User user = checkUser(updatePostDto.getUserId());
         // 수정하고자 하는 게시글 정보 조회
@@ -97,8 +101,8 @@ public class PostServiceImpl implements PostService {
 
     // 게시글 목록
     public Page<PostDetailDto> showAll(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
 
+        Page<Post> posts = postRepository.findAll(pageable);
         return new PageImpl<>(
                 posts.getContent().stream()
                         .map(PostDetailDto::createPostDto)
@@ -119,7 +123,7 @@ public class PostServiceImpl implements PostService {
     public Page<PostDetailDto> findByOption(String keyword, Pageable pageable) {
 
         Page<Post> filteredPosts = postRepository.findByOption(keyword, pageable);
-        if (filteredPosts.isEmpty()){
+        if (filteredPosts == null || filteredPosts.isEmpty()) {
             throw new PostException(PostErrorCode.POST_NOT_EXIST);
         }
         return new PageImpl<>(
@@ -136,7 +140,7 @@ public class PostServiceImpl implements PostService {
     // 게시글 목록(username으로 검색)
     public Page<PostDetailDto> findByUser(String username, Pageable pageable) {
         Page<Post> filteredPosts = postRepository.findByUser(username, pageable);
-        if (filteredPosts.isEmpty()){
+        if (filteredPosts==null || filteredPosts.isEmpty()){
             throw new PostException(PostErrorCode.POST_NOT_EXIST);
         }
         return new PageImpl<>(

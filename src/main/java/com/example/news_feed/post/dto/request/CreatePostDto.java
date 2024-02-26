@@ -26,12 +26,6 @@ public class CreatePostDto {
     private Long userId;
 
     public static CreatePostDto createPostDto(Post post) {
-        if(post.getTitle().isEmpty()){
-            throw new PostException(PostErrorCode.NOT_NULL_TITLE);
-        }
-        if(post.getContent().isEmpty()){
-            throw new PostException(PostErrorCode.NOT_NULL_CONTENT);
-        }
         return new CreatePostDto(
                 post.getPostId(),
                 post.getTitle(),

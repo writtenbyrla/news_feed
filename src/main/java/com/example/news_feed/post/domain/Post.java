@@ -11,6 +11,7 @@ import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.util.Objects;
 @ToString
 @Getter
 @Setter
+@Slf4j
 @Table(name="post")
 public class Post extends TimeStamp {
     @Id
@@ -65,9 +67,13 @@ public class Post extends TimeStamp {
         this.user = user;
     }
 
+    public Post(String title, String content, User user) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
+
     public void patch(UpdatePostDto updatePostDto) {
-        if (!this.postId.equals(updatePostDto.getPostId()))
-            throw new PostException(PostErrorCode.POST_NOT_EXIST);
         if (updatePostDto.getTitle() != null)
             this.title = updatePostDto.getTitle();
         if (updatePostDto.getContent() != null)

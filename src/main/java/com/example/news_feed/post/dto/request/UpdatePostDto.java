@@ -14,16 +14,13 @@ import java.util.Date;
 @Builder
 public class UpdatePostDto {
 
-    private Long postId;
     private String title;
     private String content;
-
     @JsonProperty("user_id")
     private Long userId;
 
     public static UpdatePostDto updatePostDto(Post post) {
         return new UpdatePostDto(
-                post.getPostId(),
                 post.getTitle(),
                 post.getContent(),
                 post.getUser().getUserId()
