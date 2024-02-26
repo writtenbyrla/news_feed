@@ -22,7 +22,7 @@ body {
         padding-left: 30px;
         border-left: 2px solid #ddd;
         &:last-child {
-            border-color: transparent;
+            /*border-color: transparent;*/
         }
         &:before {
             content: attr(data-time);

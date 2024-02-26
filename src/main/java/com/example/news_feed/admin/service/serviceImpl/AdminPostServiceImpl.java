@@ -26,7 +26,6 @@ public class AdminPostServiceImpl implements AdminPostService {
     @Transactional
     // 게시글 수정
     public UpdatePostDto update(Long postId, UpdatePostDto updatePostDto) {
-        updatePostDto.setPostId(postId);
 
         // 기존 유저정보 조회 및 예외 처리
         checkUser(updatePostDto.getUserId());
