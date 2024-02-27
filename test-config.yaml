@@ -1,0 +1,17 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      rampTo: 30
+
+scenarios:
+  - name: "get posts"
+    flow:
+      - get:
+          url: "/post"
+
+
+
+
+
