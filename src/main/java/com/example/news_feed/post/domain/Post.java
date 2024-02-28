@@ -8,6 +8,7 @@ import com.example.news_feed.common.timestamp.TimeStamp;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +39,11 @@ public class Post extends TimeStamp {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostLike> postLike = new ArrayList<>();
 
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<MultiMedia> multiMedia = new ArrayList<>();
 

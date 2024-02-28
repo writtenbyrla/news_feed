@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @ToString
 @Getter
 @Setter
+@BatchSize(size = 10)
 public class PostDetailDto {
 
     private Long postId;
@@ -27,9 +29,7 @@ public class PostDetailDto {
     @JsonProperty("user_id")
     private Long userId;
     private String username;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime modifiedAT;
     @JsonProperty("like")
     private int like;
