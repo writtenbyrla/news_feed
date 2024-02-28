@@ -4,6 +4,7 @@ import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @AllArgsConstructor
@@ -11,6 +12,7 @@ import lombok.*;
 @ToString
 @Getter
 @Setter
+@BatchSize(size = 10)
 @Table(name="multimedia")
 public class MultiMedia {
 

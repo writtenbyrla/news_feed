@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 .requestMatchers("/home", "/kakao/login", "/signup-page", "/feed").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
-//                                .requestMatchers(HttpMethod.GET,"/comments/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/post").permitAll()
                                 .requestMatchers( "/admin/**").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 );

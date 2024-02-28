@@ -1,6 +1,5 @@
 package com.example.news_feed.post.service.serviceImpl;
 
-import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
