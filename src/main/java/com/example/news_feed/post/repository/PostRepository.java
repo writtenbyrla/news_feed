@@ -3,6 +3,7 @@ package com.example.news_feed.post.repository;
 
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.user.domain.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     @Query(value = "SELECT * FROM post WHERE user_id = :userId", nativeQuery = true)
     Page<Post> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("SELECT p FROM Post p JOIN FETCH p.user")
+    Page<Post> findAll(Pageable pageable);
 }
 
