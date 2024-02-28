@@ -1,8 +1,6 @@
 package com.example.news_feed.comment.repository;
 
 import com.example.news_feed.comment.domain.Comment;
-import com.example.news_feed.comment.dto.response.CommentDetailDto;
-import com.example.news_feed.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +9,6 @@ import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
 @RepositoryDefinition(domainClass = Comment.class, idClass = Long.class)

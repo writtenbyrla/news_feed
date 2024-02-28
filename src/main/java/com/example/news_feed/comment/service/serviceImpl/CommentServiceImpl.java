@@ -8,9 +8,7 @@ import com.example.news_feed.comment.exception.CommentErrorCode;
 import com.example.news_feed.comment.exception.CommentException;
 import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.comment.service.CommentService;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.exception.PostErrorCode;
 import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
@@ -24,10 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

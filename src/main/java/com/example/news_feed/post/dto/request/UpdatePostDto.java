@@ -4,9 +4,6 @@ import com.example.news_feed.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 @AllArgsConstructor
 @ToString
 @Getter

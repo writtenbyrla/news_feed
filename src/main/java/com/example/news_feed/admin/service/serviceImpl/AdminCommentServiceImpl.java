@@ -3,22 +3,16 @@ package com.example.news_feed.admin.service.serviceImpl;
 import com.example.news_feed.admin.service.AdminCommentService;
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
-import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import com.example.news_feed.comment.exception.CommentErrorCode;
 import com.example.news_feed.comment.exception.CommentException;
 import com.example.news_feed.comment.repository.CommentRepository;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
 import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

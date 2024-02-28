@@ -1,6 +1,5 @@
 package com.example.news_feed.user.dto.request;
 
-import com.example.news_feed.user.domain.UserRoleEnum;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 

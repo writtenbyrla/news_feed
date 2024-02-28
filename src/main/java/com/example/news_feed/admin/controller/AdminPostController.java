@@ -2,16 +2,10 @@ package com.example.news_feed.admin.controller;
 
 import com.example.news_feed.multimedia.service.serviceImpl.MultiMediaServiceImpl;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
-import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.dto.response.PostResponseDto;
 import com.example.news_feed.post.service.serviceImpl.PostServiceImpl;
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

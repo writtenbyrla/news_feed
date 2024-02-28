@@ -2,7 +2,6 @@ package com.example.news_feed.admin.service;
 
 import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.dto.request.UpdateCommentDto;
-import com.example.news_feed.comment.dto.response.CommentDetailDto;
 
 import java.util.List;
 

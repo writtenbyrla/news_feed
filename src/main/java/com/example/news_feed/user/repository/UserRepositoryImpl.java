@@ -3,14 +3,11 @@ package com.example.news_feed.user.repository;
 import com.example.news_feed.user.domain.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-
-import java.util.List;
 
 import static com.example.news_feed.post.domain.QPost.post;
 import static com.example.news_feed.user.domain.QUser.user;

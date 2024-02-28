@@ -1,6 +1,5 @@
 package com.example.news_feed.post.dto.response;
 
-import com.example.news_feed.user.dto.response.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

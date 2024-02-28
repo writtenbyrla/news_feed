@@ -1,7 +1,6 @@
 package com.example.news_feed.multimedia.domain;
 
 import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.dto.request.CreatePostDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;

@@ -2,7 +2,6 @@ package com.example.news_feed.multimedia.service.serviceImpl;
 
 import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.common.aws.FileUploadService;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.multimedia.dto.MultiMediaDto;
 import com.example.news_feed.multimedia.exception.MultiMediaErrorCode;
@@ -20,7 +19,6 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

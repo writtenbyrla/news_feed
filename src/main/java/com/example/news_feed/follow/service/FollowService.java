@@ -2,7 +2,6 @@ package com.example.news_feed.follow.service;
 
 import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
-import com.example.news_feed.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

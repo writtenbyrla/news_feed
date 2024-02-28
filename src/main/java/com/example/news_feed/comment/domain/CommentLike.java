@@ -1,6 +1,4 @@
 package com.example.news_feed.comment.domain;
-import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.domain.PostLike;
 import com.example.news_feed.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

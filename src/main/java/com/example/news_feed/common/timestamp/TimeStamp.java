@@ -1,6 +1,5 @@
 package com.example.news_feed.common.timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

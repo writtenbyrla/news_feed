@@ -1,6 +1,5 @@
 package com.example.news_feed.auth.dto.response;
 
-import com.example.news_feed.user.dto.response.UserResponseDto;
 import lombok.*;
 
 @AllArgsConstructor

@@ -1,7 +1,6 @@
 package com.example.news_feed.multimedia.repository;
 
 import com.example.news_feed.multimedia.domain.MultiMedia;
-import com.example.news_feed.user.domain.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

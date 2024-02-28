@@ -1,6 +1,5 @@
 package com.example.news_feed.follow.service.serviceImpl;
 
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.follow.domain.Follow;
 import com.example.news_feed.follow.dto.request.CreateFollowDto;
 import com.example.news_feed.follow.dto.response.FollowingPostDto;
@@ -9,7 +8,6 @@ import com.example.news_feed.follow.exception.FollowException;
 import com.example.news_feed.follow.repository.FollowRepository;
 import com.example.news_feed.follow.service.FollowService;
 import com.example.news_feed.post.domain.Post;
-import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.post.exception.PostErrorCode;
 import com.example.news_feed.post.exception.PostException;
 import com.example.news_feed.post.repository.PostRepository;
@@ -23,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -6,7 +6,6 @@ import com.example.news_feed.auth.exception.AuthException;
 import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
@@ -14,7 +13,6 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,5 @@
 package com.example.news_feed.admin.service.serviceImpl;
 
-import com.example.news_feed.post.dto.response.PostDetailDto;
 import com.example.news_feed.user.dto.response.UserDetailDto;
 import com.example.news_feed.admin.exception.AdminErrorCode;
 import com.example.news_feed.admin.exception.AdminException;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,9 +1,6 @@
 package com.example.news_feed.comment.dto.request;
 
-import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.comment.domain.CommentLike;
-import com.example.news_feed.post.domain.PostLike;
-import com.example.news_feed.post.dto.request.PostLikeDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -7,8 +7,6 @@ import com.example.news_feed.comment.dto.response.CommentDetailDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface CommentService {
     /*
      * 댓글 추가

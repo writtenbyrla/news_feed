@@ -1,9 +1,7 @@
 package com.example.news_feed.post.dto.response;
 
-import com.example.news_feed.comment.domain.Comment;
 import com.example.news_feed.multimedia.domain.MultiMedia;
 import com.example.news_feed.post.domain.Post;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +10,6 @@ import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

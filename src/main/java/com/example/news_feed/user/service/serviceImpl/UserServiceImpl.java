@@ -1,6 +1,5 @@
 package com.example.news_feed.user.service.serviceImpl;
 
-import com.example.news_feed.auth.redis.service.RedisService;
 import com.example.news_feed.auth.security.jwt.JwtTokenProvider;
 import com.example.news_feed.auth.security.jwt.TokenType;
 import com.example.news_feed.user.domain.User;
@@ -24,7 +23,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 

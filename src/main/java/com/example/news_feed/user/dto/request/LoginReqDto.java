@@ -1,7 +1,5 @@
 package com.example.news_feed.user.dto.request;
 
-import com.example.news_feed.user.domain.User;
-import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.*;
 
 

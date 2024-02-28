@@ -1,7 +1,6 @@
 package com.example.news_feed.auth.security;
 
 import com.example.news_feed.user.domain.User;
-import com.example.news_feed.user.domain.UserRoleEnum;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

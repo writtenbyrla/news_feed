@@ -1,14 +1,11 @@
 package com.example.news_feed.post.service;
 
-import com.example.news_feed.auth.security.UserDetailsImpl;
 import com.example.news_feed.post.domain.Post;
 import com.example.news_feed.post.dto.request.CreatePostDto;
 import com.example.news_feed.post.dto.request.UpdatePostDto;
 import com.example.news_feed.post.dto.response.PostDetailDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface PostService {
 

@@ -8,7 +8,6 @@ import com.example.news_feed.comment.exception.CommentException;
 import com.example.news_feed.comment.repository.CommentLikeRepository;
 import com.example.news_feed.comment.repository.CommentRepository;
 import com.example.news_feed.comment.service.CommentLikeService;
-import com.example.news_feed.common.exception.HttpException;
 import com.example.news_feed.user.domain.User;
 import com.example.news_feed.user.exception.UserErrorCode;
 import com.example.news_feed.user.exception.UserException;
@@ -16,7 +15,6 @@ import com.example.news_feed.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
