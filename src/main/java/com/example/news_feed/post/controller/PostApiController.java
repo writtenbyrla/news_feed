@@ -98,7 +98,7 @@ public class PostApiController {
 
 
     // 게시글 목록
-//    @RunningTime
+    @RunningTime
     @GetMapping("/post")
     public ResponseEntity<Page<PostDetailDto>> showAll(@PageableDefault(value=10)
                                                            @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {

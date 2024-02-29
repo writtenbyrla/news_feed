@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @ToString
 @Getter
 @Setter
-@BatchSize(size = 10)
 public class PostDetailDto {
 
     private Long postId;
