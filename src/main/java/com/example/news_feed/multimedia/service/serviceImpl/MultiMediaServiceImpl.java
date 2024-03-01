@@ -62,9 +62,9 @@ public class MultiMediaServiceImpl implements MultiMediaService {
         // 수정하고자 하는 게시글 정보 조회
         Post post = checkPost(postId);
         // 기존 유저정보 조회 및 예외 처리
-        User user = checkUser(post.getUser().getUserId());
+        checkUser(post.getUser().getUserId());
         // 유저인 경우에만 작성자 본인 여부 확인(관리자는 수정 가능)
-        if(user.getRole().getAuthority().equals("USER")){
+        if(userDetails.getAuthorities().equals("USER")){
             // 작성자 여부 확인
             isWrittenByUser(post.getUser().getUserId(), userDetails.getId());
         }
