@@ -3,7 +3,8 @@
 <br><br>
 
 ## 프로젝트 소개
-### ◾개발 환경: `Java(JDK) 17`, `Spring Boot 3.2.2`, `MySQL 8.0.36`, `JPA`, `Gradle`
+### ◾개발 환경
+ㅤㅤ`Java(JDK) 17`, `Spring Boot 3.2.2`, `MySQL 8.0.36`, `JPA`, `Gradle`
 ### ◾API 명세서 - <a href="https://documenter.getpostman.com/view/29502573/2sA2rGvzCW"> 보러가기 </a>
 
 ### ◾ERD
@@ -13,7 +14,7 @@
 <br><br>
 
 ## 주요 기능
-### 요구 사항에 맞춰 기능 구현을 진행하였습니다. **[[Issues]](https://github.com/writtenbyrla/news_feed/issues?q=is%3Aissue+is%3Aclosed)**
+### 요구 사항에 맞춰 기능 구현을 진행하였습니다. **[[요구사항]](https://bubble-bladder-d73.notion.site/NewsFeed-fe5539abcf45477e8804ade8a28573fb?pvs=4)  [[Issues]](https://github.com/writtenbyrla/news_feed/issues?q=is%3Aissue+is%3Aclosed)**
 <br>
 
 ### ◾회원가입 및 로그인
