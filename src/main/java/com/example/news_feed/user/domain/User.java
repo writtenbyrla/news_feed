@@ -1,6 +1,7 @@
 package com.example.news_feed.user.domain;
 
 import com.example.news_feed.common.timestamp.TimeStamp;
+import com.example.news_feed.follow.domain.Follow;
 import com.example.news_feed.user.dto.request.PwdUpdateDto;
 import com.example.news_feed.user.dto.request.SignupReqDto;
 import com.example.news_feed.user.dto.request.UserUpdateDto;
@@ -9,6 +10,9 @@ import com.example.news_feed.user.exception.UserException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -45,6 +49,12 @@ public class User extends TimeStamp {
     @Column(name="role", columnDefinition = "varchar(10) default 'USER'")
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
+    private List<Follow> followings = new ArrayList<>();
     
     public User(String username, String pwd, String email) {
         this.username = username;
