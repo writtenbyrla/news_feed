@@ -143,6 +143,7 @@ class PostLikeApiControllerTest {
             // given
             // when
             // then
+            //수정줏저웃ㅈ도시
             mvc.perform(MockMvcRequestBuilders.delete("/post/" + 10 +"/like")
                             .contentType(MediaType.APPLICATION_JSON)
                             .with(authentication(authentication))
